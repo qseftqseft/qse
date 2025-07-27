@@ -1,0 +1,14 @@
+/home/qseft/RiderProjects/qse/qse/bin/Debug/net9.0/qse
+/home/qseft/RiderProjects/qse/qse/bin/Debug/net9.0/qse.deps.json
+/home/qseft/RiderProjects/qse/qse/bin/Debug/net9.0/qse.runtimeconfig.json
+/home/qseft/RiderProjects/qse/qse/bin/Debug/net9.0/qse.dll
+/home/qseft/RiderProjects/qse/qse/bin/Debug/net9.0/qse.pdb
+/home/qseft/RiderProjects/qse/qse/obj/Debug/net9.0/qse.GeneratedMSBuildEditorConfig.editorconfig
+/home/qseft/RiderProjects/qse/qse/obj/Debug/net9.0/qse.AssemblyInfoInputs.cache
+/home/qseft/RiderProjects/qse/qse/obj/Debug/net9.0/qse.AssemblyInfo.cs
+/home/qseft/RiderProjects/qse/qse/obj/Debug/net9.0/qse.csproj.CoreCompileInputs.cache
+/home/qseft/RiderProjects/qse/qse/obj/Debug/net9.0/qse.dll
+/home/qseft/RiderProjects/qse/qse/obj/Debug/net9.0/refint/qse.dll
+/home/qseft/RiderProjects/qse/qse/obj/Debug/net9.0/qse.pdb
+/home/qseft/RiderProjects/qse/qse/obj/Debug/net9.0/qse.genruntimeconfig.cache
+/home/qseft/RiderProjects/qse/qse/obj/Debug/net9.0/ref/qse.dll

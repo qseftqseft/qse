@@ -1,0 +1,72 @@
+using System.Text;
+
+namespace qse
+{
+    class MainClass
+    {
+        public static void Main(string[] args)
+        {
+            string str = "";
+            List<string> file = File.ReadAllText("/home/qseft/test").Split('\n').ToList();
+            Console.Clear();
+            Console.CursorVisible = true;
+            int line = 0;
+            int column = 0;
+            Console.SetCursorPosition(column, line);
+            
+            while (true)
+            {
+                
+                Console.SetCursorPosition(0, 0);
+                Console.WriteLine("== QSE ==");
+
+                for (int i = 0; i < file.Count; i++)
+                    Console.WriteLine(file[i]);
+                
+                Console.SetCursorPosition(column, line);
+                
+                
+                ConsoleKeyInfo keyInfo1 = Console.ReadKey(true);
+                switch (keyInfo1.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                        line--;
+                        break;
+                    case ConsoleKey.DownArrow:
+                        line++;
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        column--;
+                        break;
+                    case ConsoleKey.RightArrow:
+                        column++;
+                        break;
+                    case ConsoleKey.Backspace:
+                        file[line] = file[line].Remove(file[line].Length - 1);
+                        column--;
+                        break;
+                    
+                    default:
+                        if (column < file[line].Length - 1)
+                        {
+                            str = file[line];
+                            str = str.Remove(0, column);
+                            file[line] = file[line].Remove(file[line].Length - (column - 1));
+                            
+                            
+                        }
+                        else
+                        {
+                            file[line] = file[line] +  keyInfo1.KeyChar;
+                            column = file[line].Length;
+                        }
+
+                        break;
+                }
+                
+                
+                Console.Clear();
+            }
+        }
+    }
+}

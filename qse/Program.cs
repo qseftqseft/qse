@@ -64,54 +64,79 @@ namespace qse
                         column++;
                         break;
                     case ConsoleKey.Backspace:
-                        file.RemoveAt(filelenghts[line-1]+column-2+line);
+                        file.RemoveAt(filelenghts[(line+scroll)-1]+column-2+(line+scroll));
                         column--;
                         break;
                     case ConsoleKey.Enter:
-                        file.Insert(filelenghts[line-1]+column+line,  '\n');
+                        file.Insert(filelenghts[(line+scroll)-1]+column-1+(line+scroll),  '\n');
                         column=0;
                         line++;
                         break;
                     case ConsoleKey.Delete:
-                        file.RemoveAt(filelenghts[line-1]+column+line-1);
+                        file.RemoveAt(filelenghts[(line+scroll)-1]+column-1+(line+scroll));
                         break;
                     case ConsoleKey.Tab:
-                        file.Insert(filelenghts[line-1]+column-1+line,  ' ');
+                        file.Insert(filelenghts[(line+scroll)-1]+column-1+(line+scroll),  ' ');
                         column++;
-                        file.Insert(filelenghts[line-1]+column-1+line,  ' ');
+                        file.Insert(filelenghts[(line+scroll)-1]+column-1+(line+scroll),  ' ');
                         column++;
-                        file.Insert(filelenghts[line-1]+column-1+line,  ' ');
+                        file.Insert(filelenghts[(line+scroll)-1]+column-1+(line+scroll),  ' ');
                         column++;
-                        file.Insert(filelenghts[line-1]+column-1+line,  ' ');
+                        file.Insert(filelenghts[(line+scroll)-1]+column-1+(line+scroll),  ' ');
                         column++;
                         break;
                     case ConsoleKey.PageUp:
-                        scroll = scroll - top+2;
+                        scroll = scroll - top+4;
                         break;
                     case ConsoleKey.PageDown:
-                        scroll = scroll + top-2;
+                        scroll = scroll + top-4;
                         break;
                     
                     default:
-                        file.Insert(filelenghts[line-1]+column-1+line,  keyInfo1.KeyChar);
+                        file.Insert(filelenghts[(line+scroll)-1]+column-1+(line+scroll),  keyInfo1.KeyChar);
                         column++;
                         break;
                 }
 
-                if (line <= 0)
-                    line = 1;
-                if (line >= top)
-                    line = top - 1;
-                
                 if (column < 0)
-                    column = 0;
+                {
+                    column = left;
+                    line--;
+                }
+
                 if (column > left)
-                    column = left ;
+                {
+                    column = 0;
+                    line++;
+                }
+
+                if (line <= 0)
+                {
+                    line = 1;
+                    scroll--;
+                }
+
+                if (line >= top)
+                {
+                    line = top - 1;
+                    scroll++;
+                }
+                
+                if (scroll <= 0)
+                {
+                    scroll = 0;
+                }
+
+                if (scroll + top >= filelenghts.Count)
+                {
+                    scroll = filelenghts.Count - top - 1;
+                }
+
+                
                 
                 
             }
         }
-
         public static List<int> lenghts(string file)
         {
             int num = 0;
@@ -139,16 +164,17 @@ namespace qse
             
             Console.SetCursorPosition(0, 1);
             
-            for (int i = 0; i < filelenghts[top]; i++)
+            for (int i = 0; i < (filelenghts[scroll+top-1] + scroll + top-1) - (filelenghts[scroll] + scroll) ; i++)
                 Console.Write(file[i+filelenghts[scroll]+scroll]);
             
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.Black;
             Console.SetCursorPosition(0, top);
             Console.Write(" " + filelenghts.Count.ToString() + " lines loaded");
-            for (int i = 0; i < left-(14+filelenghts.Count.ToString().Count()+(filelenghts[line-1]+column-1+line).ToString().Count()); i++)
-                Console.Write(" ");
-            Console.Write(filelenghts[line - 1] + column - 1 + line + " ");
+            
+            for (int i = 0; i < left-(14+filelenghts.Count.ToString().Count()+(filelenghts[line-1]+column-1+line).ToString().Count()); i++) 
+                Console.Write(" ");  Console.Write(filelenghts[line - 1] + column - 1 + line + " ");
+            
             Console.ResetColor();
         }
 

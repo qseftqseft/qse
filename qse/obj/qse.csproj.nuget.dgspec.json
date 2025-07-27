@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/qseft/RiderProjects/qse/qse/qse.csproj": {}
+    "/home/qseft/Documents/GitHub/qse/qse/qse.csproj": {}
   },
   "projects": {
-    "/home/qseft/RiderProjects/qse/qse/qse.csproj": {
+    "/home/qseft/Documents/GitHub/qse/qse/qse.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/qseft/RiderProjects/qse/qse/qse.csproj",
+        "projectUniqueName": "/home/qseft/Documents/GitHub/qse/qse/qse.csproj",
         "projectName": "qse",
-        "projectPath": "/home/qseft/RiderProjects/qse/qse/qse.csproj",
+        "projectPath": "/home/qseft/Documents/GitHub/qse/qse/qse.csproj",
         "packagesPath": "/home/qseft/.nuget/packages/",
-        "outputPath": "/home/qseft/RiderProjects/qse/qse/obj/",
+        "outputPath": "/home/qseft/Documents/GitHub/qse/qse/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/qseft/.nuget/NuGet/NuGet.Config"

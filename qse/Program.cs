@@ -75,11 +75,21 @@ namespace qse
                     case ConsoleKey.Delete:
                         file.RemoveAt(filelenghts[line-1]+column+line-1);
                         break;
+                    case ConsoleKey.Tab:
+                        file.Insert(filelenghts[line-1]+column-1+line,  ' ');
+                        column++;
+                        file.Insert(filelenghts[line-1]+column-1+line,  ' ');
+                        column++;
+                        file.Insert(filelenghts[line-1]+column-1+line,  ' ');
+                        column++;
+                        file.Insert(filelenghts[line-1]+column-1+line,  ' ');
+                        column++;
+                        break;
                     case ConsoleKey.PageUp:
-                        scroll--;
+                        scroll = scroll - top+2;
                         break;
                     case ConsoleKey.PageDown:
-                        scroll++;
+                        scroll = scroll + top-2;
                         break;
                     
                     default:
@@ -129,8 +139,8 @@ namespace qse
             
             Console.SetCursorPosition(0, 1);
             
-            for (int i = scroll; i < filelenghts[scroll+top+1]-filelenghts[scroll+1]; i++)
-                Console.Write(file[i]);
+            for (int i = 0; i < filelenghts[top]; i++)
+                Console.Write(file[i+filelenghts[scroll]+scroll]);
             
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.Black;

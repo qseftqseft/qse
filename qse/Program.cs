@@ -53,6 +53,14 @@ namespace qse
                 {
                     case ConsoleKey.UpArrow:
                         line--;
+                        if (line >= 1)
+                        {
+                            if (column > filelenghts[line + scroll] - filelenghts[line - 1 + scroll])
+                            {
+                                column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                                
+                            }
+                        }
                         break;
                     case ConsoleKey.DownArrow:
                         line++;
@@ -98,17 +106,16 @@ namespace qse
                         break;
                 }
 
-                if (column < 0)
+                if (column < 0 && line > 1)
                 {
-                    column = left;
                     line--;
+                    column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
                 }
-
-                if (column > left)
-                {
+                
+                if (column < 0 )
                     column = 0;
-                    line++;
-                }
+
+                
 
                 if (line <= 0)
                 {
@@ -122,7 +129,7 @@ namespace qse
                     scroll++;
                 }
                 
-                if (scroll <= 0)
+                if (scroll < 0)
                 {
                     scroll = 0;
                 }
@@ -132,7 +139,18 @@ namespace qse
                     scroll = filelenghts.Count - top - 1;
                 }
 
-                
+                if (line >= 1)
+                {
+                    if (column > filelenghts[line + scroll] - filelenghts[line - 1 + scroll])
+                    {
+                        column = 0;
+                        line++;
+
+                    }
+                }
+                if (line > top - 1)
+                    line = top - 1;
+                    
                 
                 
             }
@@ -152,6 +170,7 @@ namespace qse
 
         public static void write(int scroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column)
         {
+            Stopwatch sw =  new Stopwatch();
             Console.Clear();
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.Black;
@@ -164,19 +183,32 @@ namespace qse
             
             Console.SetCursorPosition(0, 1);
             
-            for (int i = 0; i < (filelenghts[scroll+top-1] + scroll + top-1) - (filelenghts[scroll] + scroll) ; i++)
-                Console.Write(file[i+filelenghts[scroll]+scroll]);
-            
-            Console.BackgroundColor = ConsoleColor.White;
+            //for (int i = 0; i < (filelenghts[scroll+top-1] + scroll + top-1) - (filelenghts[scroll] + scroll) ; i++)
+                //Console.Write(filestr[i+filelenghts[scroll]+scroll]);
+                
+                for (int i = 0; i < top - 1; i++)
+                {
+                    sw.Start();
+                    for (int j = 0; j < left-3; j++)
+                    {
+                        Console.Write((filestr.Split("\n")[i + scroll])[j]);
+                    }
+                    Console.Write(sw.ElapsedMilliseconds);
+                    sw.Reset();
+                    Console.Write("\n");
+                }
+
+                Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.Black;
             Console.SetCursorPosition(0, top);
             Console.Write(" " + filelenghts.Count.ToString() + " lines loaded");
             
-            for (int i = 0; i < left-(14+filelenghts.Count.ToString().Count()+(filelenghts[line-1]+column-1+line).ToString().Count()); i++) 
-                Console.Write(" ");  Console.Write(filelenghts[line - 1] + column - 1 + line + " ");
+            for (int i = 0; i < left-(14+filelenghts.Count.ToString().Count()+(filelenghts[(line+scroll)-1]+column-1+(line+scroll)).ToString().Count()); i++) 
+                Console.Write(" ");  Console.Write(filelenghts[(line+scroll)-1]+column-1+(line+scroll) + " ");
             
             Console.ResetColor();
         }
 
     }
+    
 }

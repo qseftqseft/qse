@@ -1,5 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
+using System.Linq;
 
 namespace qse
 {
@@ -10,10 +14,11 @@ namespace qse
             Stopwatch sw  = new Stopwatch();
             
             
+            
             sw.Start();
             
             int left = Console.WindowWidth-1;
-            int top = Console.WindowHeight-1;
+            int top = Console.WindowHeight-2;
             int num = 0;
             string filename = "/home/qseft/test";
             string originalfile = File.ReadAllText(filename).Replace("\t", "    ");
@@ -24,12 +29,7 @@ namespace qse
                 file.Add(c);
             }
             
-            string[] display = new string[top-2];
-            for (int i = 0; i < top-2; i++)
-            {
-                for (int j = 0; j < left; j++)
-                    display[i] = " ";
-            }
+            
 
             List<int> filelenghts = new List<int>();
 
@@ -46,18 +46,30 @@ namespace qse
             bool run = true;
             while (true)
             {
+                ConsoleKeyInfo keyInfo1 = new ConsoleKeyInfo('\u001b', ConsoleKey.Escape, shift: false, alt: false, control: false);
+                left = Console.WindowWidth-1;
+                top = Console.WindowHeight-2;
+                num = 0;
+                filelenghts.Add(0);
+                filestr = string.Concat(file);
+                filelenghts = lenghts(filestr);
+                    
                 while (run)
                 {
-                    num = 0;
-                    filelenghts.Add(0);
-                    filestr = string.Concat(file);
-                    filelenghts = lenghts(filestr);
+                    
 
                     write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column);
 
                     Console.SetCursorPosition(column, line);
 
-                    ConsoleKeyInfo keyInfo1 = Console.ReadKey(true);
+                    keyInfo1 = Console.ReadKey(true);
+                    
+                    if (((keyInfo1.Modifiers & ConsoleModifiers.Alt) != 0))
+                    {
+                        run = false;
+                        break;
+                    }
+                    
                     switch (keyInfo1.Key)
                     {
                         case ConsoleKey.UpArrow:
@@ -86,13 +98,10 @@ namespace qse
                             file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);
                             break;
                         case ConsoleKey.PageUp:
-                            scroll--;
+                            scroll = scroll - top + (top / 5);
                             break;
                         case ConsoleKey.PageDown:
-                            scroll++;
-                            break;
-                        case ConsoleKey.End:
-                            run = false;
+                            scroll = scroll + top - (top / 5);
                             break;
                         default:
                             file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll,
@@ -101,7 +110,14 @@ namespace qse
                             break;
                     }
 
-
+                    
+                    left = Console.WindowWidth-1;
+                    top = Console.WindowHeight-2;
+                    num = 0;
+                    filelenghts.Add(0);
+                    filestr = string.Concat(file);
+                    filelenghts = lenghts(filestr);
+                    
                     //where is if(hscroll > lenght of a line) {stuck at end of it}
 
                     if (line <= 0)
@@ -110,7 +126,7 @@ namespace qse
                         scroll--;
                     }
 
-                    if (column < 0 && hscroll == 0 && line + scroll >= 2)
+                    if (column < 0 && hscroll == 0 && line + scroll >= 2 )
                     {
                         line--;
                         column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
@@ -122,7 +138,7 @@ namespace qse
                         hscroll--;
                     }
 
-                    if (column < 0 && hscroll == 0 && line + scroll < 2)
+                    if (column < 0 && hscroll == 0 && (line + scroll < 2))
                     {
                         column = 0;
                     }
@@ -134,7 +150,7 @@ namespace qse
                     }
 
 
-
+                    
 
 
                     if (line >= top)
@@ -148,15 +164,34 @@ namespace qse
                         scroll = 0;
                     }
 
-                    if (line >= 1)
+                    if (line >= 1 && (line + scroll < filelenghts.Count-1))
                     {
+                        
                         if (column > filelenghts[line + scroll] - filelenghts[line - 1 + scroll])
                         {
                             column = 0;
                             hscroll = 0;
                             line++;
-
+                            if (line >= top)
+                            {
+                                line = top - 1;
+                                column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                            }
                         }
+                    }
+                    if (scroll + top >= filelenghts.Count && filelenghts.Count - top - 1 > 0)
+                    {
+                        if (line < top)
+                            line++;
+                        scroll = filelenghts.Count - top - 1;
+                    }
+                    if (line >= top)
+                    {
+                        line = top - 1;
+                    }
+                    if (filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll > filelenghts[filelenghts.Count - 1]+(filelenghts.Count - 3))
+                    {
+                        column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
                     }
 
                     if (column > left)
@@ -177,21 +212,65 @@ namespace qse
 
                     }
 
-                    if (scroll + top >= filelenghts.Count)
-                    {
-                        scroll = filelenghts.Count - top - 1;
-                    }
-
+                    
+                    
+                    
 
 
 
                 }
-                Console.Clear();
-                Console.WriteLine("SAVING, DO NOT EXIT!!!");
-                File.WriteAllText(filename, filestr);
-                Console.Write("SAVED, PRESS ANY KEY TO RETURN");
-                Console.ReadKey();
+
+                
+                Console.SetCursorPosition(0, top-1);
+                
+                Console.BackgroundColor = ConsoleColor.Gray;
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                
+                for (int i = 0; i < left; i++)
+                {
+                    Console.Write(" ");
+                }
+                
+                Console.SetCursorPosition(0, top-1);
+                
+                if (keyInfo1.Key == ConsoleKey.S)
+                {
+                    Console.Write("SAVING, DO NOT EXIT!!!");
+                    File.WriteAllText(filename, filestr);
+                    Console.CursorLeft = 0;
+                    Console.Write("SAVED, PRESS ANY KEY TO RETURN");
+                    Console.ReadKey(true);
+                }
+                if (keyInfo1.Key == ConsoleKey.G)
+                {
+                    Console.Write("got line: ");
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    int lne = int.Parse(Console.ReadLine());
+                    scroll = lne - line;
+                }
+                if (keyInfo1.Key == ConsoleKey.O)
+                {
+                    Console.Write("enter filepath: ");
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    filename = Console.ReadLine();
+                   originalfile = File.ReadAllText(filename).Replace("\t", "    ");
+                    filestr = "";
+                    file = new List<char>();
+                    foreach (char c in originalfile)
+                    {
+                        file.Add(c);
+                    }
+                }
+
+                if (keyInfo1.Key == ConsoleKey.C)
+                {
+                    Console.Write("enter command: ");
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    string command = Console.ReadLine();
+                }
+                
                 run = true;
+                
             }
         }
 
@@ -210,58 +289,68 @@ namespace qse
 
         public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column)
         {
-            Console.Clear();
+            Console.CursorVisible = false;
+            Console.WriteLine("\u001b]0;My Custom Console Title\u0007");
+            Console.Title = "Qseft's simple editor - editing " + filename;
+            
+            
+            Console.ResetColor();
+            
+            StringWriter stringWriter = new StringWriter();
+            
+                Console.SetOut(stringWriter);
+                
+                int neededoutputlines = filelenghts.Count - 1;
+                if (neededoutputlines > top) neededoutputlines = top;
+            
+                for (int i = scroll; i < neededoutputlines+scroll-1; i++)
+                {
+                    if (filelenghts[i + 1] - filelenghts[i] - hscroll <= left && filelenghts[i + 1] - filelenghts[i] - hscroll >= 0)
+                    {
+                        for (int j = filelenghts[i]+i+ hscroll ; j <= filelenghts[i + 1]+i; j++)
+                        {
+                            Console.Write(file[j]);
+                        }
+                    }
+                    else if (filelenghts[i + 1] - filelenghts[i] - hscroll < 0)
+                    {
+                        Console.Write("\n");
+                    }
+                    else
+                    {
+                        for (int j = filelenghts[i]+i + hscroll ; j < filelenghts[i]+left+1+i+ hscroll - 1; j++)
+                        {
+                            Console.Write(file[j]);
+                        }
+                        Console.Write(">\n");
+                    }
+
+                
+
+                }
+                
+                
+                string output = stringWriter.ToString();
+                
+                Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true });
+                Console.Clear();
+                
+                Console.SetCursorPosition(0, 1);
+                Console.WriteLine(output);
+            Console.SetCursorPosition(0, 0);
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.Black;
-            Console.SetCursorPosition(0, 0);
             Console.Write(" QSE");
             for (int i = 0; i < left-(4+filename.Length); i++)
                 Console.Write(" ");
             Console.Write(filename+" ");
-            Console.ResetColor();
-            
-            Console.SetCursorPosition(0, 1);
-            
-            /*  top     filelenghts[scroll + 1]
-             *  bottom  filelenghts[scroll + top + 1]
-             *  
-             *  
-             *  
-             */
-            
-            int neededoutputlines = filelenghts.Count - 1;
-            if (neededoutputlines > top) neededoutputlines = top;
-            
-            for (int i = scroll; i < neededoutputlines+scroll-1; i++)
-            {
-                if (filelenghts[i + 1] - filelenghts[i] - hscroll <= left)
-                {
-                    for (int j = filelenghts[i]+i+ hscroll; j <= filelenghts[i + 1]+i; j++)
-                    {
-                        Console.Write(file[j]);
-                    }
-                }
-                else
-                {
-                    for (int j = filelenghts[i]+i + hscroll ; j < filelenghts[i]+left+1+i+ hscroll; j++)
-                    {
-                        Console.Write(file[j]);
-                    }
-
-                    Console.CursorLeft = left;
-                    Console.Write(">\n");
-                }
-
-            }
-
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.Black;
             Console.SetCursorPosition(0, top);
             Console.Write(" " + filelenghts.Count.ToString() + " lines loaded");
             for (int i = 0; i < left-(14+filelenghts.Count.ToString().Count()+(filelenghts[line-1]+column-1+line).ToString().Count()); i++)
                 Console.Write(" ");
             Console.Write(filelenghts[line - 1] + column - 1 + line + " ");
             Console.ResetColor();
+            Console.CursorVisible = true;
         }
 
     }

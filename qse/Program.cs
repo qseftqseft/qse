@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Linq;
+using rohankapoor.AutoPrompt;
+using WindowsInput;
 
 namespace qse
 {
@@ -11,6 +13,22 @@ namespace qse
     {
         public static void Main(string[] args)
         {
+            /* blue
+             * if, else, switch, for, while, do, break, continue, return, throw, try, catch, finally, public, private, protected, internal,static, abstract, sealed, virtual, override, readonly, const, volatile, namespace, using, typeof, sizeof, is, as, ref, out, in, params, operator, implicit, explicit, async, await, var, dynamic, nameof, record, init, global, required, scoped, with
+             * cyan
+             * int, string, bool, float, double, char, object, decimal, void
+             * purple
+             * true, false, null, 42, 3.14
+             * gray
+             * #region, #define, #if, #endif, #else, #pragma, #warning, #error
+             * green
+             * //, /* * /, ///
+             * red
+             * "Hello"
+             */
+
+            
+            
             Stopwatch sw  = new Stopwatch();
             
             
@@ -20,7 +38,8 @@ namespace qse
             int left = Console.WindowWidth-1;
             int top = Console.WindowHeight-2;
             int num = 0;
-            string filename = "/home/qseft/test";
+            string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string filename = homeDirectory + "/test";
             string originalfile = File.ReadAllText(filename).Replace("\t", "    ");
             string filestr = "";
             List<char> file = new List<char>();
@@ -44,6 +63,16 @@ namespace qse
             int scroll = 0;
             int hscroll = 0;
             bool run = true;
+            var keyboard = new InputSimulator();
+
+            if (!Directory.Exists(homeDirectory + "/.qse"))
+            {
+                Directory.CreateDirectory(homeDirectory + "/.qse");
+            }
+            
+            
+            
+            
             while (true)
             {
                 ConsoleKeyInfo keyInfo1 = new ConsoleKeyInfo('\u001b', ConsoleKey.Escape, shift: false, alt: false, control: false);
@@ -235,6 +264,9 @@ namespace qse
                 
                 if (keyInfo1.Key == ConsoleKey.S)
                 {
+                    string ogfilename = filename;
+                    filename = AutoPrompt.PromptForInput("save to: ", filename);
+                    Console.SetCursorPosition(0, top-1);
                     Console.Write("SAVING, DO NOT EXIT!!!");
                     File.WriteAllText(filename, filestr);
                     Console.CursorLeft = 0;
@@ -250,10 +282,31 @@ namespace qse
                 }
                 if (keyInfo1.Key == ConsoleKey.O)
                 {
-                    Console.Write("enter filepath: ");
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    filename = Console.ReadLine();
-                   originalfile = File.ReadAllText(filename).Replace("\t", "    ");
+                    string dfromf = "";
+                    do
+                    {
+                        Console.SetCursorPosition(0, top - 1);
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.Write("enter filepath: ");
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        filename = AutoPrompt.PromptForInput("", filename);
+                        Console.SetCursorPosition(0, top - 1);
+                        for (int i = 0; i < left; i++)
+                        {
+                            Console.Write(" ");
+                        }
+                        
+
+                        for (int i = 0; i < filename.Split('/').Length - 1; i++)
+                        {
+                            dfromf = dfromf +  filename.Split('/')[i] + "/";
+                        }
+                        
+                        
+                    }while(!Directory.Exists(dfromf));
+
+
+                    originalfile = File.ReadAllText(filename).Replace("\t", "    ");
                     filestr = "";
                     file = new List<char>();
                     foreach (char c in originalfile)
@@ -289,6 +342,15 @@ namespace qse
 
         public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column)
         {
+            string[] blue = {"if","else", "switch", "for", "while", "do", "break", "continue", "return", "throw", "try", "catch", "finally", "public", "private", "protected", "internal","static", "abstract", "sealed", "virtual", "override", "readonly", "const", "volatile", "namespace", "using", "typeof", "sizeof", "is", "as", "ref", "out", "in", "params", "operator", "implicit", "explicit", "async", "await", "var", "dynamic", "nameof", "record", "init", "global", "required", "scoped", "with", "new", "true", "false"};
+            string[] cyan = {"int", "string", "bool", "float", "double", "char", "object", "decimal", "void", "Stopwatch" };
+            string[] purple = {"true", "false", "null" };
+            string[] gray = {"#" };
+            string[] green = {"//" };
+            string[] red = {" "};
+            
+            
+            
             Console.CursorVisible = false;
             Console.WriteLine("\u001b]0;My Custom Console Title\u0007");
             Console.Title = "Qseft's simple editor - editing " + filename;
@@ -305,28 +367,101 @@ namespace qse
             
                 for (int i = scroll; i < neededoutputlines+scroll-1; i++)
                 {
+                    string writeline = "";
+                    
                     if (filelenghts[i + 1] - filelenghts[i] - hscroll <= left && filelenghts[i + 1] - filelenghts[i] - hscroll >= 0)
                     {
                         for (int j = filelenghts[i]+i+ hscroll ; j <= filelenghts[i + 1]+i; j++)
                         {
-                            Console.Write(file[j]);
+                            writeline = writeline + file[j];
+                            //Console.Write(file[j]);
                         }
                     }
                     else if (filelenghts[i + 1] - filelenghts[i] - hscroll < 0)
                     {
-                        Console.Write("\n");
+                        writeline = writeline + "\n";
+                        //Console.Write("\n");
                     }
                     else
                     {
                         for (int j = filelenghts[i]+i + hscroll ; j < filelenghts[i]+left+1+i+ hscroll - 1; j++)
                         {
-                            Console.Write(file[j]);
+                            writeline = writeline + file[j];
+                            //Console.Write(file[j]);
                         }
-                        Console.Write(">\n");
+                        writeline = writeline + ">\n";
+                        //Console.Write(">\n");
                     }
+                    
+                    string[] writeword =  writeline.Split(' ');
 
-                
+                    for (int j = 0; j < writeword.Length; j++)
+                    {
+                        
+                        
+                        Console.Write("\x1b[0m");
+                        
+                        if(j!=0)
+                            Console.Write(" ");
+                        
+                        if(Array.Exists(blue, x => x == writeword[j]))
+                        {
+                            Console.Write("\x1b[34m");
+                        }
+                        else if(Array.Exists(cyan, x => x == writeword[j]))
+                        {
+                            Console.Write("\x1b[36m");
+                        }
+                        else if(Array.Exists(purple, x => x == writeword[j]) || float.TryParse(writeword[j], out float num))
+                        {
+                            Console.Write("\x1b[35m");
+                        }
 
+                        if (writeword[j].Length > 1)
+                        {
+                            if (writeword[j][0] == '#')
+                            {
+                                Console.Write("\x1b[90m");
+                            }
+                            else if (writeword[j][0] == '/' && writeword[j][1] == '/')
+                            {
+                                Console.Write("\x1b[32m");
+                            }
+                            else if (writeword[j][0] == '"' && writeword[j][writeword[j].Length - 1] == '"')
+                            {
+                                Console.Write("\x1b[31m");
+                            }
+                        }
+
+                        if (writeword[j].Length >= 4)
+                        {
+                            if (writeword[j][0] == 'L' && writeword[j][1] == 'i' && writeword[j][2] == 's' && writeword[j][3] == 't')
+                            {
+                                Console.Write("\x1b[92m");
+                            }
+                        }
+
+                        if (writeword[j].Length >= 7)
+                        {
+                            if (writeword[j][0] == 'C' && writeword[j][1] == 'o' && writeword[j][2] == 'n' && writeword[j][3] == 's'&& writeword[j][4] == 'o' && writeword[j][5] == 'l' && writeword[j][6] == 'e')
+                            {
+                                Console.Write("\x1b[33m");
+                            }
+                        }
+
+
+                       
+                        
+                        
+                        Console.Write(writeword[j]);
+                        
+                        
+                        
+                    }
+                    
+                    
+                    
+                    
                 }
                 
                 
@@ -335,8 +470,9 @@ namespace qse
                 Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true });
                 Console.Clear();
                 
-                Console.SetCursorPosition(0, 1);
+                Console.SetCursorPosition (0, 1);
                 Console.WriteLine(output);
+                
             Console.SetCursorPosition(0, 0);
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.Black;

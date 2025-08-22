@@ -9,6 +9,8 @@
     ".NETCoreApp,Version=v9.0/linux-x64": {
       "qse/1.0.0": {
         "dependencies": {
+          "InputSimulator": "1.0.4",
+          "rohankapoor.AutoPrompt": "1.0.6",
           "runtimepack.Microsoft.NETCore.App.Runtime.linux-x64": "9.0.7"
         },
         "runtime": {
@@ -741,6 +743,22 @@
             "fileVersion": "0.0.0.0"
           }
         }
+      },
+      "InputSimulator/1.0.4": {
+        "runtime": {
+          "lib/net20/WindowsInput.dll": {
+            "assemblyVersion": "1.0.4.0",
+            "fileVersion": "1.0.4.0"
+          }
+        }
+      },
+      "rohankapoor.AutoPrompt/1.0.6": {
+        "runtime": {
+          "lib/net40/AutoPrompt.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
       }
     }
   },
@@ -754,6 +772,20 @@
       "type": "runtimepack",
       "serviceable": false,
       "sha512": ""
+    },
+    "InputSimulator/1.0.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-D0LvRCPQMX6/FJHBjng+RO+wRDuHTJrfo7IAc7rmkPvRqchdVGJWg3y70peOtDy3OLNK+HSOwVkH4GiuLnkKgA==",
+      "path": "inputsimulator/1.0.4",
+      "hashPath": "inputsimulator.1.0.4.nupkg.sha512"
+    },
+    "rohankapoor.AutoPrompt/1.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Bo/zymDwaX8YkrJuGgy4/VjvA+Pud+//cz239IqS5rYj7teON5+AGS9mJXOKgrCnYBDD5uagErYGQS6g3Ujm1A==",
+      "path": "rohankapoor.autoprompt/1.0.6",
+      "hashPath": "rohankapoor.autoprompt.1.0.6.nupkg.sha512"
     }
   },
   "runtimes": {

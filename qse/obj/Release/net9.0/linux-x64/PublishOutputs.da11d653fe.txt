@@ -187,3 +187,5 @@
 /home/qseft/Documents/GitHub/qse/qse/bin/Release/net9.0/linux-x64/publish/libhostpolicy.so
 /home/qseft/Documents/GitHub/qse/qse/bin/Release/net9.0/linux-x64/publish/libmscordaccore.so
 /home/qseft/Documents/GitHub/qse/qse/bin/Release/net9.0/linux-x64/publish/libmscordbi.so
+/home/qseft/Documents/GitHub/qse/qse/bin/Release/net9.0/linux-x64/publish/WindowsInput.dll
+/home/qseft/Documents/GitHub/qse/qse/bin/Release/net9.0/linux-x64/publish/AutoPrompt.dll

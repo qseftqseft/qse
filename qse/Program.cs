@@ -463,14 +463,15 @@ namespace qse
 
         public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column)
         {
+            char strng = '"';
+            char[] ignclr = {'.', ',', '/', '+', '-', '>', '<', '=', ' ', '\n', ';', '(', ')', '[', ']', '{', '}', '!', '"'};
+            string strgclr = "\x1b[91m";
+            string cmntclr = "\x1b[32m";
             
             
             
-            
-            
-            char[] ignclr = {'.', ',', '/', '+', '-', '>', '<', '=', ' ', '\n', ';', '(', ')', '[', ']', '{', '}', '!'};
-            
-            
+            int strngs = 0;
+            bool mlcomment = false;
             
             Console.CursorVisible = false;
             Console.WriteLine("\u001b]0;My Custom Console Title\u0007");
@@ -499,6 +500,7 @@ namespace qse
                     string chcklne = "";
                     int indx = 0;
                     string outp = "";
+                    bool comment = false;
                     while (chcklne.Length < writeline.Length)
                     {
                         expression = "";
@@ -511,14 +513,30 @@ namespace qse
                                 chcklne = chcklne + writeline[indx];
                                 indx++;
                             }
-
-                            outp = outp + colour(expression) + expression;
+                            
+                            if (comment|| mlcomment) { outp = outp + cmntclr; }
+                            else if(strngs % 2 == 0) {outp = outp + colour(expression);}
+                            else outp = outp + strgclr;
+                            outp = outp + expression;
+                            
                         }
                         if (indx < writeline.Length)
                         {
-                            outp = outp + "\x1b[00m";
+                            if(writeline[indx] == '/' && writeline[indx + 1] == '/') comment = true;
+                            if(writeline[indx] == '/' && writeline[indx + 1] == '*') mlcomment = true;
+                            if(indx>0) if(writeline[indx] == '/' && writeline[indx - 1] == '*') mlcomment = false;
+                            
+
+                            if (comment || mlcomment) { outp = outp + cmntclr; }
+                            else if(strngs % 2 == 0 && writeline[indx] != strng) {outp = outp + "\x1b[00m";}
+                            else outp = outp + strgclr;
+                            
                             outp = outp + writeline[indx];
                             chcklne = chcklne + writeline[indx];
+                            if (writeline[indx] == strng)
+                            {
+                                strngs++;
+                            }
                             indx++;
                         }
                     }
@@ -552,7 +570,7 @@ namespace qse
                     
                     
                     
-                    if (Regex.Replace(outp, @"\x1B\[[0-9;]*[A-Za-z]", "").Length > left)
+                    if (Regex.Replace(outp, @"\x1B\[[0-9;]*[A-Za-z]", "").Length > left + 1)
                     {
                         while (Regex.Replace(outp, @"\x1B\[[0-9;]*[A-Za-z]", "").Length > left)
                         {
@@ -560,7 +578,6 @@ namespace qse
                         }
                         outp = outp + "\x1b[00m>\n";
                     }
-
 
                     Console.Write(outp);
                 }

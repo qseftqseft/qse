@@ -198,6 +198,5 @@
 /home/qseft/Documents/GitHub/qse/qse/obj/Release/net9.0/linux-x64/qse.pdb
 /home/qseft/Documents/GitHub/qse/qse/obj/Release/net9.0/linux-x64/qse.genruntimeconfig.cache
 /home/qseft/Documents/GitHub/qse/qse/obj/Release/net9.0/linux-x64/ref/qse.dll
-/home/qseft/Documents/GitHub/qse/qse/bin/Release/net9.0/linux-x64/WindowsInput.dll
 /home/qseft/Documents/GitHub/qse/qse/bin/Release/net9.0/linux-x64/AutoPrompt.dll
 /home/qseft/Documents/GitHub/qse/qse/obj/Release/net9.0/linux-x64/qse.csproj.AssemblyReference.cache

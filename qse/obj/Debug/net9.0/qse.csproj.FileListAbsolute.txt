@@ -29,5 +29,4 @@
 /home/qseft/Documents/GitHub/qse/qse/obj/Debug/net9.0/ref/qse.dll
 /home/qseft/Documents/GitHub/qse/qse/obj/Debug/net9.0/qse.csproj.AssemblyReference.cache
 /home/qseft/Documents/GitHub/qse/qse/obj/Debug/net9.0/qse.csproj.Up2Date
-/home/qseft/Documents/GitHub/qse/qse/bin/Debug/net9.0/WindowsInput.dll
 /home/qseft/Documents/GitHub/qse/qse/bin/Debug/net9.0/AutoPrompt.dll

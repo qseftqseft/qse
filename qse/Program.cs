@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Linq;
+using System.Text.RegularExpressions;
 using rohankapoor.AutoPrompt;
-using WindowsInput;
 
 namespace qse
 {
@@ -63,7 +63,7 @@ namespace qse
             int scroll = 0;
             int hscroll = 0;
             bool run = true;
-            var keyboard = new InputSimulator();
+            
 
             if (!Directory.Exists(homeDirectory + "/.qse"))
             {
@@ -98,6 +98,9 @@ namespace qse
                         run = false;
                         break;
                     }
+                    
+                    
+
                     
                     switch (keyInfo1.Key)
                     {
@@ -146,8 +149,6 @@ namespace qse
                     filelenghts.Add(0);
                     filestr = string.Concat(file);
                     filelenghts = lenghts(filestr);
-                    
-                    //where is if(hscroll > lenght of a line) {stuck at end of it}
 
                     if (line <= 0)
                     {
@@ -321,6 +322,23 @@ namespace qse
                     Console.ForegroundColor = ConsoleColor.Black;
                     string command = Console.ReadLine();
                 }
+
+                if (keyInfo1.Key == ConsoleKey.M)
+                {
+                    hscroll = hscroll + 2;
+                }
+
+                if (keyInfo1.Key == ConsoleKey.N)
+                {
+                    if (hscroll > 2)
+                    {
+                        hscroll = hscroll - 2;
+                    }
+                    else
+                    {
+                        hscroll = 0;
+                    }
+                }
                 
                 run = true;
                 
@@ -340,14 +358,117 @@ namespace qse
             return filelenghts;
         }
 
+        public static string colour(string str)
+        {
+            string[] black ={""};
+            string[] red = {""};
+            string[] green ={"//"};
+            string[] yellow ={"Add", "ReadAllText", "Replace"};
+            string[] blue ={"for","foreach","using","if","else", "switch", "for", "while", "do", "break", "continue", "return", "throw", "try", "catch", "finally", "public", "private", "protected", "internal","static", "abstract", "sealed", "virtual", "override", "readonly", "const", "volatile", "namespace", "typeof", "sizeof", "is", "as", "ref", "out", "in", "params", "operator", "implicit", "explicit", "async", "await", "var", "dynamic", "nameof", "record", "init", "global", "required", "scoped", "with", "new", "true", "false"};
+            string[] magenta ={"true", "false", "null" };
+            string[] cyan = {"int", "string", "bool", "float", "double", "char", "object", "decimal", "void", "Stopwatch" };
+            string[] white ={""};
+            
+            string[] bblack ={"#"};
+            string[] bred ={""};
+            string[] bgreen ={"File", "List", "ConsoleKeyInfo", "ConsoleKey"};
+            string[] byellow ={"Start", "Concat", "ReadKey", "RemoveAt", "Insert"};
+            string[] bblue ={"using", "args", "case"};
+            string[] bmagenta ={""};
+            string[] bcyan ={"Console"};
+            string[] bwhite ={""};
+            
+            string normal = "\x1b[90m";
+            string number = "\x1b[95m";
+            
+
+            if (Array.Exists(black, x => x == str))
+            {
+                return "\x1b[30m";
+            }
+            else if (Array.Exists(red, x => x == str))
+            {
+                return "\x1b[31m";
+            }
+            else if (Array.Exists(green, x => x == str))
+            {
+                return "\x1b[32m";
+            }
+            else if (Array.Exists(yellow, x => x == str))
+            {
+                return "\x1b[33m";
+            }
+            else if (Array.Exists(blue, x => x == str))
+            {
+                return "\x1b[34m";
+            }
+            else if (Array.Exists(magenta, x => x == str))
+            {
+                return "\x1b[35m";
+            }
+            else if (Array.Exists(cyan, x => x == str))
+            {
+                return "\x1b[36m";
+            }
+            else if (Array.Exists(white, x => x == str))
+            {
+                return "\x1b[37m";
+            }
+            else if (Array.Exists(bblack, x => x == str))
+            {
+                return "\x1b[90m";
+            }
+            else if (Array.Exists(bred, x => x == str))
+            {
+                return "\x1b[91m";
+            }
+            else if (Array.Exists(bgreen, x => x == str))
+            {
+                return "\x1b[92m";
+            }
+            else if (Array.Exists(byellow, x => x == str))
+            {
+                return "\x1b[93m";
+            }
+            else if (Array.Exists(bblue, x => x == str))
+            {
+                return "\x1b[94m";
+            }
+            else if (Array.Exists(bmagenta, x => x == str))
+            {
+                return "\x1b[95m";
+            }
+            else if (Array.Exists(bcyan, x => x == str))
+            {
+                return "\x1b[96m";
+            }
+            else if (Array.Exists(bwhite, x => x == str))
+            {
+                return "\x1b[97m";
+            }
+            
+            else if (int.TryParse(str, out var num))
+            {
+                return number;
+            }
+
+            else
+            {
+                return normal;
+            }
+
+
+
+        }
+
         public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column)
         {
-            string[] blue = {"if","else", "switch", "for", "while", "do", "break", "continue", "return", "throw", "try", "catch", "finally", "public", "private", "protected", "internal","static", "abstract", "sealed", "virtual", "override", "readonly", "const", "volatile", "namespace", "using", "typeof", "sizeof", "is", "as", "ref", "out", "in", "params", "operator", "implicit", "explicit", "async", "await", "var", "dynamic", "nameof", "record", "init", "global", "required", "scoped", "with", "new", "true", "false"};
-            string[] cyan = {"int", "string", "bool", "float", "double", "char", "object", "decimal", "void", "Stopwatch" };
-            string[] purple = {"true", "false", "null" };
-            string[] gray = {"#" };
-            string[] green = {"//" };
-            string[] red = {" "};
+            
+            
+            
+            
+            
+            char[] ignclr = {'.', ',', '/', '+', '-', '>', '<', '=', ' ', '\n', ';', '(', ')', '[', ']', '{', '}', '!'};
             
             
             
@@ -369,99 +490,79 @@ namespace qse
                 {
                     string writeline = "";
                     
-                    if (filelenghts[i + 1] - filelenghts[i] - hscroll <= left && filelenghts[i + 1] - filelenghts[i] - hscroll >= 0)
+                    for (int j = filelenghts[i]+i ; j <= filelenghts[i + 1]+i; j++)
                     {
-                        for (int j = filelenghts[i]+i+ hscroll ; j <= filelenghts[i + 1]+i; j++)
-                        {
-                            writeline = writeline + file[j];
-                            //Console.Write(file[j]);
-                        }
-                    }
-                    else if (filelenghts[i + 1] - filelenghts[i] - hscroll < 0)
-                    {
-                        writeline = writeline + "\n";
-                        //Console.Write("\n");
-                    }
-                    else
-                    {
-                        for (int j = filelenghts[i]+i + hscroll ; j < filelenghts[i]+left+1+i+ hscroll - 1; j++)
-                        {
-                            writeline = writeline + file[j];
-                            //Console.Write(file[j]);
-                        }
-                        writeline = writeline + ">\n";
-                        //Console.Write(">\n");
+                        writeline = writeline + file[j];
                     }
                     
-                    string[] writeword =  writeline.Split(' ');
-
-                    for (int j = 0; j < writeword.Length; j++)
+                    string expression = "";
+                    string chcklne = "";
+                    int indx = 0;
+                    string outp = "";
+                    while (chcklne.Length < writeline.Length)
                     {
+                        expression = "";
                         
-                        
-                        Console.Write("\x1b[0m");
-                        
-                        if(j!=0)
-                            Console.Write(" ");
-                        
-                        if(Array.Exists(blue, x => x == writeword[j]))
+                        if (indx < writeline.Length)
                         {
-                            Console.Write("\x1b[34m");
-                        }
-                        else if(Array.Exists(cyan, x => x == writeword[j]))
-                        {
-                            Console.Write("\x1b[36m");
-                        }
-                        else if(Array.Exists(purple, x => x == writeword[j]) || float.TryParse(writeword[j], out float num))
-                        {
-                            Console.Write("\x1b[35m");
-                        }
+                            while (!ignclr.Contains(writeline[indx]))
+                            {
+                                expression = expression + writeline[indx];
+                                chcklne = chcklne + writeline[indx];
+                                indx++;
+                            }
 
-                        if (writeword[j].Length > 1)
-                        {
-                            if (writeword[j][0] == '#')
-                            {
-                                Console.Write("\x1b[90m");
-                            }
-                            else if (writeword[j][0] == '/' && writeword[j][1] == '/')
-                            {
-                                Console.Write("\x1b[32m");
-                            }
-                            else if (writeword[j][0] == '"' && writeword[j][writeword[j].Length - 1] == '"')
-                            {
-                                Console.Write("\x1b[31m");
-                            }
+                            outp = outp + colour(expression) + expression;
                         }
-
-                        if (writeword[j].Length >= 4)
+                        if (indx < writeline.Length)
                         {
-                            if (writeword[j][0] == 'L' && writeword[j][1] == 'i' && writeword[j][2] == 's' && writeword[j][3] == 't')
-                            {
-                                Console.Write("\x1b[92m");
-                            }
+                            outp = outp + "\x1b[00m";
+                            outp = outp + writeline[indx];
+                            chcklne = chcklne + writeline[indx];
+                            indx++;
                         }
-
-                        if (writeword[j].Length >= 7)
-                        {
-                            if (writeword[j][0] == 'C' && writeword[j][1] == 'o' && writeword[j][2] == 'n' && writeword[j][3] == 's'&& writeword[j][4] == 'o' && writeword[j][5] == 'l' && writeword[j][6] == 'e')
-                            {
-                                Console.Write("\x1b[33m");
-                            }
-                        }
+                    }
 
 
-                       
-                        
-                        
-                        Console.Write(writeword[j]);
-                        
-                        
-                        
+                    int windx = hscroll;
+                    while (windx > 0)
+                    {
+                        if (outp.Length > 0)
+                        {
+                            if (outp[0] != '\x1b')
+                            {
+                                outp = outp.Remove(0, 1);
+                            }
+                            else
+                            {
+                                while (outp[5] == '\x1b')
+                                {
+                                    outp = outp.Remove(0, 5);
+                                }
+                                if (outp.Length > 6)
+                                {
+                                    outp = outp.Remove(5, 1);
+                                }
+                            }
+                        }
+                        else {outp = outp + "\n";}
+
+                        windx--;
                     }
                     
                     
                     
-                    
+                    if (Regex.Replace(outp, @"\x1B\[[0-9;]*[A-Za-z]", "").Length > left)
+                    {
+                        while (Regex.Replace(outp, @"\x1B\[[0-9;]*[A-Za-z]", "").Length > left)
+                        {
+                            outp = outp.Substring(0, outp.Length-1);
+                        }
+                        outp = outp + "\x1b[00m>\n";
+                    }
+
+
+                    Console.Write(outp);
                 }
                 
                 

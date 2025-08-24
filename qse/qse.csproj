@@ -8,7 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="InputSimulator" Version="1.0.4" />
       <PackageReference Include="rohankapoor.AutoPrompt" Version="1.0.6" />
     </ItemGroup>
 

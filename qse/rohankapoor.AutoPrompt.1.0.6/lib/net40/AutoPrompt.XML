@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AutoPrompt</name>
+    </assembly>
+    <members>
+        <member name="M:rohankapoor.AutoPrompt.AutoPrompt.GetPath(System.String)">
+            <summary>
+            Used to get path from command prompt. Starts by showing available directories
+            Press:
+                 Up Arrow to go to next file or directory
+                 Down Arrow to go to previous file or directory
+                 '\' to navigate into current directory
+                 Any key to list matching files and directory. The search criteria is 'begins with'. Eg, When 'W' is pressed in C:\, the prompt will auto fill with 'Windows' as the closest match. The search is case sensitive
+                Enter to return with the current value
+            </summary>
+            <param name="message">Message that appears on the prompt. For eg, Enter Value:</param>
+            <returns>Full path of the file or directory selected</returns>
+        </member>
+        <member name="M:rohankapoor.AutoPrompt.AutoPrompt.PromptForInput(System.String,System.String)">
+            <summary>
+            Asks the user for input, with a default input value already set
+            </summary>
+            <param name="message">Message that appears on the prompt. For eg, Enter Value:</param>
+            <param name="initialInput">The value prefilled. Eg, "22 Jump Street" prefilled if prompt is to accept address</param>
+            <returns>User entered string or 'initialInput' if no edits were made</returns>
+        </member>
+        <member name="M:rohankapoor.AutoPrompt.AutoPrompt.PromptForInput(System.String,System.String[])">
+            <summary>
+            Accepts user input by displaying options. The input is editable as well
+            Press:
+                Up Arrow to go to next option
+                Down Arrow to go to previous option
+                Any character to edit the current option
+                Enter to return with the current value
+            </summary>
+            <param name="message">Message that appears on the prompt. For eg, Enter Value:</param>
+            <param name="options">List of values. Eg {Mr, Mrs, Ms} can be passed if prompt if for salutation. User can switch between these values by pressing up/down arrow OR enter something like Dr or Er and hit enter</param>
+            <returns>User entered string or one of the string in 'options' choosen by the user</returns>
+        </member>
+        <member name="M:rohankapoor.AutoPrompt.AutoPrompt.PromptForInput(System.String,System.String[],System.Boolean)">
+            <summary>
+            Accepts user input by displaying options. The input is not editable and the user must choose among the options available
+            Press:
+                Up Arrow to go to next option
+                Down Arrow to go to previous option
+                Enter to return with the current value
+            </summary>
+            <param name="message">Message that appears on the prompt. For eg, Enter Value:</param>
+            <param name="options">List of values. Eg {Mr, Mrs, Ms} can be passed if prompt is for salutation. User can switch between these values by pressing up/down arrow or type another value if edits are allowed</param>
+            <param name="allowEdits">If set to false, keys for characters, backspace, delete will not work. Only Up down can be used to select the options</param>
+            <returns>User entered string or one of the string in 'options' choosen by the user</returns>
+        </member>
+        <member name="M:rohankapoor.AutoPrompt.AutoPrompt.PromptForInput_Searchable(System.String,System.String[])">
+            <summary>
+            Accepts user input by displaying options. The options are autofilled with matches from key press. This is like auto suggest for a text box
+            Press:
+                Up Arrow to go to next option
+                Down Arrow to go to previous option
+                Any key to list closest matching option. The search criteria is 'begins with'. Eg, When 'C' is pressed and options is a list of US states, then 'California' is set to as choosen option. The search is case sensitive
+                Enter to return with the current value
+            </summary>
+            <param name="message">Message that appears on the prompt. For eg, Enter Value:</param>
+            <param name="options">Input options that the user can choose from using up-down arrow or type to get to</param>
+            <returns>User entered string or one of the string in 'options' choosen by the user</returns>
+        </member>
+        <member name="M:rohankapoor.AutoPrompt.AutoPrompt.GetPassword(System.String)">
+            <summary>
+            Gets a password without displaying it on screen. Input is masked by *s
+            </summary>
+            <param name="message">Message that appears on the prompt. For eg, Enter Value:</param>
+            <returns>The password entered by the user</returns>
+        </member>
+    </members>
+</doc>

@@ -69,39 +69,45 @@ namespace qse
             {
                 Directory.CreateDirectory(homeDirectory + "/.qse");
             }
-            
-            
-            
-            
+
+
+
+
             while (true)
             {
-                ConsoleKeyInfo keyInfo1 = new ConsoleKeyInfo('\u001b', ConsoleKey.Escape, shift: false, alt: false, control: false);
-                left = Console.WindowWidth-1;
-                top = Console.WindowHeight-2;
+                ConsoleKeyInfo keyInfo1 = new ConsoleKeyInfo('\u001b', ConsoleKey.Escape, shift: false, alt: false,
+                    control: false);
+                left = Console.WindowWidth - 1;
+                top = Console.WindowHeight - 2;
                 num = 0;
                 filelenghts.Add(0);
                 filestr = string.Concat(file);
                 filelenghts = lenghts(filestr);
-                    
+
                 while (run)
                 {
-                    
-
+                    bool r = false;
                     write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column);
 
                     Console.SetCursorPosition(column, line);
 
                     keyInfo1 = Console.ReadKey(true);
-                    
+
                     if (((keyInfo1.Modifiers & ConsoleModifiers.Alt) != 0))
                     {
                         run = false;
                         break;
                     }
-                    
-                    
 
-                    
+                    if (((keyInfo1.Modifiers & ConsoleModifiers.Control) != 0))
+                    {
+                        run = false;
+                        break;
+                    }
+
+
+
+
                     switch (keyInfo1.Key)
                     {
                         case ConsoleKey.UpArrow:
@@ -115,6 +121,7 @@ namespace qse
                             break;
                         case ConsoleKey.RightArrow:
                             column++;
+                            r = true;
                             break;
                         case ConsoleKey.Backspace:
                             file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll);
@@ -142,21 +149,23 @@ namespace qse
                             break;
                     }
 
-                    
-                    left = Console.WindowWidth-1;
-                    top = Console.WindowHeight-2;
+
+                    left = Console.WindowWidth - 1;
+                    top = Console.WindowHeight - 2;
                     num = 0;
                     filelenghts.Add(0);
                     filestr = string.Concat(file);
                     filelenghts = lenghts(filestr);
-
+                    
+                    while (line >= top - (top/10)) { line--; scroll++; }
+                    
                     if (line <= 0)
                     {
                         line = 1;
                         scroll--;
                     }
 
-                    if (column < 0 && hscroll == 0 && line + scroll >= 2 )
+                    if (column < 0 && hscroll == 0 && line + scroll >= 2)
                     {
                         line--;
                         column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
@@ -180,7 +189,7 @@ namespace qse
                     }
 
 
-                    
+
 
 
                     if (line >= top)
@@ -194,10 +203,10 @@ namespace qse
                         scroll = 0;
                     }
 
-                    if (line >= 1 && (line + scroll < filelenghts.Count-1))
+                    if (line >= 1 && (line + scroll < filelenghts.Count - 1))
                     {
-                        
-                        if (column > filelenghts[line + scroll] - filelenghts[line - 1 + scroll])
+
+                        if ((column == filelenghts[line + scroll] - filelenghts[line - 1 + scroll] + 1 || column  >= left - (left/10)) && r)
                         {
                             column = 0;
                             hscroll = 0;
@@ -209,22 +218,28 @@ namespace qse
                             }
                         }
                     }
+                    
+                    while (column >= left - (left/10)) { column--; hscroll++; }
+                    
                     if (scroll + top >= filelenghts.Count && filelenghts.Count - top - 1 > 0)
                     {
                         if (line < top)
                             line++;
                         scroll = filelenghts.Count - top - 1;
                     }
+
                     if (line >= top)
                     {
                         line = top - 1;
                     }
-                    if (filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll > filelenghts[filelenghts.Count - 1]+(filelenghts.Count - 3))
+
+                    if (filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll >
+                        filelenghts[filelenghts.Count - 1] + (filelenghts.Count - 3))
                     {
                         column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
                     }
 
-                    if (column > left)
+                    if (column >= left - (left/10))
                     {
                         hscroll = column - left + hscroll;
                         column = left;
@@ -242,106 +257,198 @@ namespace qse
 
                     }
 
-                    
-                    
-                    
-
-
-
-                }
-
-                
-                Console.SetCursorPosition(0, top-1);
-                
-                Console.BackgroundColor = ConsoleColor.Gray;
-                Console.ForegroundColor = ConsoleColor.DarkGray;
-                
-                for (int i = 0; i < left; i++)
-                {
-                    Console.Write(" ");
-                }
-                
-                Console.SetCursorPosition(0, top-1);
-                
-                if (keyInfo1.Key == ConsoleKey.S)
-                {
-                    string ogfilename = filename;
-                    filename = AutoPrompt.PromptForInput("save to: ", filename);
-                    Console.SetCursorPosition(0, top-1);
-                    Console.Write("SAVING, DO NOT EXIT!!!");
-                    File.WriteAllText(filename, filestr);
-                    Console.CursorLeft = 0;
-                    Console.Write("SAVED, PRESS ANY KEY TO RETURN");
-                    Console.ReadKey(true);
-                }
-                if (keyInfo1.Key == ConsoleKey.G)
-                {
-                    Console.Write("got line: ");
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    int lne = int.Parse(Console.ReadLine());
-                    scroll = lne - line;
-                }
-                if (keyInfo1.Key == ConsoleKey.O)
-                {
-                    string dfromf = "";
-                    do
+                    while (column < 0)
                     {
+                        column++;
+                        if (hscroll > 0)
+                            hscroll--;
+                    }
+                    
+                    
+
+
+
+
+
+
+
+
+                }
+
+                if ((((keyInfo1.Modifiers & ConsoleModifiers.Alt) != 0)) && (keyInfo1.Modifiers & ConsoleModifiers.Shift) == 0)
+                {
+                    Console.SetCursorPosition(0, top - 1);
+
+                    Console.BackgroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+
+                    for (int i = 0; i < left; i++)
+                    {
+                        Console.Write(" ");
+                    }
+
+                    Console.SetCursorPosition(0, top - 1);
+
+                    if (keyInfo1.Key == ConsoleKey.S)
+                    {
+                        string ogfilename = filename;
+                        filename = AutoPrompt.PromptForInput("save to: ", filename);
                         Console.SetCursorPosition(0, top - 1);
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
-                        Console.Write("enter filepath: ");
+                        Console.Write("SAVING, DO NOT EXIT!!!");
+                        File.WriteAllText(filename, filestr);
+                        Console.CursorLeft = 0;
+                        Console.Write("SAVED, PRESS ANY KEY TO RETURN");
+                        Console.ReadKey(true);
+                    }
+
+                    if (keyInfo1.Key == ConsoleKey.G)
+                    {
+                        Console.Write("got line: ");
                         Console.ForegroundColor = ConsoleColor.Black;
-                        filename = AutoPrompt.PromptForInput("", filename);
-                        Console.SetCursorPosition(0, top - 1);
-                        for (int i = 0; i < left; i++)
-                        {
-                            Console.Write(" ");
-                        }
-                        
+                        int lne = int.Parse(Console.ReadLine());
+                        scroll = lne - line;
+                    }
 
-                        for (int i = 0; i < filename.Split('/').Length - 1; i++)
-                        {
-                            dfromf = dfromf +  filename.Split('/')[i] + "/";
-                        }
-                        
-                        
-                    }while(!Directory.Exists(dfromf));
-
-
-                    originalfile = File.ReadAllText(filename).Replace("\t", "    ");
-                    filestr = "";
-                    file = new List<char>();
-                    foreach (char c in originalfile)
+                    if (keyInfo1.Key == ConsoleKey.O)
                     {
-                        file.Add(c);
+                        string dfromf = "";
+                        do
+                        {
+                            Console.SetCursorPosition(0, top - 1);
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+                            Console.Write("enter filepath: ");
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            filename = AutoPrompt.PromptForInput("", filename);
+                            Console.SetCursorPosition(0, top - 1);
+                            for (int i = 0; i < left; i++)
+                            {
+                                Console.Write(" ");
+                            }
+
+
+                            for (int i = 0; i < filename.Split('/').Length - 1; i++)
+                            {
+                                dfromf = dfromf + filename.Split('/')[i] + "/";
+                            }
+
+
+                        } while (!Directory.Exists(dfromf));
+
+
+                        originalfile = File.ReadAllText(filename).Replace("\t", "    ");
+                        filestr = "";
+                        file = new List<char>();
+                        foreach (char c in originalfile)
+                        {
+                            file.Add(c);
+                        }
+                    }
+
+                    if (keyInfo1.Key == ConsoleKey.C)
+                    {
+                        Console.Write("enter command: ");
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        string command = Console.ReadLine();
+                    }
+
+                    if (keyInfo1.Key == ConsoleKey.M)
+                    {
+                        hscroll = hscroll + 2;
+                    }
+
+                    if (keyInfo1.Key == ConsoleKey.N)
+                    {
+                        if (hscroll > 2)
+                        {
+                            hscroll = hscroll - 2;
+                        }
+                        else
+                        {
+                            hscroll = 0;
+                        }
+                    }
+
+                }
+                else if ((((keyInfo1.Modifiers & ConsoleModifiers.Shift) == 0)) && (keyInfo1.Modifiers & ConsoleModifiers.Control) != 0)
+                {
+                    int position = (filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);
+                    
+                    if (keyInfo1.Key == ConsoleKey.RightArrow)
+                    {
+                        bool slashn = false;
+                        int aposition = position;
+                        if (file[aposition] == '\n') {line++; column = 0; hscroll = 0;slashn=true;}
+
+                        if (!slashn)
+                        {
+                            do
+                            {
+                                aposition++;
+                                while(file[aposition] == ' ' && file[aposition + 1] == ' ') aposition++;
+                                    
+                            } while (file[aposition] != ' ' && file[aposition] != '\n');
+                            if(file[aposition] == ' ') aposition++;
+
+                            column = column + (aposition - position);
+                            while (column >= left - (left/10)) { column--; hscroll++; }
+                            
+                        }
+
+                        while (line >= top - (top/10)) { line--; scroll++; }
+                    }
+                    else if (keyInfo1.Key == ConsoleKey.LeftArrow)
+                    {
+                        bool slashn = false;
+                        int aposition = position;
+                        do
+                        {
+                            aposition--;
+                            if(aposition > 0) while (file[aposition] == ' ' && file[aposition - 1] == ' ') aposition--;
+                            if(aposition < 0){ aposition = 0; break;}
+                        } while (file[aposition] != ' ' && file[aposition] != '\n');
+                         
+                        column = column + (aposition - position);
+                        while (column >= left - (left / 5))
+                        {
+                            column--;
+                            hscroll++;
+                        }
+                        if (column < 0)
+                        {
+                            hscroll = 0;
+                            line--;
+                            column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                        }
+                            
+                        if (line < 1) {scroll--; line++; }
+                    }
+                    else if (keyInfo1.Key == ConsoleKey.DownArrow)
+                    {
+                        if(scroll + top < filelenghts.Count - 1)
+                            scroll++;
+                    }
+                    else if (keyInfo1.Key == ConsoleKey.UpArrow)
+                    {
+                        if(scroll > 0)
+                            scroll--;
                     }
                 }
-
-                if (keyInfo1.Key == ConsoleKey.C)
+                else
                 {
-                    Console.Write("enter command: ");
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    string command = Console.ReadLine();
-                }
-
-                if (keyInfo1.Key == ConsoleKey.M)
-                {
-                    hscroll = hscroll + 2;
-                }
-
-                if (keyInfo1.Key == ConsoleKey.N)
-                {
-                    if (hscroll > 2)
+                    if (keyInfo1.Key == ConsoleKey.RightArrow)
                     {
-                        hscroll = hscroll - 2;
+                        hscroll = 0;
+                        column = filelenghts[line + scroll] -  filelenghts[line - 1 + scroll];
+                        while (column >= left - (left/10)) { column--; hscroll++; }
                     }
-                    else
+                    if (keyInfo1.Key == ConsoleKey.LeftArrow)
                     {
+                        column = 0;
                         hscroll = 0;
                     }
                 }
                 
                 run = true;
-                
             }
         }
 
@@ -474,7 +581,7 @@ namespace qse
             bool mlcomment = false;
             
             Console.CursorVisible = false;
-            Console.WriteLine("\u001b]0;My Custom Console Title\u0007");
+            Console.WriteLine("\u001b]0;Qseft's simple editor\u0007");
             Console.Title = "Qseft's simple editor - editing " + filename;
             
             
@@ -567,17 +674,27 @@ namespace qse
 
                         windx--;
                     }
+
+                    int indx1 = (filelenghts[i + 1] - filelenghts[i]) - hscroll;
                     
-                    
-                    
-                    if (Regex.Replace(outp, @"\x1B\[[0-9;]*[A-Za-z]", "").Length > left + 1)
+                    if (indx1 > left )
                     {
-                        while (Regex.Replace(outp, @"\x1B\[[0-9;]*[A-Za-z]", "").Length > left)
+                        while (indx1 > left - 1)
                         {
-                            outp = outp.Substring(0, outp.Length-1);
+                            if (outp[outp.Length - 5] == '\x1b')
+                                indx1 = indx1 + 5;
+                            outp = outp.Substring(0, outp.Length - 1);
+                            indx1--;
                         }
+
+
                         outp = outp + "\x1b[00m>\n";
                     }
+
+                    
+
+
+
 
                     Console.Write(outp);
                 }

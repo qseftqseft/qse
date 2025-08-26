@@ -126,6 +126,11 @@ namespace qse
                         case ConsoleKey.Backspace:
                             file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll);
                             column--;
+                            if (column < 0 && hscroll == 0 && line + scroll >= 2)
+                            {
+                                line--;
+                                column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                            }
                             break;
                         case ConsoleKey.Enter:
                             file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll,

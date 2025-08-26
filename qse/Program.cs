@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,6 +6,7 @@ using System.Text;
 using System.Linq;
 using System.Text.RegularExpressions;
 using rohankapoor.AutoPrompt;
+using TextCopy;
 
 namespace qse
 {
@@ -62,6 +63,7 @@ namespace qse
             int column = 0;
             int scroll = 0;
             int hscroll = 0;
+            int tab = 0;
             bool run = true;
             
 
@@ -69,10 +71,31 @@ namespace qse
             {
                 Directory.CreateDirectory(homeDirectory + "/.qse");
             }
-
-
-
-
+            if (!File.Exists(homeDirectory + "/.qse/projects.list"))
+            {
+                File.WriteAllText(homeDirectory + "/.qse/projects.list", "lol"); 
+            }
+            
+            List<string> projectsnames = new List<string>();
+            List<string> projectsexecs = new List<string>();
+            
+            string projectsstr = File.ReadAllText(homeDirectory + "/.qse/projects.list");
+            string[] project = projectsstr.Split('\n');
+            
+            if(project[0].Split(' ').Length >= 2)
+            {
+                for (int i = 0; i < project.Length; i++)
+                {
+                    projectsnames.Add(project[0]);
+                    for (int j = 1; j < project[i].Split(' ').Length; j++)
+                    {
+                        projectsexecs.Add(project[i]);
+                    }
+    
+                }                        
+            }
+            
+            
             while (true)
             {
                 ConsoleKeyInfo keyInfo1 = new ConsoleKeyInfo('\u001b', ConsoleKey.Escape, shift: false, alt: false,
@@ -123,6 +146,13 @@ namespace qse
                             column++;
                             r = true;
                             break;
+                        case ConsoleKey.Tab:
+                            file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, ' ');
+                            file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, ' ');
+                            file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, ' ');
+                            file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, ' ');
+                            column = column + 4;
+                            break;
                         case ConsoleKey.Backspace:
                             file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll);
                             column--;
@@ -133,10 +163,21 @@ namespace qse
                             }
                             break;
                         case ConsoleKey.Enter:
-                            file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll,
-                                '\n');
+                            tab = 0;
+                            while (file[filelenghts[line + scroll - 1] + line + scroll - 1 + tab] == ' ')
+                            {
+                                tab++;
+                            }
+                            
+                            file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, '\n');
                             column = 0;
                             line++;
+                            
+                            for(int i = 0; i < tab; i++)
+                            {
+                                file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, ' ');
+                                column++;
+                            }
                             break;
                         case ConsoleKey.Delete:
                             file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);
@@ -283,27 +324,35 @@ namespace qse
                 if ((((keyInfo1.Modifiers & ConsoleModifiers.Alt) != 0)) && (keyInfo1.Modifiers & ConsoleModifiers.Shift) == 0)
                 {
                     Console.SetCursorPosition(0, top - 1);
-
+                    
                     Console.BackgroundColor = ConsoleColor.Gray;
                     Console.ForegroundColor = ConsoleColor.DarkGray;
-
-                    for (int i = 0; i < left; i++)
+                    
+                    for (int i = 0; i <= left; i++)
                     {
                         Console.Write(" ");
                     }
 
                     Console.SetCursorPosition(0, top - 1);
 
-                    if (keyInfo1.Key == ConsoleKey.S)
+                    if (keyInfo1.Key == ConsoleKey.S || keyInfo1.Key == ConsoleKey.R)
                     {
-                        string ogfilename = filename;
-                        filename = AutoPrompt.PromptForInput("save to: ", filename);
+                        if(keyInfo1.Key == ConsoleKey.S)
+                            filename = AutoPrompt.PromptForInput("save to: ", filename);
                         Console.SetCursorPosition(0, top - 1);
                         Console.Write("SAVING, DO NOT EXIT!!!");
                         File.WriteAllText(filename, filestr);
                         Console.CursorLeft = 0;
-                        Console.Write("SAVED, PRESS ANY KEY TO RETURN");
-                        Console.ReadKey(true);
+                        for(int i = 0; i <= left; i++)
+                        {
+                            Console.Write(" ");
+                        }
+                        Console.CursorLeft = 0;
+                        if(keyInfo1.Key == ConsoleKey.S)
+                        {
+                            Console.Write("SAVED, PRESS ANY KEY TO RETURN");
+                            Console.ReadKey(true);
+                        }
                     }
 
                     if (keyInfo1.Key == ConsoleKey.G)
@@ -337,7 +386,7 @@ namespace qse
                             }
 
 
-                        } while (!Directory.Exists(dfromf));
+                        } while (!File.Exists(filename));
 
 
                         originalfile = File.ReadAllText(filename).Replace("\t", "    ");
@@ -354,8 +403,16 @@ namespace qse
                         Console.Write("enter command: ");
                         Console.ForegroundColor = ConsoleColor.Black;
                         string command = Console.ReadLine();
+                        if(command.Length > 3)
+                        {
+                            string cmdinpt = command.Remove(0, 3);
+                            switch(command.Substring(0, 2))
+                            {
+                                case "lp":
+                                    break;
+                            }
+                        }                        
                     }
-
                     if (keyInfo1.Key == ConsoleKey.M)
                     {
                         hscroll = hscroll + 2;
@@ -371,6 +428,25 @@ namespace qse
                         {
                             hscroll = 0;
                         }
+                    }
+                    if (keyInfo1.Key == ConsoleKey.R)
+                    {
+                        string command = "bash -c \"pushd /home/qseft/Documents/GitHub/qse && dotnet build && /home/qseft/Documents/GitHub/qse/qse/bin/Debug/net9.0/qse; popd; exec bash\"";
+
+                        ProcessStartInfo psi = new ProcessStartInfo
+                        {
+                            FileName = "st",
+                            Arguments = $"-f \"monospace:size=18\" -e {command}",
+                            UseShellExecute = false
+                        };
+                        Console.ResetColor();
+                        Console.Clear();
+                        Console.Write("Running process");
+                        using (Process proc = Process.Start(psi))
+                        {
+                            proc.WaitForExit();
+                        }
+                        
                     }
 
                 }
@@ -437,6 +513,46 @@ namespace qse
                         if(scroll > 0)
                             scroll--;
                     }
+                    else if (keyInfo1.Key == ConsoleKey.V)
+                    {
+                        string pclip = ClipboardService.GetText();
+                        for (int i = 0; i < pclip.Length; i++)
+                        {
+                            file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, pclip[i]);
+                            column++;
+                        }
+                        
+                        filestr = string.Concat(file);
+                        filelenghts = lenghts(filestr);
+                        
+                        while (column > filelenghts[line + scroll] - filelenghts[line + scroll - 1])
+                        {
+                            line++;
+                            column = filelenghts[line + scroll] - filelenghts[line + scroll - 1];
+                        }
+                    }
+                    else if (keyInfo1.Key == ConsoleKey.Delete)
+                    {
+                        do
+                        {
+                            file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);
+                        } while (file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll] == ' ');
+                    }
+                    else if (keyInfo1.Key == ConsoleKey.Backspace)
+                    {
+                        do
+                        {
+                            file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll);
+                            column--;
+                            if (column < 0 && hscroll == 0 && line + scroll >= 2)
+                            {
+                                line--;
+                                column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                            }
+
+                        } while (file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll] == ' ');
+                    }
+
                 }
                 else
                 {
@@ -645,6 +761,7 @@ namespace qse
                             
                             outp = outp + writeline[indx];
                             chcklne = chcklne + writeline[indx];
+                            if (indx > 0){if((writeline[indx-1] == '\\' || writeline[indx-1] == '\'') && writeline[indx] == strng) strngs--;}
                             if (writeline[indx] == strng)
                             {
                                 strngs++;

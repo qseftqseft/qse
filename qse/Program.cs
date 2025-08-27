@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Linq;
-using System.Text.RegularExpressions;
 using rohankapoor.AutoPrompt;
 using TextCopy;
 
@@ -49,6 +48,7 @@ namespace qse
                 file.Add(c);
             }
             
+            char[] ignclr = {'.', ',', '/', '+', '-', '>', '<', '=', ' ', '\n', ';', '(', ')', '[', ']', '{', '}', '!', '"'};
             
 
             List<int> filelenghts = new List<int>();
@@ -76,24 +76,27 @@ namespace qse
                 File.WriteAllText(homeDirectory + "/.qse/projects.list", "lol"); 
             }
             
-            List<string> projectsnames = new List<string>();
-            List<string> projectsexecs = new List<string>();
+            
             
             string projectsstr = File.ReadAllText(homeDirectory + "/.qse/projects.list");
             string[] project = projectsstr.Split('\n');
             
-            if(project[0].Split(' ').Length >= 2)
+            
+            List<string>[] projects = Enumerable.Range(0, project.Length).Select(_ => new List<string>()).ToArray();
+            //projects[project_no.] = list_of_files
+            
+            if(project.Length > 0)
             {
-                for (int i = 0; i < project.Length; i++)
+                for(int i = 0; i < projects.Length; i++)
                 {
-                    projectsnames.Add(project[0]);
-                    for (int j = 1; j < project[i].Split(' ').Length; j++)
+                    for(int j = 0; j < project[i].Split(' ').Length; j++)
                     {
-                        projectsexecs.Add(project[i]);
+                        projects[i].Add(project[i].Split(' ')[j]);
                     }
-    
-                }                        
-            }
+                }
+            }    
+            string currentproject = projects[0][0];
+            int currentprojectindx = 0;
             
             
             while (true)
@@ -110,7 +113,7 @@ namespace qse
                 while (run)
                 {
                     bool r = false;
-                    write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column);
+                    write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject);
 
                     Console.SetCursorPosition(column, line);
 
@@ -170,12 +173,15 @@ namespace qse
                             }
                             
                             file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, '\n');
-                            column = 0;
-                            line++;
-                            
+                                                        
                             for(int i = 0; i < tab; i++)
                             {
-                                file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, ' ');
+                                file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll + 1, ' ');
+                            }
+                            column = 0;
+                            line++;
+                            for(int i = 0; i < tab; i++)
+                            {
                                 column++;
                             }
                             break;
@@ -233,11 +239,11 @@ namespace qse
                         line = 1;
                         scroll--;
                     }
-
-
-
-
-
+                    
+                    
+                    
+                    
+                    
                     if (line >= top)
                     {
                         line = top - 1;
@@ -409,6 +415,31 @@ namespace qse
                             switch(command.Substring(0, 2))
                             {
                                 case "lp":
+                                    if(projects.Any(list => list.Count > 0 && list[0] == cmdinpt))
+                                    {
+                                        currentproject = cmdinpt;
+                                        currentprojectindx = Array.FindIndex(projects, list => list.Count > 0 && list[0] == currentproject);
+                                     }
+                                     break;
+                                case "pf":
+                                    if(projects[currentprojectindx].Contains(cmdinpt))
+                                    {
+                                        if(projects[currentprojectindx].IndexOf(cmdinpt) > 0)
+                                        {
+                                            filename = projects[currentprojectindx][projects[currentprojectindx].IndexOf(cmdinpt) + 1];
+                                            //
+                                            if(File.Exists(filename))
+                                            {
+                                                originalfile = File.ReadAllText(filename).Replace("\t", "    ");
+                                                filestr = "";
+                                                file = new List<char>();
+                                                foreach (char c in originalfile)
+                                                {
+                                                    file.Add(c);
+                                                }
+                                            }
+                                        }
+                                    }
                                     break;
                             }
                         }                        
@@ -466,10 +497,10 @@ namespace qse
                             {
                                 aposition++;
                                 while(file[aposition] == ' ' && file[aposition + 1] == ' ') aposition++;
-                                    
-                            } while (file[aposition] != ' ' && file[aposition] != '\n');
+                                
+                            } while (!ignclr.Contains(file[aposition]));
                             if(file[aposition] == ' ') aposition++;
-
+                            
                             column = column + (aposition - position);
                             while (column >= left - (left/10)) { column--; hscroll++; }
                             
@@ -486,7 +517,7 @@ namespace qse
                             aposition--;
                             if(aposition > 0) while (file[aposition] == ' ' && file[aposition - 1] == ' ') aposition--;
                             if(aposition < 0){ aposition = 0; break;}
-                        } while (file[aposition] != ' ' && file[aposition] != '\n');
+                        } while (!ignclr.Contains(file[aposition]));
                          
                         column = column + (aposition - position);
                         while (column >= left - (left / 5))
@@ -533,24 +564,52 @@ namespace qse
                     }
                     else if (keyInfo1.Key == ConsoleKey.Delete)
                     {
-                        do
+                        if(!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll]))
                         {
-                            file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);
-                        } while (file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll] == ' ');
+                            do
+                            {
+                                file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);
+                            } while (!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll]));
+                        }  
+                        else
+                        { 
+                            do
+                            {
+                                file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);
+                            } while (file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll] == ' ');
+                        } 
                     }
                     else if (keyInfo1.Key == ConsoleKey.Backspace)
                     {
-                        do
+                        if(!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll]))
                         {
-                            file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll);
-                            column--;
-                            if (column < 0 && hscroll == 0 && line + scroll >= 2)
+                            do
                             {
-                                line--;
-                                column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
-                            }
+                                file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll);
+                                column--;
+                                if (column < 0 && hscroll == 0 && line + scroll >= 2)
+                                {
+                                    line--;
+                                    column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                                }
 
-                        } while (file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll] == ' ');
+                            } while (!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll]));
+                        }
+                        
+                        else
+                        { 
+                            do
+                            {
+                                file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll);
+                                column--;
+                                if (column < 0 && hscroll == 0 && line + scroll >= 2)
+                                {
+                                    line--;
+                                    column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                                }
+                                
+                            } while (file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll] == ' ');
+                        }
                     }
 
                 }
@@ -689,7 +748,7 @@ namespace qse
 
         }
 
-        public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column)
+        public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column, string currentproject)
         {
             char strng = '"';
             char[] ignclr = {'.', ',', '/', '+', '-', '>', '<', '=', ' ', '\n', ';', '(', ')', '[', ']', '{', '}', '!', '"'};
@@ -710,128 +769,118 @@ namespace qse
             
             StringWriter stringWriter = new StringWriter();
             
-                Console.SetOut(stringWriter);
-                
-                int neededoutputlines = filelenghts.Count - 1;
-                if (neededoutputlines > top) neededoutputlines = top;
+            Console.SetOut(stringWriter);
             
-                for (int i = scroll; i < neededoutputlines+scroll-1; i++)
+            int neededoutputlines = filelenghts.Count - 1;
+            if (neededoutputlines > top) neededoutputlines = top;
+        
+            for (int i = scroll; i < neededoutputlines+scroll-1; i++)
+            {
+                string writeline = "";
+                
+                for (int j = filelenghts[i]+i ; j <= filelenghts[i + 1]+i; j++)
                 {
-                    string writeline = "";
-                    
-                    for (int j = filelenghts[i]+i ; j <= filelenghts[i + 1]+i; j++)
-                    {
-                        writeline = writeline + file[j];
-                    }
-                    
-                    string expression = "";
-                    string chcklne = "";
-                    int indx = 0;
-                    string outp = "";
-                    bool comment = false;
-                    while (chcklne.Length < writeline.Length)
-                    {
-                        expression = "";
-                        
-                        if (indx < writeline.Length)
-                        {
-                            while (!ignclr.Contains(writeline[indx]))
-                            {
-                                expression = expression + writeline[indx];
-                                chcklne = chcklne + writeline[indx];
-                                indx++;
-                            }
-                            
-                            if (comment|| mlcomment) { outp = outp + cmntclr; }
-                            else if(strngs % 2 == 0) {outp = outp + colour(expression);}
-                            else outp = outp + strgclr;
-                            outp = outp + expression;
-                            
-                        }
-                        if (indx < writeline.Length)
-                        {
-                            if(writeline[indx] == '/' && writeline[indx + 1] == '/') comment = true;
-                            if(writeline[indx] == '/' && writeline[indx + 1] == '*') mlcomment = true;
-                            if(indx>0) if(writeline[indx] == '/' && writeline[indx - 1] == '*') mlcomment = false;
-                            
-
-                            if (comment || mlcomment) { outp = outp + cmntclr; }
-                            else if(strngs % 2 == 0 && writeline[indx] != strng) {outp = outp + "\x1b[00m";}
-                            else outp = outp + strgclr;
-                            
-                            outp = outp + writeline[indx];
-                            chcklne = chcklne + writeline[indx];
-                            if (indx > 0){if((writeline[indx-1] == '\\' || writeline[indx-1] == '\'') && writeline[indx] == strng) strngs--;}
-                            if (writeline[indx] == strng)
-                            {
-                                strngs++;
-                            }
-                            indx++;
-                        }
-                    }
-
-
-                    int windx = hscroll;
-                    while (windx > 0)
-                    {
-                        if (outp.Length > 0)
-                        {
-                            if (outp[0] != '\x1b')
-                            {
-                                outp = outp.Remove(0, 1);
-                            }
-                            else
-                            {
-                                while (outp[5] == '\x1b')
-                                {
-                                    outp = outp.Remove(0, 5);
-                                }
-                                if (outp.Length > 6)
-                                {
-                                    outp = outp.Remove(5, 1);
-                                }
-                            }
-                        }
-                        else {outp = outp + "\n";}
-
-                        windx--;
-                    }
-
-                    int indx1 = (filelenghts[i + 1] - filelenghts[i]) - hscroll;
-                    
-                    if (indx1 > left )
-                    {
-                        while (indx1 > left - 1)
-                        {
-                            if (outp[outp.Length - 5] == '\x1b')
-                                indx1 = indx1 + 5;
-                            outp = outp.Substring(0, outp.Length - 1);
-                            indx1--;
-                        }
-
-
-                        outp = outp + "\x1b[00m>\n";
-                    }
-
-                    
-
-
-
-
-                    Console.Write(outp);
+                    writeline = writeline + file[j];
                 }
                 
+                string expression = "";
+                string chcklne = "";
+                int indx = 0;
+                string outp = "";
+                bool comment = false;
+                while (chcklne.Length < writeline.Length)
+                {
+                    expression = "";
+                    
+                    if (indx < writeline.Length)
+                    {
+                        while (!ignclr.Contains(writeline[indx]))
+                        {
+                            expression = expression + writeline[indx];
+                            chcklne = chcklne + writeline[indx];
+                            indx++;
+                        }
+                        
+                        if (comment|| mlcomment) { outp = outp + cmntclr; }
+                        else if(strngs % 2 == 0) {outp = outp + colour(expression);}
+                        else outp = outp + strgclr;
+                        outp = outp + expression;
+                        
+                    }
+                    if (indx < writeline.Length)
+                    {
+                        if(writeline[indx] == '/' && writeline[indx + 1] == '/') comment = true;
+                        if(writeline[indx] == '/' && writeline[indx + 1] == '*') mlcomment = true;
+                        if(indx>0) if(writeline[indx] == '/' && writeline[indx - 1] == '*') mlcomment = false;
+                        
+                        
+                        if (comment || mlcomment) { outp = outp + cmntclr; }
+                        else if(strngs % 2 == 0 && writeline[indx] != strng) {outp = outp + "\x1b[00m";}
+                        else outp = outp + strgclr;
+                        
+                        outp = outp + writeline[indx];
+                        chcklne = chcklne + writeline[indx];
+                        if (indx > 0){if((writeline[indx-1] == '\\' || writeline[indx-1] == '\'') && writeline[indx] == strng) strngs--;}
+                        if (writeline[indx] == strng)
+                        {
+                            strngs++;
+                        }
+                        indx++;
+                    }
+                }
                 
-                string output = stringWriter.ToString();
+                int windx = hscroll;
+                while (windx > 0)
+                {
+                    if (outp.Length > 0)
+                    {
+                        if (outp[0] != '\x1b')
+                        {
+                            outp = outp.Remove(0, 1);
+                        }
+                        else
+                        {
+                            while (outp[5] == '\x1b')
+                            {
+                                outp = outp.Remove(0, 5);
+                            }
+                            if (outp.Length > 6)
+                            {
+                                outp = outp.Remove(5, 1);
+                            }
+                        }
+                    }
+                    else {outp = outp + "\n";}
+                    windx--;
+                }
+                int indx1 = (filelenghts[i + 1] - filelenghts[i]) - hscroll;
                 
-                Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true });
-                Console.Clear();
-                
-                Console.SetCursorPosition (0, 1);
-                Console.WriteLine(output);
-                
+                if (indx1 > left )
+                {
+                    while (indx1 > left - 1)
+                    {
+                        if (outp[outp.Length - 5] == '\x1b')
+                            indx1 = indx1 + 5;
+                        outp = outp.Substring(0, outp.Length - 1);
+                        indx1--;
+                    }
+                    outp = outp + "\x1b[00m>\n";
+                }
+                 
+                Console.Write(outp);
+            }
+            
+            
+            string output = stringWriter.ToString();
+            
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true });
+            Console.Clear();
+            
+            Console.SetCursorPosition (0, 1);
+            Console.WriteLine(output);
+            
             Console.SetCursorPosition(0, 0);
-            Console.BackgroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Gray;
             Console.ForegroundColor = ConsoleColor.Black;
             Console.Write(" QSE");
             for (int i = 0; i < left-(4+filename.Length); i++)
@@ -839,9 +888,9 @@ namespace qse
             Console.Write(filename+" ");
             Console.SetCursorPosition(0, top);
             Console.Write(" " + filelenghts.Count.ToString() + " lines loaded");
-            for (int i = 0; i < left-(14+filelenghts.Count.ToString().Count()+(filelenghts[line-1]+column-1+line).ToString().Count()); i++)
+            for (int i = 0; i < left-(14+filelenghts.Count.ToString().Count()+currentproject.ToString().Count()); i++)
                 Console.Write(" ");
-            Console.Write(filelenghts[line - 1] + column - 1 + line + " ");
+            Console.Write(currentproject + " ");
             Console.ResetColor();
             Console.CursorVisible = true;
         }

@@ -1,0 +1,21 @@
+.Æ,Æ/Æ+Æ-Æ>Æ<Æ=Æ Æ;Æ(Æ)Æ[Æ]Æ{Æ}Æ!Æ"
+
+
+//
+AddÆReadAllTextÆReplace
+forÆforeachÆusingÆifÆelseÆswitchÆforÆwhileÆdoÆbreakÆcontinueÆreturnÆthrowÆtryÆcatchÆfinallyÆpublicÆprivateÆprotectedÆinternalÆstaticÆabstractÆsealedÆvirtualÆoverrideÆreadonlyÆconstÆvolatileÆnamespaceÆtypeofÆsizeofÆisÆasÆrefÆoutÆinÆparamsÆoperatorÆimplicitÆexplicitÆasyncÆawaitÆvarÆdynamicÆnameofÆrecordÆinitÆglobalÆrequiredÆscopedÆwithÆnewÆtrueÆfalse
+trueÆfalseÆnull
+intÆstringÆboolÆfloatÆdoubleÆcharÆobjectÆdecimalÆvoidÆStopwatch
+
+#
+
+FileÆListÆConsoleKeyInfoÆConsoleKey
+StartÆConcatÆReadKeyÆRemoveAtÆInsert
+usingÆargsÆcase
+
+Console
+
+"
+st
+-f "monospace:size=18" -e
+bash -c "pushd /home/qseft/Documents/GitHub/qse && dotnet build && /home/qseft/Documents/GitHub/qse/qse/bin/Debug/net9.0/qse; popd"

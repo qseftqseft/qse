@@ -48,8 +48,6 @@ namespace qse
                 file.Add(c);
             }
             
-            char[] ignclr = {'.', ',', '/', '+', '-', '>', '<', '=', ' ', '\n', ';', '(', ')', '[', ']', '{', '}', '!', '"'};
-            
 
             List<int> filelenghts = new List<int>();
 
@@ -75,7 +73,41 @@ namespace qse
             {
                 File.WriteAllText(homeDirectory + "/.qse/projects.list", "lol"); 
             }
+            if (!File.Exists(homeDirectory + "/.qse/settings"))
+            {
+                File.WriteAllText(homeDirectory + "/.qse/settings", " \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n");
+            }
             
+            string[] settings = File.ReadAllText(homeDirectory + "/.qse/settings").Split('\n');
+            
+            char[] ignclr = (settings[0] + "Æ\n").Split('Æ').SelectMany(s => s.ToCharArray()).ToArray();
+            
+            string[] black = settings[1].Split('Æ');
+            string[] red = settings[2].Split('Æ');
+            string[] green = settings[3].Split('Æ');
+            string[] yellow = settings[4].Split('Æ');
+            string[] blue = settings[5].Split('Æ');
+            string[] magenta = settings[6].Split('Æ');
+            string[] cyan = settings[7].Split('Æ');
+            string[] white = settings[8].Split('Æ');
+            string[] bblack = settings[9].Split('Æ');
+            string[] bred = settings[10].Split('Æ');
+            string[] bgreen = settings[11].Split('Æ');
+            string[] byellow = settings[12].Split('Æ');
+            string[] bblue = settings[13].Split('Æ');
+            string[] bmagenta = settings[14].Split('Æ');
+            string[] bcyan = settings[15].Split('Æ');
+            string[] bwhite = settings[16].Split('Æ');
+
+            string normal = "\x1b[90m";
+            string number = "\x1b[95m";
+            char strng = char.Parse(settings[17]);
+            string strgclr = "\x1b[91m";
+            string cmntclr = "\x1b[32m";
+            
+            string term = settings[18];
+            string tflags = settings[19];
+            string tcommand = settings[20];
             
             
             string projectsstr = File.ReadAllText(homeDirectory + "/.qse/projects.list");
@@ -113,8 +145,9 @@ namespace qse
                 while (run)
                 {
                     bool r = false;
-                    write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject);
-
+                    
+                    write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, strgclr, cmntclr, ignclr, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, normal, number);
+                
                     Console.SetCursorPosition(column, line);
 
                     keyInfo1 = Console.ReadKey(true);
@@ -392,7 +425,11 @@ namespace qse
                             }
 
 
-                        } while (!File.Exists(filename));
+                        } while (!Directory.Exists(dfromf));
+                        if(!File.Exists(filename))
+                        {
+                            File.WriteAllText(filename, "\n");
+                        }
 
 
                         originalfile = File.ReadAllText(filename).Replace("\t", "    ");
@@ -462,12 +499,10 @@ namespace qse
                     }
                     if (keyInfo1.Key == ConsoleKey.R)
                     {
-                        string command = "bash -c \"pushd /home/qseft/Documents/GitHub/qse && dotnet build && /home/qseft/Documents/GitHub/qse/qse/bin/Debug/net9.0/qse; popd; exec bash\"";
-
                         ProcessStartInfo psi = new ProcessStartInfo
                         {
-                            FileName = "st",
-                            Arguments = $"-f \"monospace:size=18\" -e {command}",
+                            FileName = term,
+                            Arguments = tflags + " " + tcommand,
                             UseShellExecute = false
                         };
                         Console.ResetColor();
@@ -475,7 +510,7 @@ namespace qse
                         Console.Write("Running process");
                         using (Process proc = Process.Start(psi))
                         {
-                            proc.WaitForExit();
+                             proc.WaitForExit();
                         }
                         
                     }
@@ -645,30 +680,8 @@ namespace qse
             return filelenghts;
         }
 
-        public static string colour(string str)
+        public static string colour(string str, string[] black, string[] red, string[] green, string[] yellow, string[] blue, string[] magenta, string[] cyan, string[] white, string[] bblack, string[] bred, string[] bgreen, string[] byellow, string[] bblue, string[] bmagenta, string[] bcyan, string[] bwhite, string normal, string number)
         {
-            string[] black ={""};
-            string[] red = {""};
-            string[] green ={"//"};
-            string[] yellow ={"Add", "ReadAllText", "Replace"};
-            string[] blue ={"for","foreach","using","if","else", "switch", "for", "while", "do", "break", "continue", "return", "throw", "try", "catch", "finally", "public", "private", "protected", "internal","static", "abstract", "sealed", "virtual", "override", "readonly", "const", "volatile", "namespace", "typeof", "sizeof", "is", "as", "ref", "out", "in", "params", "operator", "implicit", "explicit", "async", "await", "var", "dynamic", "nameof", "record", "init", "global", "required", "scoped", "with", "new", "true", "false"};
-            string[] magenta ={"true", "false", "null" };
-            string[] cyan = {"int", "string", "bool", "float", "double", "char", "object", "decimal", "void", "Stopwatch" };
-            string[] white ={""};
-            
-            string[] bblack ={"#"};
-            string[] bred ={""};
-            string[] bgreen ={"File", "List", "ConsoleKeyInfo", "ConsoleKey"};
-            string[] byellow ={"Start", "Concat", "ReadKey", "RemoveAt", "Insert"};
-            string[] bblue ={"using", "args", "case"};
-            string[] bmagenta ={""};
-            string[] bcyan ={"Console"};
-            string[] bwhite ={""};
-            
-            string normal = "\x1b[90m";
-            string number = "\x1b[95m";
-            
-
             if (Array.Exists(black, x => x == str))
             {
                 return "\x1b[30m";
@@ -748,12 +761,9 @@ namespace qse
 
         }
 
-        public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column, string currentproject)
+        public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column, string currentproject, char strng, string strgclr, string cmntclr, char[] ignclr, string[] black, string[] red, string[] green, string[] yellow, string[] blue, string[] magenta, string[] cyan, string[] white, string[] bblack, string[] bred, string[] bgreen, string[] byellow, string[] bblue, string[] bmagenta, string[] bcyan, string[] bwhite, string normal, string number)
         {
-            char strng = '"';
-            char[] ignclr = {'.', ',', '/', '+', '-', '>', '<', '=', ' ', '\n', ';', '(', ')', '[', ']', '{', '}', '!', '"'};
-            string strgclr = "\x1b[91m";
-            string cmntclr = "\x1b[32m";
+            
             
             
             
@@ -773,7 +783,7 @@ namespace qse
             
             int neededoutputlines = filelenghts.Count - 1;
             if (neededoutputlines > top) neededoutputlines = top;
-        
+            
             for (int i = scroll; i < neededoutputlines+scroll-1; i++)
             {
                 string writeline = "";
@@ -802,7 +812,7 @@ namespace qse
                         }
                         
                         if (comment|| mlcomment) { outp = outp + cmntclr; }
-                        else if(strngs % 2 == 0) {outp = outp + colour(expression);}
+                        else if(strngs % 2 == 0) {outp = outp + colour(expression, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, normal, number);}
                         else outp = outp + strgclr;
                         outp = outp + expression;
                         

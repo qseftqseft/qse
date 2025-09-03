@@ -63,6 +63,7 @@ namespace qse
             int hscroll = 0;
             int tab = 0;
             bool run = true;
+            string settingsfile = "settings";
             
 
             if (!Directory.Exists(homeDirectory + "/.qse"))
@@ -73,12 +74,12 @@ namespace qse
             {
                 File.WriteAllText(homeDirectory + "/.qse/projects.list", "lol"); 
             }
-            if (!File.Exists(homeDirectory + "/.qse/settings"))
+            if (!File.Exists(homeDirectory + "/.qse/" + settingsfile))
             {
-                File.WriteAllText(homeDirectory + "/.qse/settings", " \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n");
+                File.WriteAllText(homeDirectory + "/.qse/" + settingsfile, " \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n");
             }
             
-            string[] settings = File.ReadAllText(homeDirectory + "/.qse/settings").Split('\n');
+            string[] settings = File.ReadAllText(homeDirectory + "/.qse/" + settingsfile).Split('\n');
             
             char[] ignclr = (settings[0] + "Æ\n").Split('Æ').SelectMany(s => s.ToCharArray()).ToArray();
             
@@ -144,14 +145,20 @@ namespace qse
 
                 while (run)
                 {
+                    left = Console.WindowWidth - 1;
+                    top = Console.WindowHeight - 2;
                     bool r = false;
                     
                     write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, strgclr, cmntclr, ignclr, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, normal, number);
                 
                     Console.SetCursorPosition(column, line);
+                    
+                    Console.CancelKeyPress += (sender, e) => { e.Cancel = true;};
 
+                    
                     keyInfo1 = Console.ReadKey(true);
-
+                    
+                                        
                     if (((keyInfo1.Modifiers & ConsoleModifiers.Alt) != 0))
                     {
                         run = false;
@@ -234,130 +241,10 @@ namespace qse
                             break;
                     }
 
-
-                    left = Console.WindowWidth - 1;
-                    top = Console.WindowHeight - 2;
-                    num = 0;
-                    filelenghts.Add(0);
-                    filestr = string.Concat(file);
-                    filelenghts = lenghts(filestr);
                     
-                    while (line >= top - (top/10)) { line--; scroll++; }
-                    
-                    if (line <= 0)
-                    {
-                        line = 1;
-                        scroll--;
-                    }
-
-                    if (column < 0 && hscroll == 0 && line + scroll >= 2)
-                    {
-                        line--;
-                        column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
-                    }
-
-                    if (column < 0 && hscroll > 0)
-                    {
-                        column = 0;
-                        hscroll--;
-                    }
-
-                    if (column < 0 && hscroll == 0 && (line + scroll < 2))
-                    {
-                        column = 0;
-                    }
-
-                    if (line <= 0)
-                    {
-                        line = 1;
-                        scroll--;
-                    }
+                    HandleRC(line, column, scroll, hscroll, file, r, out line, out column, out scroll, out hscroll, out file, out filelenghts);
                     
                     
-                    
-                    
-                    
-                    if (line >= top)
-                    {
-                        line = top - 1;
-                        scroll++;
-                    }
-
-                    if (scroll <= 0)
-                    {
-                        scroll = 0;
-                    }
-
-                    if (line >= 1 && (line + scroll < filelenghts.Count - 1))
-                    {
-
-                        if ((column == filelenghts[line + scroll] - filelenghts[line - 1 + scroll] + 1 || column  >= left - (left/10)) && r)
-                        {
-                            column = 0;
-                            hscroll = 0;
-                            line++;
-                            if (line >= top)
-                            {
-                                line = top - 1;
-                                column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
-                            }
-                        }
-                    }
-                    
-                    while (column >= left - (left/10)) { column--; hscroll++; }
-                    
-                    if (scroll + top >= filelenghts.Count && filelenghts.Count - top - 1 > 0)
-                    {
-                        if (line < top)
-                            line++;
-                        scroll = filelenghts.Count - top - 1;
-                    }
-
-                    if (line >= top)
-                    {
-                        line = top - 1;
-                    }
-
-                    if (filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll >
-                        filelenghts[filelenghts.Count - 1] + (filelenghts.Count - 3))
-                    {
-                        column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
-                    }
-
-                    if (column >= left - (left/10))
-                    {
-                        hscroll = column - left + hscroll;
-                        column = left;
-                        if (hscroll > (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]) - left)
-                        {
-                            hscroll = 0;
-                            column = 0;
-                            line++;
-                        }
-                    }
-
-                    if (hscroll + column > (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]))
-                    {
-                        column = (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]) - hscroll;
-
-                    }
-
-                    while (column < 0)
-                    {
-                        column++;
-                        if (hscroll > 0)
-                            hscroll--;
-                    }
-                    
-                    
-
-
-
-
-
-
-
-
                 }
 
                 if ((((keyInfo1.Modifiers & ConsoleModifiers.Alt) != 0)) && (keyInfo1.Modifiers & ConsoleModifiers.Shift) == 0)
@@ -478,6 +365,43 @@ namespace qse
                                         }
                                     }
                                     break;
+                                case "ls":
+                                    if(File.Exists(homeDirectory + "/.qse/" + cmdinpt))
+                                    {
+                                        settingsfile = cmdinpt;
+                                        settings = File.ReadAllText(homeDirectory + "/.qse/" + settingsfile).Split('\n');
+                                        
+                                        ignclr = (settings[0] + "Æ\n").Split('Æ').SelectMany(s => s.ToCharArray()).ToArray();
+                                        
+                                        black = settings[1].Split('Æ');
+                                        red = settings[2].Split('Æ');
+                                        green = settings[3].Split('Æ');
+                                        yellow = settings[4].Split('Æ');
+                                        blue = settings[5].Split('Æ');
+                                        magenta = settings[6].Split('Æ');
+                                        cyan = settings[7].Split('Æ');
+                                        white = settings[8].Split('Æ');
+                                        bblack = settings[9].Split('Æ');
+                                        bred = settings[10].Split('Æ');
+                                        bgreen = settings[11].Split('Æ');
+                                        byellow = settings[12].Split('Æ');
+                                        bblue = settings[13].Split('Æ');
+                                        bmagenta = settings[14].Split('Æ');
+                                        bcyan = settings[15].Split('Æ');
+                                        bwhite = settings[16].Split('Æ');
+                                        
+                                        normal = "\x1b[90m";
+                                        number = "\x1b[95m";
+                                        strng = char.Parse(settings[17]);
+                                        strgclr = "\x1b[91m";
+                                        cmntclr = "\x1b[32m";
+                                        
+                                        term = settings[18];
+                                        tflags = settings[19];
+                                        tcommand = settings[20];
+                                    }
+                                    break;
+                                    
                             }
                         }                        
                     }
@@ -499,6 +423,9 @@ namespace qse
                     }
                     if (keyInfo1.Key == ConsoleKey.R)
                     {
+                        filestr = string.Concat(file);
+                        File.WriteAllText(filename, filestr);
+                        do{}while(File.ReadAllText(filename) != filestr);
                         ProcessStartInfo psi = new ProcessStartInfo
                         {
                             FileName = term,
@@ -514,6 +441,20 @@ namespace qse
                         }
                         
                     }
+                    if (keyInfo1.Key == ConsoleKey.Q)
+                    {
+                        Console.Write("u sure?");
+                        ConsoleKeyInfo r = Console.ReadKey();
+                        if (r.Key == ConsoleKey.Enter)
+                        {
+                            Console.CursorLeft = 0;
+                            Console.Write("you can press ctrl+c to exit now");
+                            Console.CancelKeyPress += (sender, e) => { e.Cancel = false;};
+                            Console.ReadKey();
+                        }
+                        
+                    }
+
 
                 }
                 else if ((((keyInfo1.Modifiers & ConsoleModifiers.Shift) == 0)) && (keyInfo1.Modifiers & ConsoleModifiers.Control) != 0)
@@ -620,27 +561,49 @@ namespace qse
                         {
                             do
                             {
-                                file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll);
-                                column--;
-                                if (column < 0 && hscroll == 0 && line + scroll >= 2)
+                                if(column != 0)
                                 {
-                                    line--;
-                                    column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                                    file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll);
+                                    column--;
+                                    
+                                    
+                                    if (column < 0 && hscroll == 0 && line + scroll >= 2)
+                                    {
+                                        line--;
+                                        column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                                        if (line+scroll <= 1)
+                                        {
+                                            line = 1;
+                                            scroll = 0;
+                                        }
+                                        
+                                        if (column <= 0)
+                                            column = 0;
+                                    
+                                    }
                                 }
-
-                            } while (!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll]));
+                                
+                                if(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll < 0)
+                                {
+                                    break;
+                                }
+                                
+                            } while (!(ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll]) || (column == 0 && line + scroll == 1)));
                         }
                         
                         else
                         { 
                             do
                             {
-                                file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll);
-                                column--;
-                                if (column < 0 && hscroll == 0 && line + scroll >= 2)
+                                if(column > 0)
                                 {
-                                    line--;
-                                    column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                                    file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll);
+                                    column--;
+                                    if (column < 0 && hscroll == 0 && line + scroll >= 2)
+                                    {
+                                        line--;
+                                        column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                                    }
                                 }
                                 
                             } while (file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll] == ' ');
@@ -656,13 +619,23 @@ namespace qse
                         column = filelenghts[line + scroll] -  filelenghts[line - 1 + scroll];
                         while (column >= left - (left/10)) { column--; hscroll++; }
                     }
-                    if (keyInfo1.Key == ConsoleKey.LeftArrow)
+                    else if (keyInfo1.Key == ConsoleKey.LeftArrow)
                     {
                         column = 0;
                         hscroll = 0;
                     }
+                    else if (keyInfo1.Key == ConsoleKey.UpArrow)
+                    {
+                        scroll = scroll - 4;
+                        if(scroll < 0) scroll = 0;
+                    }
+                    else if (keyInfo1.Key == ConsoleKey.DownArrow)
+                    {
+                        scroll = scroll + 4;
+                        if(scroll > filelenghts.Count - top - 1 && filelenghts.Count > top) scroll = filelenghts.Count - top - 1;
+                    }
                 }
-                
+                HandleRC(line, column, scroll, hscroll, file, false, out line, out column, out scroll, out hscroll, out file, out filelenghts);
                 run = true;
             }
         }
@@ -904,6 +877,145 @@ namespace qse
             Console.ResetColor();
             Console.CursorVisible = true;
         }
+        
+        public static void HandleRC(int line, int column, int scroll, int hscroll, List<char> file, bool r, out int line1, out int column1, out int scroll1, out int hscroll1, out List<char> file1, out List<int> filelenghts1)
+        {
+            int left = Console.WindowWidth - 1;
+            int top = Console.WindowHeight - 2;
+            int num = 0;
+            List<int> filelenghts = new List<int>();
+            filelenghts.Add(0);
+            string filestr = string.Concat(file);
+            filelenghts = lenghts(filestr);
+
+
+            if(line >= filelenghts.Count)
+                line = filelenghts.Count - 1;
+
+
+
+            while (line >= top) { line--; scroll++; }
+
+            if (line <= 0)
+            {
+                line = 1;
+                scroll--;
+            }
+
+            if (column < 0 && hscroll == 0 && line + scroll >= 2)
+            {
+                line--;
+                column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+            }
+
+            if (column < 0 && hscroll > 0)
+            {
+                column = 0;
+                hscroll--;
+            }
+
+            if (column < 0 && hscroll == 0 && (line + scroll < 2))
+            {
+                column = 0;
+            }
+
+            if (line <= 0)
+            {
+                line = 1;
+                scroll--;
+            }
+
+
+
+
+
+            if (line >= top)
+            {
+                line = top - 1;
+                scroll++;
+            }
+
+            if (scroll <= 0)
+            {
+                scroll = 0;
+            }
+
+            if (line >= 1 && (line + scroll < filelenghts.Count - 1))
+            {
+                if ((column + hscroll == filelenghts[line + scroll] - filelenghts[line - 1 + scroll] + 1/*  || column  >= left*/) && r)
+                {
+                    column = 0;
+                    hscroll = 0;
+                    line++;
+                    if (line >= top)
+                    {
+                        line = top - 1;
+                        column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                    }
+                }
+            }
+
+            while (column >= left - 1) { column--; hscroll++; }
+
+                    if (scroll + top >= filelenghts.Count && filelenghts.Count - top - 1 > 0)
+                    {
+                        if (line < top)
+                            line++;
+                        scroll = filelenghts.Count - top - 1;
+                    }
+
+                    if (line >= top)
+                    {
+                        line = top - 1;
+                    }
+
+                    if (filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll >
+                        filelenghts[filelenghts.Count - 1] + (filelenghts.Count - 3))
+                    {
+                        column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                    }
+
+                    if (column >= left)
+                    {
+                        hscroll = column - left + hscroll;
+                        column = left;
+                        if (hscroll > (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]) - left)
+                        {
+                            hscroll = 0;
+                            column = 0;
+                            line++;
+                        }
+                    }
+
+                    if (hscroll + column > (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]))
+                    {
+                        column = (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]) - hscroll;
+
+                    }
+
+                    while (column < 0)
+                    {
+                        column++;
+                        if (hscroll > 0)
+                            hscroll--;
+                    }
+                    
+                    line1 = line;
+                    column1 = column;
+                    scroll1 = scroll;
+                    hscroll1 = hscroll;
+                    file1 = file;
+                    filelenghts1 = filelenghts;
+
+        }
+        
+        
+        
+        
+        
+        
+        
+        
 
     }
 }

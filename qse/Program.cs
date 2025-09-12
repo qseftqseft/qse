@@ -89,10 +89,15 @@ namespace qse
             char strng = char.Parse(settings[17]);
             string strgclr = "\x1b[91m";
             string cmntclr = "\x1b[32m";
+                        
+            string term = settings[19];
+            string tflags = settings[20];
+            string tcommand = settings[21];
             
-            string term = settings[18];
-            string tflags = settings[19];
-            string tcommand = settings[20];
+            if (settings[18] == "1")
+            {
+                tcommand = filename + tcommand;
+            }
             
             
             string projectsstr = File.ReadAllText(homeDirectory + "/.qse/projects.list");
@@ -299,7 +304,7 @@ namespace qse
                         } while (!Directory.Exists(dfromf));
                         if(!File.Exists(filename))
                         {
-                            File.WriteAllText(filename, "\n");
+                            File.WriteAllText(filename, "\n\n");
                         }
                         
                         
@@ -374,9 +379,14 @@ namespace qse
                                         strgclr = "\x1b[91m";
                                         cmntclr = "\x1b[32m";
                                         
-                                        term = settings[18];
-                                        tflags = settings[19];
-                                        tcommand = settings[20];
+                                        term = settings[19];
+                                        tflags = settings[20];
+                                        tcommand = settings[21];
+                                        
+                                        if (settings[18] == "1")
+                                        {
+                                            tcommand = filename + tcommand;
+                                        }
                                     }
                                     break;
                                     
@@ -412,7 +422,7 @@ namespace qse
                         };
                         Console.ResetColor();
                         Console.Clear();
-                        Console.Write("Running process");
+                        Console.Write("Running process: " + term + tflags +  " " +  tcommand + "\n");
                         using (Process proc = Process.Start(psi))
                         {
                              proc.WaitForExit();
@@ -734,7 +744,7 @@ namespace qse
             int neededoutputlines = filelenghts.Count - 1;
             if (neededoutputlines > top) neededoutputlines = top;
             
-            for (int i = scroll; i < neededoutputlines+scroll-1; i++)
+            for (int i = scroll; i < neededoutputlines+scroll - 1; i++)
             {
                 string writeline = "";
                 
@@ -769,9 +779,9 @@ namespace qse
                     }
                     if (indx < writeline.Length)
                     {
-                        if(writeline[indx] == '/' && writeline[indx + 1] == '/') comment = true;
-                        if(writeline[indx] == '/' && writeline[indx + 1] == '*') mlcomment = true;
-                        if(indx>0) if(writeline[indx] == '/' && writeline[indx - 1] == '*') mlcomment = false;
+                        if(writeline[indx] == '/' && writeline[indx + 1] == '/' && strngs % 2 == 0) comment = true;
+                        if(writeline[indx] == '/' && writeline[indx + 1] == '*' && strngs % 2 == 0) mlcomment = true;
+                        if(indx>0) if(writeline[indx] == '/' && writeline[indx - 1] == '*' && strngs % 2 == 0) mlcomment = false;
                         
                         
                         if (comment || mlcomment) { outp = outp + cmntclr; }

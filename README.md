@@ -2,4 +2,4 @@
 
 QSE /ˈzi/ is a fast, easy to learn, customizable and open-source text editor. It's the first c# console-based text editor, with features like syntax highlighting, project managment and automatically compiling and running your code. QSE is configured via a config file.
 
-[qseftweb.wz.cz/qse/wiki](qseftweb.wz.cz/qse/wiki)
+[https://qseftweb.wz.cz/qse/wiki](https://qseftweb.wz.cz/qse/wiki)

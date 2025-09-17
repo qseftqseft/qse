@@ -33,3 +33,9 @@ jobs:
       with:
         name: linbuild
         path: ./publish
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ./publish/linbuild.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

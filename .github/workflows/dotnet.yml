@@ -46,7 +46,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         repository: ${{ github.repository }}
-        type: minor
+        type: patch
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:

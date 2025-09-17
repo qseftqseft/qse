@@ -5,4 +5,4 @@ QSE /ˈzi/ is a fast, easy to learn, customizable and open-source text editor. I
 [https://qseftweb.wz.cz/qse/wiki](https://qseftweb.wz.cz/qse/wiki)
 
 **IMPORTANT!!!**
-QSE does not have a check for a sane operating system (POSIX compliant), do NOT expect it to work ony every os that dotnet supports.
+QSE does not have a check for a sane operating system (POSIX compliant), do NOT expect it to work on every os that dotnet supports.

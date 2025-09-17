@@ -25,6 +25,9 @@ namespace qse
             string filename = homeDirectory + "/test";
             List<char> file = OpenFile(filename, out string originalfile);
             string filestr = "";
+            bool marked = false;
+            int mark = 0;
+            
             
             List<int> filelenghts = new List<int>();
 
@@ -118,7 +121,7 @@ namespace qse
                     top = Console.WindowHeight - 2;
                     bool r = false;
                     
-                    write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, strgclr, cmntclr, ignclr, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, normal, number);
+                    write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, strgclr, cmntclr, ignclr, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, normal, number, marked, mark);
                 
                     Console.SetCursorPosition(column, line);
                     
@@ -233,7 +236,7 @@ namespace qse
                     }
 
                     Console.SetCursorPosition(0, top - 1);
-
+                    
                     if (keyInfo1.Key == ConsoleKey.S || keyInfo1.Key == ConsoleKey.R)
                     {
                         if(keyInfo1.Key == ConsoleKey.S)
@@ -253,7 +256,13 @@ namespace qse
                             Console.ReadKey(true);
                         }
                     }
-
+                    
+                    if (keyInfo1.Key == ConsoleKey.A)
+                    {
+                        marked = !marked;
+                        mark = filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll;
+                    }
+                    
                     if (keyInfo1.Key == ConsoleKey.G)
                     {
                         Console.Write("got line: ");
@@ -584,7 +593,6 @@ namespace qse
                             }
                         }
                     }
-
                 }
                 else
                 {
@@ -709,7 +717,7 @@ namespace qse
 
         }
 
-        public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column, string currentproject, char strng, string strgclr, string cmntclr, char[] ignclr, string[] black, string[] red, string[] green, string[] yellow, string[] blue, string[] magenta, string[] cyan, string[] white, string[] bblack, string[] bred, string[] bgreen, string[] byellow, string[] bblue, string[] bmagenta, string[] bcyan, string[] bwhite, string normal, string number)
+        public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column, string currentproject, char strng, string strgclr, string cmntclr, char[] ignclr, string[] black, string[] red, string[] green, string[] yellow, string[] blue, string[] magenta, string[] cyan, string[] white, string[] bblack, string[] bred, string[] bgreen, string[] byellow, string[] bblue, string[] bmagenta, string[] bcyan, string[] bwhite, string normal, string number, bool marked, int mark)
         {
             
             
@@ -954,7 +962,7 @@ namespace qse
                         scroll--;
                     }
                     else{
-                        file.Insert(0, '\n');
+                        file.Insert(file.Count(), '\n');
                         break;
                     }
                 }

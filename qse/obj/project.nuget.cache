@@ -1,25 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "Cj4BYI0by7A=",
+  "dgSpecHash": "nzE28mWNwjw=",
   "success": true,
   "projectFilePath": "/home/qseft/Documents/GitHub/qse/qse/qse.csproj",
   "expectedPackageFiles": [
     "/home/qseft/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/7.0.0/microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
-    "/home/qseft/.nuget/packages/rohankapoor.autoprompt/1.0.6/rohankapoor.autoprompt.1.0.6.nupkg.sha512",
     "/home/qseft/.nuget/packages/textcopy/6.2.1/textcopy.6.2.1.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "message": "Package 'rohankapoor.AutoPrompt 1.0.6' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net9.0'. This package may not be fully compatible with your project.",
-      "projectPath": "/home/qseft/Documents/GitHub/qse/qse/qse.csproj",
-      "warningLevel": 1,
-      "filePath": "/home/qseft/Documents/GitHub/qse/qse/qse.csproj",
-      "libraryId": "rohankapoor.AutoPrompt",
-      "targetGraphs": [
-        "net9.0"
-      ]
-    }
-  ]
+  "logs": []
 }

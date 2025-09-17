@@ -48,6 +48,6 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ steps.versioning.outputs.version }}
-        files: ./publish/linbuild.zip
+        files: linbuild.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

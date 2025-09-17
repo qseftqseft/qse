@@ -13,25 +13,8 @@ namespace qse
     {
         public static void Main(string[] args)
         {
-            /* blue
-             * if, else, switch, for, while, do, break, continue, return, throw, try, catch, finally, public, private, protected, internal,static, abstract, sealed, virtual, override, readonly, const, volatile, namespace, using, typeof, sizeof, is, as, ref, out, in, params, operator, implicit, explicit, async, await, var, dynamic, nameof, record, init, global, required, scoped, with
-             * cyan
-             * int, string, bool, float, double, char, object, decimal, void
-             * purple
-             * true, false, null, 42, 3.14
-             * gray
-             * #region, #define, #if, #endif, #else, #pragma, #warning, #error
-             * green
-             * //, /* * /, ///
-             * red
-             * "Hello"
-             */
-
-            
-            
+        
             Stopwatch sw  = new Stopwatch();
-            
-            
             
             sw.Start();
             
@@ -43,11 +26,8 @@ namespace qse
             List<char> file = OpenFile(filename, out string originalfile);
             string filestr = "";
             
-
             List<int> filelenghts = new List<int>();
 
-            
-            
             Console.CursorVisible = false;
             
             Console.Clear();
@@ -186,12 +166,15 @@ namespace qse
                             column = column + 4;
                             break;
                         case ConsoleKey.Backspace:
-                            file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll);
-                            column--;
-                            if (column < 0 && hscroll == 0 && line + scroll >= 2)
+                            if(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll >= 0)
                             {
-                                line--;
-                                column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                                file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll);
+                                column--;
+                                if (column < 0 && hscroll == 0 && line + scroll >= 2)
+                                {
+                                    line--;
+                                    column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                                }
                             }
                             break;
                         case ConsoleKey.Enter:
@@ -215,7 +198,8 @@ namespace qse
                             }
                             break;
                         case ConsoleKey.Delete:
-                            file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);
+                            if(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll < file.Count){
+                            file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);}
                             break;
                         case ConsoleKey.PageUp:
                             scroll = scroll - top + (top / 5);
@@ -274,7 +258,10 @@ namespace qse
                     {
                         Console.Write("got line: ");
                         Console.ForegroundColor = ConsoleColor.Black;
-                        int lne = int.Parse(Console.ReadLine());
+                        string inp = Console.ReadLine();
+                        int lne = scroll+line;
+                        do{}while(!int.TryParse(inp, out lne));
+                        
                         scroll = lne - line;
                     }
 
@@ -304,7 +291,7 @@ namespace qse
                         } while (!Directory.Exists(dfromf));
                         if(!File.Exists(filename))
                         {
-                            File.WriteAllText(filename, "\n\n");
+                            File.WriteAllText(filename, "\n");
                         }
                         
                         
@@ -422,7 +409,7 @@ namespace qse
                         };
                         Console.ResetColor();
                         Console.Clear();
-                        Console.Write("Running process: " + term + tflags +  " " +  tcommand + "\n");
+                        Console.Write("\x1b[92m" + Environment.UserName + "@" + Environment.MachineName + " \x1b[34m" + System.IO.Directory.GetCurrentDirectory() + " $ \x1b[37m" + term + tflags +  " " +  tcommand + "\n\x1b[90m");
                         using (Process proc = Process.Start(psi))
                         {
                              proc.WaitForExit();
@@ -750,7 +737,8 @@ namespace qse
                 
                 for (int j = filelenghts[i]+i ; j <= filelenghts[i + 1]+i; j++)
                 {
-                    writeline = writeline + file[j];
+                    if(j < file.Count)
+                        writeline = writeline + file[j];
                 }
                 
                 string expression = "";
@@ -851,7 +839,11 @@ namespace qse
             Console.WriteLine(output);
             
             Console.SetCursorPosition (0, 1);
-            for(int i = 1; i < top; i++)
+            int max = top;
+            if (max > filelenghts.Count - 1)
+                max = filelenghts.Count - 1;
+            
+            for(int i = 1; i < max; i++)
             {
                 Console.SetCursorPosition(left-((filelenghts.Count).ToString().Length) + 1 , i);
                 for(int j = 0; j < ((filelenghts.Count).ToString().Length) - (i+scroll).ToString().Length; j++)
@@ -868,8 +860,8 @@ namespace qse
                 Console.Write(" ");
             Console.Write(filename+" ");
             Console.SetCursorPosition(0, top);
-            Console.Write(" " + filelenghts.Count.ToString() + " lines loaded");
-            for (int i = 0; i < left-(14+filelenghts.Count.ToString().Count()+currentproject.ToString().Count()); i++)
+            Console.Write(" " + (filelenghts.Count-2).ToString() + " lines loaded");
+            for (int i = 0; i < left-(14+(filelenghts.Count-2).ToString().Count()+currentproject.ToString().Count()); i++)
                 Console.Write(" ");
             Console.Write(currentproject + " ");
             Console.ResetColor();
@@ -952,59 +944,75 @@ namespace qse
                     }
                 }
             }
-
-            while (column >=  (left-((filelenghts.Count).ToString().Length))) { column--; hscroll++; }
-
-                    if (scroll + top >= filelenghts.Count && filelenghts.Count - top - 1 > 0)
-                    {
-                        if (line < top)
-                            line++;
-                        scroll = filelenghts.Count - top - 1;
+            
+            while(line + scroll >= filelenghts.Count - 1)
+                {
+                    if(line > 1){
+                        line--;
                     }
-
-                    if (line >= top)
-                    {
-                        line = top - 1;
+                    else if (scroll > 0){
+                        scroll--;
                     }
-
-                    if (filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll >
-                        filelenghts[filelenghts.Count - 1] + (filelenghts.Count - 3))
-                    {
-                        column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                    else{
+                        file.Insert(0, '\n');
+                        break;
                     }
+                }
 
-                    if (column >= left)
-                    {
-                        hscroll = column - left + hscroll;
-                        column = left;
-                        if (hscroll > (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]) - left)
-                        {
-                            hscroll = 0;
-                            column = 0;
-                            line++;
-                        }
-                    }
-
-                    if (hscroll + column > (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]))
-                    {
-                        column = (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]) - hscroll;
-
-                    }
-
-                    while (column < 0)
-                    {
-                        column++;
-                        if (hscroll > 0)
-                            hscroll--;
-                    }
-                    
-                    line1 = line;
-                    column1 = column;
-                    scroll1 = scroll;
-                    hscroll1 = hscroll;
-                    file1 = file;
-                    filelenghts1 = filelenghts;
-
+            while (column >=  (left-((filelenghts.Count).ToString().Length)))
+            {
+            column--; hscroll++;
+            }
+            
+            if (scroll + top >= filelenghts.Count && filelenghts.Count - top > 0)
+            {
+                if (line < top)
+                    line++;
+                scroll = filelenghts.Count - top - 1;
+            }
+            
+            if (line >= top)
+            {
+                line = top - 1;
+            }
+            
+            if (filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll >
+                filelenghts[filelenghts.Count - 1] + (filelenghts.Count - 3))
+            {
+                column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+            }
+            
+            if (column >= left)
+            {
+                hscroll = column - left + hscroll;
+                column = left;
+                if (hscroll > (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]) - left)
+                {
+                    hscroll = 0;
+                    column = 0;
+                    line++;
+                }
+            }
+            
+            if (hscroll + column > (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]))
+            {
+                column = (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]) - hscroll;
+            }
+            
+            while (column < 0)
+            {
+                column++;
+                if (hscroll > 0)
+                    hscroll--;
+            }
+            
+            
+            line1 = line;
+            column1 = column;
+            scroll1 = scroll;
+            hscroll1 = hscroll;
+            file1 = file;
+            filelenghts1 = filelenghts;
         }
         public static List<char> OpenFile(string filename, out string originalfile)
         {

@@ -27,12 +27,16 @@ jobs:
     - name: LinPub
       run: dotnet publish --configuration Release --runtime linux-x64 --self-contained true --output ./publish
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal      
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
         name: linbuild
         path: ./publish
+    - name: Zip published files
+      run: |
+        cd publish
+        zip -r ../linbuild.zip .
     - name: Auto Semver
       uses: oss-actions/auto-semver@v0.1.11
       id: versioning

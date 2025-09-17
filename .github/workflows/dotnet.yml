@@ -33,17 +33,17 @@ jobs:
       with:
         name: linbuild
         path: ./publish
-    - name: Tag bs
-      uses: KageKirin/git-automatic-semver@v2
+    - name: Auto Semver
+      uses: oss-actions/auto-semver@v0.1.11
+      id: versioning
       with:
-        create_tag: true
-        tag_prefix: v
-        initial_version: 0.0.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        repository: ${{ github.repository }}
+        type: minor
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
+        tag_name: ${{ steps.versioning.outputs.version }}
         files: ./publish/linbuild.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

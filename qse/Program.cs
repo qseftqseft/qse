@@ -125,7 +125,20 @@ namespace qse
                 
                     Console.SetCursorPosition(column, line);
                     
-                    Console.CancelKeyPress += (sender, e) => { e.Cancel = true;};
+                    Console.CancelKeyPress += (sender, e) => 
+                    {
+                     e.Cancel = true;
+                     if(marked)
+                        {
+                            string pclip = "";
+                            for(int i = mark; i <= filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll; i++)
+                            {
+                                pclip = pclip + file[i];
+                            }
+                            ClipboardService.SetText(pclip);
+                            marked = false;
+                        }
+                     };
                     
                     
                         keyInfo1 = Console.ReadKey(true);
@@ -522,6 +535,23 @@ namespace qse
                             column = filelenghts[line + scroll] - filelenghts[line + scroll - 1];
                         }
                     }
+                    else if (keyInfo1.Key == ConsoleKey.X)
+                    {
+                        if(marked)
+                        {
+                            string pclip = "";
+                            for(int i = mark; i <= filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll; i++)
+                            {
+                                pclip = pclip + file[i];
+                            }
+                            ClipboardService.SetText(pclip);
+                            for(int i = mark; i <= filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll; i++)
+                            {
+                                file.RemoveAt(mark);
+                            }
+                            marked = false;
+                        }
+                    }
                     else if (keyInfo1.Key == ConsoleKey.Delete)
                     {
                         if(!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll]))
@@ -762,6 +792,15 @@ namespace qse
                     {
                         while (!ignclr.Contains(writeline[indx]))
                         {
+                            if (filelenghts[i] + indx + i >= mark && marked)
+                            {
+                                expression=expression+"\x1b[43m";
+                            }
+                            if ( marked && filelenghts[i] + indx + i >= filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll + 2)
+                            {
+                                expression=expression+"\x1b[49m";
+                            }
+                            
                             expression = expression + writeline[indx];
                             chcklne = chcklne + writeline[indx];
                             indx++;
@@ -775,15 +814,22 @@ namespace qse
                     }
                     if (indx < writeline.Length)
                     {
+                        if (filelenghts[i] + indx + i >= mark && marked)
+                        {
+                            outp=outp+"\x1b[43m";
+                        }
+                        if (marked && filelenghts[i] + indx + i >= filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll + 2)
+                        {
+                            outp=outp+"\x1b[49m";
+                        }
                         if(writeline[indx] == '/' && writeline[indx + 1] == '/' && strngs % 2 == 0) comment = true;
                         if(writeline[indx] == '/' && writeline[indx + 1] == '*' && strngs % 2 == 0) mlcomment = true;
                         if(indx>0) if(writeline[indx] == '/' && writeline[indx - 1] == '*' && strngs % 2 == 0) mlcomment = false;
                         
-                        
                         if (comment || mlcomment) { outp = outp + cmntclr; }
-                        else if(strngs % 2 == 0 && writeline[indx] != strng) {outp = outp + "\x1b[00m";}
+                        else if(strngs % 2 == 0 && writeline[indx] != strng) {outp = outp + "\x1b[39m";}
                         else outp = outp + strgclr;
-                        
+
                         outp = outp + writeline[indx];
                         chcklne = chcklne + writeline[indx];
                         if (indx > 0){if((writeline[indx-1] == '\\' || writeline[indx-1] == '\'') && writeline[indx] == strng) strngs--;}

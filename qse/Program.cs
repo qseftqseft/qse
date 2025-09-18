@@ -23,6 +23,8 @@ namespace qse
             int num = 0;
             string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string filename = homeDirectory + "" + Path.DirectorySeparatorChar + "test";
+            if(!File.Exists(homeDirectory + Path.DirectorySeparatorChar + "test"))
+                File.WriteAllText(homeDirectory + Path.DirectorySeparatorChar + "test", "Welcome to QSE, be sure to check out the wiki\nqseftweb.wz.cz/qse/wiki\n");
             List<char> file = OpenFile(filename, out string originalfile);
             string filestr = "";
             bool marked = false;
@@ -1094,7 +1096,7 @@ namespace qse
             }
             if (!File.Exists(homeDirectory + "/.qse/" + settingsfile))
             {
-                File.WriteAllText(homeDirectory + "/.qse/" + settingsfile, " \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n");
+                File.WriteAllText(homeDirectory + "/.qse/" + settingsfile, " \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n");
                 r=false;
             }
             return r;

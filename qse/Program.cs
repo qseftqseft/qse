@@ -22,7 +22,7 @@ namespace qse
             int top = Console.WindowHeight-2;
             int num = 0;
             string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            string filename = homeDirectory + "/test";
+            string filename = homeDirectory + "" + Path.DirectorySeparatorChar + "test";
             List<char> file = OpenFile(filename, out string originalfile);
             string filestr = "";
             bool marked = false;
@@ -30,7 +30,7 @@ namespace qse
             
             
             List<int> filelenghts = new List<int>();
-
+            
             Console.CursorVisible = false;
             
             Console.Clear();
@@ -46,7 +46,7 @@ namespace qse
             
             MakeSureConfDirExists(settingsfile, homeDirectory);
             
-            string[] settings = File.ReadAllText(homeDirectory + "/.qse/" + settingsfile).Split('\n');
+            string[] settings = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "" + settingsfile).Split('\n');
             
             char[] ignclr = (settings[0] + "Æ\n").Split('Æ').SelectMany(s => s.ToCharArray()).ToArray();
             
@@ -83,7 +83,7 @@ namespace qse
             }
             
             
-            string projectsstr = File.ReadAllText(homeDirectory + "/.qse/projects.list");
+            string projectsstr = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "projects.list");
             string[] project = projectsstr.Split('\n');
             
             
@@ -149,16 +149,16 @@ namespace qse
                         run = false;
                         break;
                     }
-
+                    
                     if (((keyInfo1.Modifiers & ConsoleModifiers.Control) != 0))
                     {
                         run = false;
                         break;
                     }
-
-
-
-
+                    
+                    
+                    
+                    
                     switch (keyInfo1.Key)
                     {
                         case ConsoleKey.UpArrow:
@@ -229,13 +229,13 @@ namespace qse
                             column++;
                             break;
                     }
-
+                    
                     
                     HandleRC(line, column, scroll, hscroll, file, r, out line, out column, out scroll, out hscroll, out file, out filelenghts);
                     
                     
                 }
-
+                
                 if ((((keyInfo1.Modifiers & ConsoleModifiers.Alt) != 0)) && (keyInfo1.Modifiers & ConsoleModifiers.Shift) == 0)
                 {
                     Console.SetCursorPosition(0, top - 1);
@@ -247,7 +247,7 @@ namespace qse
                     {
                         Console.Write(" ");
                     }
-
+                    
                     Console.SetCursorPosition(0, top - 1);
                     
                     if (keyInfo1.Key == ConsoleKey.S || keyInfo1.Key == ConsoleKey.R)
@@ -286,7 +286,7 @@ namespace qse
                         
                         scroll = lne - line;
                     }
-
+                    
                     if (keyInfo1.Key == ConsoleKey.O)
                     {
                         string dfromf = "";
@@ -304,9 +304,9 @@ namespace qse
                             }
                             
                             
-                            for (int i = 0; i < filename.Split('/').Length - 1; i++)
+                            for (int i = 0; i < filename.Split(Path.DirectorySeparatorChar).Length - 1; i++)
                             {
-                                dfromf = dfromf + filename.Split('/')[i] + "/";
+                                dfromf = dfromf + filename.Split(Path.DirectorySeparatorChar)[i] + "/";
                             }
                             
                             
@@ -319,7 +319,7 @@ namespace qse
                         
                         file = OpenFile(filename, out originalfile);
                     }
-
+                    
                     if (keyInfo1.Key == ConsoleKey.C)
                     {
                         Console.Write("enter command: ");
@@ -406,7 +406,7 @@ namespace qse
                     {
                         hscroll = hscroll + 2;
                     }
-
+                    
                     if (keyInfo1.Key == ConsoleKey.N)
                     {
                         if (hscroll > 2)
@@ -451,8 +451,8 @@ namespace qse
                         }
                         
                     }
-
-
+                
+                
                 }
                 else if ((((keyInfo1.Modifiers & ConsoleModifiers.Shift) == 0)) && (keyInfo1.Modifiers & ConsoleModifiers.Control) != 0)
                 {
@@ -463,7 +463,7 @@ namespace qse
                         bool slashn = false;
                         int aposition = position;
                         if (file[aposition] == '\n') {line++; column = 0; hscroll = 0;slashn=true;}
-
+                        
                         if (!slashn)
                         {
                             do
@@ -478,7 +478,7 @@ namespace qse
                             while (column >= left - (left/10)) { column--; hscroll++; }
                             
                         }
-
+                        
                         while (line >= top - (top/10)) { line--; scroll++; }
                     }
                     else if (keyInfo1.Key == ConsoleKey.LeftArrow)
@@ -652,7 +652,7 @@ namespace qse
                 run = true;
             }
         }
-
+        
         public static List<int> lenghts(string file)
         {
             int num = 0;
@@ -665,7 +665,7 @@ namespace qse
             }
             return filelenghts;
         }
-
+        
         public static string colour(string str, string[] black, string[] red, string[] green, string[] yellow, string[] blue, string[] magenta, string[] cyan, string[] white, string[] bblack, string[] bred, string[] bgreen, string[] byellow, string[] bblue, string[] bmagenta, string[] bcyan, string[] bwhite, string normal, string number)
         {
             if (Array.Exists(black, x => x == str))
@@ -737,16 +737,16 @@ namespace qse
             {
                 return number;
             }
-
+            
             else
             {
                 return normal;
             }
-
-
-
+            
+            
+            
         }
-
+        
         public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column, string currentproject, char strng, string strgclr, string cmntclr, char[] ignclr, string[] black, string[] red, string[] green, string[] yellow, string[] blue, string[] magenta, string[] cyan, string[] white, string[] bblack, string[] bred, string[] bgreen, string[] byellow, string[] bblue, string[] bmagenta, string[] bcyan, string[] bwhite, string normal, string number, bool marked, int mark)
         {
             
@@ -829,7 +829,7 @@ namespace qse
                         if (comment || mlcomment) { outp = outp + cmntclr; }
                         else if(strngs % 2 == 0 && writeline[indx] != strng) {outp = outp + "\x1b[39m";}
                         else outp = outp + strgclr;
-
+                        
                         outp = outp + writeline[indx];
                         chcklne = chcklne + writeline[indx];
                         if (indx > 0){if((writeline[indx-1] == '\\' || writeline[indx-1] == '\'') && writeline[indx] == strng) strngs--;}
@@ -931,59 +931,59 @@ namespace qse
             filelenghts.Add(0);
             string filestr = string.Concat(file);
             filelenghts = lenghts(filestr);
-
-
+            
+            
             if(line >= filelenghts.Count)
                 line = filelenghts.Count - 1;
-
-
-
+            
+            
+            
             while (line >= top) { line--; scroll++; }
-
+            
             if (line <= 0)
             {
                 line = 1;
                 scroll--;
             }
-
+            
             if (column < 0 && hscroll == 0 && line + scroll >= 2)
             {
                 line--;
                 column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
             }
-
+            
             if (column < 0 && hscroll > 0)
             {
                 column = 0;
                 hscroll--;
             }
-
+            
             if (column < 0 && hscroll == 0 && (line + scroll < 2))
             {
                 column = 0;
             }
-
+            
             if (line <= 0)
             {
                 line = 1;
                 scroll--;
             }
-
-
-
-
-
+            
+            
+            
+            
+            
             if (line >= top)
             {
                 line = top - 1;
                 scroll++;
             }
-
+            
             if (scroll <= 0)
             {
                 scroll = 0;
             }
-
+            
             if (line >= 1 && (line + scroll < filelenghts.Count - 1))
             {
                 if ((column + hscroll == filelenghts[line + scroll] - filelenghts[line - 1 + scroll] + 1/*  || column  >= left*/) && r)
@@ -1012,7 +1012,7 @@ namespace qse
                         break;
                     }
                 }
-
+            
             while (column >=  (left-((filelenghts.Count).ToString().Length)))
             {
             column--; hscroll++;
@@ -1077,7 +1077,7 @@ namespace qse
                 file.Add(c);
             }
             return file;
-
+        
         }
         public static bool MakeSureConfDirExists(string settingsfile, string homeDirectory)
         {
@@ -1099,13 +1099,5 @@ namespace qse
             }
             return r;
         }
-        
-        
-        
-        
-        
-        
-        
-
     }
 }

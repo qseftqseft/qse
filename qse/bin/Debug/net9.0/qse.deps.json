@@ -9,7 +9,7 @@
       "qse/1.0.0": {
         "dependencies": {
           "TextCopy": "6.2.1",
-          "AutoPrompt": "1.0.0.0"
+          "rohankapoor.AutoPrompt": "1.0.6"
         },
         "runtime": {
           "qse.dll": {}
@@ -23,20 +23,20 @@
           }
         }
       },
+      "rohankapoor.AutoPrompt/1.0.6": {
+        "runtime": {
+          "lib/net40/AutoPrompt.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "TextCopy/6.2.1": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0"
         },
         "runtime": {
           "lib/net6.0/TextCopy.dll": {
-            "assemblyVersion": "1.0.0.0",
-            "fileVersion": "1.0.0.0"
-          }
-        }
-      },
-      "AutoPrompt/1.0.0.0": {
-        "runtime": {
-          "AutoPrompt.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -57,17 +57,19 @@
       "path": "microsoft.extensions.dependencyinjection.abstractions/7.0.0",
       "hashPath": "microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512"
     },
+    "rohankapoor.AutoPrompt/1.0.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Bo/zymDwaX8YkrJuGgy4/VjvA+Pud+//cz239IqS5rYj7teON5+AGS9mJXOKgrCnYBDD5uagErYGQS6g3Ujm1A==",
+      "path": "rohankapoor.autoprompt/1.0.6",
+      "hashPath": "rohankapoor.autoprompt.1.0.6.nupkg.sha512"
+    },
     "TextCopy/6.2.1": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-ryejViUBmHQ2XMie2AiRBn7KVKu2Gh/hqrctGSAUf1BufwfPjr+MWuACNBaiG+40TMbWRDJZgV73Tpl9hggeRw==",
       "path": "textcopy/6.2.1",
       "hashPath": "textcopy.6.2.1.nupkg.sha512"
-    },
-    "AutoPrompt/1.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
     }
   }
 }

@@ -8,9 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Reference Include="AutoPrompt">
-		<HintPath>../AutoPrompt1.dll</HintPath>
-	</Reference>
+      <PackageReference Include="rohankapoor.AutoPrompt" Version="1.0.6" />
       <PackageReference Include="TextCopy" Version="6.2.1" />
     </ItemGroup>
 

@@ -47,6 +47,10 @@
             "TextCopy": {
               "target": "Package",
               "version": "[6.2.1, )"
+            },
+            "rohankapoor.AutoPrompt": {
+              "target": "Package",
+              "version": "[1.0.6, )"
             }
           },
           "imports": [

@@ -1,0 +1,23 @@
+.Æ,Æ/Æ+Æ-Æ>Æ<Æ=Æ Æ;Æ(Æ)Æ[Æ]Æ{Æ}Æ!Æ"
+
+
+//
+AddÆReadAllTextÆReplace
+forÆforeachÆusingÆifÆelseÆswitchÆforÆwhileÆdoÆbreakÆcontinueÆreturnÆthrowÆtryÆcatchÆfinallyÆpublicÆprivateÆprotectedÆinternalÆstaticÆabstractÆsealedÆvirtualÆoverrideÆreadonlyÆconstÆvolatileÆnamespaceÆtypeofÆsizeofÆisÆasÆrefÆoutÆinÆparamsÆoperatorÆimplicitÆexplicitÆasyncÆawaitÆvarÆdynamicÆnameofÆrecordÆinitÆglobalÆrequiredÆscopedÆwithÆnewÆtrueÆfalse
+trueÆfalseÆnull
+intÆstringÆboolÆfloatÆdoubleÆcharÆobjectÆdecimalÆvoidÆStopwatch
+
+#
+
+FileÆListÆConsoleKeyInfoÆConsoleKey
+StartÆConcatÆReadKeyÆRemoveAtÆInsert
+usingÆargsÆcase
+
+Console
+
+"
+1
+bash
+-c "st -f \"monospace:size=18\" -e bash -c \"dotnet run --project \$(dirname \\\"
+\\\"); sleep infinity\""
+

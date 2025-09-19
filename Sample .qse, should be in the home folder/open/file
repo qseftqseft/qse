@@ -1,0 +1,33 @@
+
+Welcome to QSE, here's a list of basic shortcuts:
+
+
+CTRL shortcuts
+    CTRL+L/R arrow -> jump to next thing
+    CTRL+U/D arrow -> scrolling
+    CTRL+V -> paste
+    CTRT+C -> copy
+    CTRL+X -> cut
+    CTRL+BACKSPACE/DELETE -> remove next thing
+    CTRL+SHIFT+U/D arrow -> fast scrolling
+    CTRL+SHIFT+R arrow -> jump to end of line
+    CTRL+SHIFT+L arrow -> jump to start of line
+
+ALT shortcuts
+    ALT+M -> scroll right
+    ALT+N -> scroll left
+    ALT+S -> save file
+    ALT+G -> go to line
+    ALT+O -> open file
+    ALT+A -> set mark (for selecting text to copy/cut)
+    ALT+C -> Command mode
+    ALT+R -> Run
+    ALT+Q -> Quit (must confirm with ENTER)
+
+Other shortcuts
+    Page Up/Down -> scrolls a page (surprisingly)
+
+
+Be sure to check out the wiki
+qseftweb.wz.cz/qse/wiki
+

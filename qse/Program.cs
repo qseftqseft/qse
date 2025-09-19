@@ -22,9 +22,12 @@ namespace qse
             int top = Console.WindowHeight-2;
             int num = 0;
             string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            string filename = homeDirectory + "" + Path.DirectorySeparatorChar + "test";
-            if(!File.Exists(homeDirectory + Path.DirectorySeparatorChar + "test"))
-                File.WriteAllText(homeDirectory + Path.DirectorySeparatorChar + "test", "Welcome to QSE, be sure to check out the wiki\nqseftweb.wz.cz/qse/wiki\n");
+            
+            string settingsfile = "settings";
+            MakeSureConfDirExists(settingsfile, homeDirectory);
+            
+            string filename = homeDirectory + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "open" + Path.DirectorySeparatorChar + "file";
+            
             List<char> file = OpenFile(filename, out string originalfile);
             string filestr = "";
             bool marked = false;
@@ -43,12 +46,8 @@ namespace qse
             int hscroll = 0;
             int tab = 0;
             bool run = true;
-            
-            string settingsfile = "settings";
-            
-            MakeSureConfDirExists(settingsfile, homeDirectory);
-            
-            string[] settings = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "" + settingsfile).Split('\n');
+                                    
+            string[] settings = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "settings" + Path.DirectorySeparatorChar + settingsfile).Split('\n');
             
             char[] ignclr = (settings[0] + "Æ\n").Split('Æ').SelectMany(s => s.ToCharArray()).ToArray();
             
@@ -85,7 +84,7 @@ namespace qse
             }
             
             
-            string projectsstr = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "projects.list");
+            string projectsstr = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "projects" + Path.DirectorySeparatorChar + "projects.list");
             string[] project = projectsstr.Split('\n');
             
             
@@ -345,7 +344,7 @@ namespace qse
                                         if(projects[currentprojectindx].IndexOf(cmdinpt) > 0)
                                         {
                                             filename = projects[currentprojectindx][projects[currentprojectindx].IndexOf(cmdinpt) + 1];
-                                            //
+
                                             if(File.Exists(filename))
                                             {
                                                 originalfile = File.ReadAllText(filename).Replace("\t", "    ");
@@ -360,10 +359,10 @@ namespace qse
                                     }
                                     break;
                                 case "ls":
-                                    if(File.Exists(homeDirectory + "/.qse/" + cmdinpt))
+                                    if(File.Exists(homeDirectory + "/.qse/settings/" + cmdinpt))
                                     {
                                         settingsfile = cmdinpt;
-                                        settings = File.ReadAllText(homeDirectory + "/.qse/" + settingsfile).Split('\n');
+                                        settings = File.ReadAllText(homeDirectory + "/.qse/settings/" + settingsfile).Split('\n');
                                         
                                         ignclr = (settings[0] + "Æ\n").Split('Æ').SelectMany(s => s.ToCharArray()).ToArray();
                                         
@@ -1089,16 +1088,41 @@ namespace qse
                 Directory.CreateDirectory(homeDirectory + "/.qse");
                 r=false;
             }
-            if (!File.Exists(homeDirectory + "/.qse/projects.list"))
+            
+            if (!Directory.Exists(homeDirectory + "/.qse/projects"))
             {
-                File.WriteAllText(homeDirectory + "/.qse/projects.list", "lol");
+                Directory.CreateDirectory(homeDirectory + "/.qse/projects");
                 r=false;
             }
-            if (!File.Exists(homeDirectory + "/.qse/" + settingsfile))
+            if (!File.Exists(homeDirectory + "/.qse/projects/projects.list"))
             {
-                File.WriteAllText(homeDirectory + "/.qse/" + settingsfile, " \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n");
+                File.WriteAllText(homeDirectory + "/.qse/projects/projects.list", "\n");
                 r=false;
             }
+            
+            
+            if (!Directory.Exists(homeDirectory + "/.qse/settings"))
+            {
+                Directory.CreateDirectory(homeDirectory + "/.qse/settings");
+                r=false;
+            }
+            if (!File.Exists(homeDirectory + "/.qse/settings/" + settingsfile))
+            {
+                File.WriteAllText(homeDirectory + "/.qse/settings" + settingsfile, " \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n");
+                r=false;
+            }
+            
+            if (!Directory.Exists(homeDirectory + "/.qse/open"))
+            {
+                Directory.CreateDirectory(homeDirectory + "/.qse/open");
+                r=false;
+            }
+            if (!File.Exists(homeDirectory + "/.qse/open/file"))
+            {
+                File.WriteAllText(homeDirectory + "/.qse/open/file", "Welcome to QSE, be sure to check out the wiki\nqseftweb.wz.cz/qse/wiki\n");
+                r=false;
+            }
+            
             return r;
         }
     }

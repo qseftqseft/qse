@@ -1,12 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "Cj4BYI0by7A=",
+  "dgSpecHash": "zXAthvlzh1s=",
   "success": true,
   "projectFilePath": "/home/qseft/Documents/GitHub/qse/qse/qse.csproj",
   "expectedPackageFiles": [
     "/home/qseft/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/7.0.0/microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
     "/home/qseft/.nuget/packages/rohankapoor.autoprompt/1.0.6/rohankapoor.autoprompt.1.0.6.nupkg.sha512",
-    "/home/qseft/.nuget/packages/textcopy/6.2.1/textcopy.6.2.1.nupkg.sha512"
+    "/home/qseft/.nuget/packages/textcopy/6.2.1/textcopy.6.2.1.nupkg.sha512",
+    "/home/qseft/.nuget/packages/microsoft.netcore.app.runtime.linux-x64/9.0.7/microsoft.netcore.app.runtime.linux-x64.9.0.7.nupkg.sha512",
+    "/home/qseft/.nuget/packages/microsoft.aspnetcore.app.runtime.linux-x64/9.0.7/microsoft.aspnetcore.app.runtime.linux-x64.9.0.7.nupkg.sha512"
   ],
   "logs": [
     {

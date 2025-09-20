@@ -768,12 +768,10 @@ namespace qse
         
         public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column, string currentproject, char strng, string strgclr, string cmntclr, char[] ignclr, string[] black, string[] red, string[] green, string[] yellow, string[] blue, string[] magenta, string[] cyan, string[] white, string[] bblack, string[] bred, string[] bgreen, string[] byellow, string[] bblue, string[] bmagenta, string[] bcyan, string[] bwhite, string normal, string number, bool marked, int mark)
         {
+            int[] filespec = ColourOverrides(file, strng);
             
-            
-            
-            
-            int strngs = 0;
             bool mlcomment = false;
+            bool comment = false;
             
             Console.CursorVisible = false;
             Console.Title = "Qseft's simple editor - editing " + filename;
@@ -802,7 +800,6 @@ namespace qse
                 string chcklne = "";
                 int indx = 0;
                 string outp = "";
-                bool comment = false;
                 while (chcklne.Length < writeline.Length)
                 {
                     expression = "";
@@ -826,7 +823,7 @@ namespace qse
                         }
                         
                         if (comment|| mlcomment) { outp = outp + cmntclr; }
-                        else if(strngs % 2 == 0) {outp = outp + colour(expression, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, normal, number);}
+                        else if(filespec[filelenghts[i] + indx + i] != 2) {outp = outp + colour(expression, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, normal, number);}
                         else outp = outp + strgclr;
                         outp = outp + expression;
                         
@@ -841,21 +838,25 @@ namespace qse
                         {
                             outp=outp+"\x1b[49m";
                         }
-                        if(writeline[indx] == '/' && writeline[indx + 1] == '/' && strngs % 2 == 0) comment = true;
-                        if(writeline[indx] == '/' && writeline[indx + 1] == '*' && strngs % 2 == 0) mlcomment = true;
-                        if(indx>0) if(writeline[indx] == '/' && writeline[indx - 1] == '*' && strngs % 2 == 0) mlcomment = false;
+                        
+                        
+                        if(filespec[filelenghts[i] + indx + i] == 1)
+                        {
+                            mlcomment = true;
+                        }
+                        
+                        if(filespec[filelenghts[i] + indx + i] == 0)
+                        {
+                            mlcomment = false;
+                        }
                         
                         if (comment || mlcomment) { outp = outp + cmntclr; }
-                        else if(strngs % 2 == 0 && writeline[indx] != strng) {outp = outp + "\x1b[39m";}
+                        else if(filespec[filelenghts[i] + indx + i] != 2 && writeline[indx] != strng) {outp = outp + "\x1b[39m";}
                         else outp = outp + strgclr;
                         
                         outp = outp + writeline[indx];
                         chcklne = chcklne + writeline[indx];
-                        if (indx > 0){if((writeline[indx-1] == '\\' || writeline[indx-1] == '\'') && writeline[indx] == strng) strngs--;}
-                        if (writeline[indx] == strng)
-                        {
-                            strngs++;
-                        }
+                        
                         indx++;
                     }
                 }
@@ -939,6 +940,37 @@ namespace qse
             Console.Write(currentproject + " ");
             Console.ResetColor();
             Console.CursorVisible = true;
+        }
+        
+        public static int[] ColourOverrides(List<char> file, char strng)
+        {
+            int[] filespec = new int[file.Count()];
+            
+            bool mlcomment = false;
+            bool comment = false;
+            bool bstrng = false;
+            
+            for (int i = 0; i < file.Count(); i++)
+            {
+                if(file[i] == '/' && file[i + 1] == '*' ) mlcomment = true;
+                if (i > 0) if(file[i] == '/' && file[i - 1] == '*' ) mlcomment = false;
+                if(file[i] == '/' && file[i + 1] == '/') comment = true;
+                if (file[i] == '\n') comment = false;
+                if(file[i] == strng && filespec[i] == 0) bstrng = !bstrng;
+                if (i > 0){if((file[i-1] == '\\' || file[i-1] == '\'') && file[i] == strng) bstrng = false;}
+                
+                if (bstrng)
+                    filespec[i] = 2;
+                if (!bstrng)
+                    filespec[i] = 0;
+                if (mlcomment == true || comment == true)
+                    filespec[i] = 1;
+                if (mlcomment == false && comment == false && !bstrng)
+                    filespec[i] = 0;
+                
+            }
+            
+            return filespec;
         }
         
         public static void HandleRC(int line, int column, int scroll, int hscroll, List<char> file, bool r, out int line1, out int column1, out int scroll1, out int hscroll1, out List<char> file1, out List<int> filelenghts1)

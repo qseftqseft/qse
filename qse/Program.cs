@@ -823,10 +823,10 @@ namespace qse
                         }
                         
                         if (comment|| mlcomment) { outp = outp + cmntclr; }
+                        if(filelenghts[i] + indx + i - 1 > 0) if(filespec[filelenghts[i] + indx + i - 1] == 2) expression = strgclr + expression;
                         else if(filespec[filelenghts[i] + indx + i] != 2) {outp = outp + colour(expression, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, normal, number);}
                         else outp = outp + strgclr;
                         outp = outp + expression;
-                        
                     }
                     if (indx < writeline.Length)
                     {
@@ -956,19 +956,23 @@ namespace qse
                 if (i > 0) if(file[i] == '/' && file[i - 1] == '*' ) mlcomment = false;
                 if(file[i] == '/' && file[i + 1] == '/') comment = true;
                 if (file[i] == '\n') comment = false;
-                if(file[i] == strng && filespec[i] == 0) bstrng = !bstrng;
+                if(file[i] == strng) bstrng = !bstrng;
                 if (i > 0){if((file[i-1] == '\\' || file[i-1] == '\'') && file[i] == strng) bstrng = false;}
                 
-                if (bstrng)
-                    filespec[i] = 2;
-                if (!bstrng)
-                    filespec[i] = 0;
+                
                 if (mlcomment == true || comment == true)
                     filespec[i] = 1;
                 if (mlcomment == false && comment == false && !bstrng)
                     filespec[i] = 0;
+                if (bstrng && !comment && !mlcomment)
+                    filespec[i] = 2;
                 
             }
+            
+            string fspecs = "";
+            foreach (int i in filespec)
+                fspecs=fspecs+i;
+            File.WriteAllText("/home/qseft/fspec", fspecs);
             
             return filespec;
         }

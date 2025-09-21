@@ -233,7 +233,7 @@ namespace qse
                             }
                             break;
                         case ConsoleKey.Delete:
-                            if(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll < file.Count){
+                            if(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll < file.Count && !(scroll + line + 3 > filelenghts.Count())){
                             file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);}
                             break;
                         case ConsoleKey.PageUp:
@@ -573,19 +573,24 @@ namespace qse
                     }
                     else if (keyInfo1.Key == ConsoleKey.Delete)
                     {
-                        if(!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll]))
+                        if(!(scroll + line + 3 > filelenghts.Count()))
                         {
-                            do
+                            if(!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll]))
                             {
-                                file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);
-                            } while (!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll]));
-                        }  
-                        else
-                        { 
-                            do
-                            {
-                                file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);
-                            } while (file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll] == ' ');
+                                do
+                                {
+                                    file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);
+                                } while (!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll]));
+                            }  
+                            else
+                            { 
+                                do
+                                {
+                                    file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);
+                                    if(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll >= file.Count())
+                                        break;
+                                } while (file[filelenghts[ (line + scroll) - 1] + column - 1 + (line + scroll) + hscroll] == ' ');
+                            }
                         } 
                     }
                     else if (keyInfo1.Key == ConsoleKey.Backspace)
@@ -968,11 +973,6 @@ namespace qse
                     filespec[i] = 2;
                 
             }
-            
-            /*string fspecs = "";
-            foreach (int i in filespec)
-                fspecs=fspecs+i;
-            File.WriteAllText("/home/qseft/fspec", fspecs);*/
             
             return filespec;
         }

@@ -442,6 +442,16 @@ namespace qse
                         filestr = string.Concat(file);
                         File.WriteAllText(filename, filestr);
                         do{}while(File.ReadAllText(filename) != filestr);
+                        
+                         term = settings[19];
+                         tflags = settings[20];
+                         tcommand = settings[21];
+                        
+                        if (settings[18] == "1")
+                        {
+                            tcommand = filename + tcommand;
+                        }
+                        
                         ProcessStartInfo psi = new ProcessStartInfo
                         {
                             FileName = term,

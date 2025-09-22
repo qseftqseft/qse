@@ -828,8 +828,8 @@ namespace qse
                         }
                         
                         if (comment || mlcomment) { outp = outp + cmntclr; }
-                        else if(filelenghts[i] + indx + i - 1 > 0) if(!(comment || mlcomment) && filespec[filelenghts[i] + indx + i - 1] == 2) expression = strgclr + expression;
-                        else if(filespec[filelenghts[i] + indx + i] != 2) {outp = outp + colour(expression, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, normal, number);}
+                        else if(filelenghts[i] + indx + i > 0) if(!(comment || mlcomment) && filespec[filelenghts[i] + indx + i - 1] == 2) expression = strgclr + expression;
+                        else if(filespec[filelenghts[i] + indx + i - 1] != 2) {outp = outp + colour(expression, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, normal, number);}
                         else outp = outp + strgclr;
                         outp = outp + expression;
                     }
@@ -957,20 +957,21 @@ namespace qse
             
             for (int i = 0; i < file.Count(); i++)
             {
-                if(file[i] == '/' && file[i + 1] == '*' ) mlcomment = true;
-                if (i > 0) if(file[i] == '/' && file[i - 1] == '*' ) mlcomment = false;
-                if(file[i] == '/' && file[i + 1] == '/') comment = true;
+                
+                
+                if(file[i] == '/' && file[i + 1] == '*' && !bstrng) mlcomment = true;
+                if (i > 0) if(file[i] == '/' && file[i - 1] == '*' && !bstrng) mlcomment = false;
+                if(file[i] == '/' && file[i + 1] == '/' && !bstrng) comment = true;
                 if (file[i] == '\n') comment = false;
                 if(file[i] == strng && !(comment || mlcomment)) bstrng = !bstrng;
                 if (i > 0){if((file[i-1] == '\\' || file[i-1] == '\'') && file[i] == strng) bstrng = false;}
                 
-                
-                if (mlcomment == true || comment == true)
-                    filespec[i] = 1;
-                if (mlcomment == false && comment == false && !bstrng)
-                    filespec[i] = 0;
-                if (bstrng && !comment && !mlcomment)
+                if (bstrng)
                     filespec[i] = 2;
+                else if (mlcomment == true || comment == true)
+                    filespec[i] = 1;
+                else
+                    filespec[i] = 0;
                 
             }
             

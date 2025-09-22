@@ -987,6 +987,14 @@ namespace qse
             string filestr = string.Concat(file);
             filelenghts = lenghts(filestr);
             
+            /*while(filelenghts[filelenghts.Count - 1] > 100)
+            {
+                file.Add('\n');
+                filelenghts.Add(0);
+                filestr = string.Concat(file);
+                filelenghts = lenghts(filestr);
+
+            }*/
             
             if(line >= filelenghts.Count)
                 line = filelenghts.Count - 1;
@@ -1173,7 +1181,7 @@ namespace qse
             }
             if (!File.Exists(homeDirectory + "/.qse/open/file"))
             {
-                File.WriteAllText(homeDirectory + "/.qse/open/file", "Welcome to QSE, be sure to check out the wiki\nqseftweb.wz.cz/qse/wiki\n");
+                File.WriteAllText(homeDirectory + "/.qse/open/file","QSE - qseft's simple editor - the C# console-based text editor\nCopyright (C) 2025 Václav Ulrich\n\n    This program is free software: you can redistribute it and/or modify\n    it under the terms of the GNU General Public License as published by\n    the Free Software Foundation, either version 3 of the License, or\n    (at your option) any later version.\n\n    This program is distributed in the hope that it will be useful,\n    but WITHOUT ANY WARRANTY; without even the implied warranty of\n    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n    GNU General Public License for more details.\n\n    You should have received a copy of the GNU General Public License\n    along with this program.  If not, see <https://www.gnu.org/licenses/>.\n\nWelcome to QSE, here's a list of basic shortcuts:\n\nCTRL shortcuts\n    CTRL+L/R arrow -> jump to next thing\n    CTRL+U/D arrow -> scrolling\n    CTRL+V -> paste\n    CTRT+C -> copy\n    CTRL+X -> cut\n    CTRL+BACKSPACE/DELETE -> remove next thing\n    CTRL+SHIFT+U/D arrow -> fast scrolling\n    CTRL+SHIFT+R arrow -> jump to end of line\n    CTRL+SHIFT+L arrow -> jump to start of line\n\n\nALT shortcuts\n    ALT+M -> scroll right\n    ALT+N -> scroll left\n    ALT+S -> save file\n    ALT+G -> go to line\n    ALT+O -> open file\n    ALT+A -> set mark (for selecting text to copy/cut)\n    ALT+C -> Command mode\n    ALT+R -> Run\n    ALT+Q -> Quit (must confirm with ENTER)\n\nOther shortcuts\n    Page Up/Down -> scrolls a page (surprisingly)\n\nBe sure to check out the wiki\nqseftweb.wz.cz/qse/wiki\n\n");
                 r=false;
             }
             

@@ -301,9 +301,9 @@ namespace qse
                         Console.ForegroundColor = ConsoleColor.Black;
                         string inp = Console.ReadLine();
                         int lne = scroll+line;
-                        do{}while(!int.TryParse(inp, out lne));
                         
-                        scroll = lne - line;
+                        if(int.TryParse(inp, out lne))                        
+                            scroll = lne - line;
                     }
                     
                     if (keyInfo1.Key == ConsoleKey.O)
@@ -344,9 +344,12 @@ namespace qse
                         Console.Write("enter command: ");
                         Console.ForegroundColor = ConsoleColor.Black;
                         string command = Console.ReadLine();
-                        if(command.Length > 3)
+                        if(command.Length > 1)
                         {
-                            string cmdinpt = command.Remove(0, 3);
+                            string cmdinpt = "";
+                            if(command.Length > 3)
+                                cmdinpt = command.Remove(0, 3);
+                            
                             switch(command.Substring(0, 2))
                             {
                                 case "lp":
@@ -417,7 +420,12 @@ namespace qse
                                         }
                                     }
                                     break;
-                                    
+                                case "pm":
+                                    Console.ResetColor();
+                                    Console.Clear();
+                                    string proj = ProjectManagementTUI();
+                                    File.WriteAllText(homeDirectory + "/.qse/projects/projects.list", proj);
+                                    break;
                             }
                         }                        
                     }
@@ -443,9 +451,9 @@ namespace qse
                         File.WriteAllText(filename, filestr);
                         do{}while(File.ReadAllText(filename) != filestr);
                         
-                         term = settings[19];
-                         tflags = settings[20];
-                         tcommand = settings[21];
+                        term = settings[19];
+                        tflags = settings[20];
+                        tcommand = settings[21];
                         
                         if (settings[18] == "1")
                         {
@@ -998,15 +1006,6 @@ namespace qse
             string filestr = string.Concat(file);
             filelenghts = lenghts(filestr);
             
-            /*while(filelenghts[filelenghts.Count - 1] > 100)
-            {
-                file.Add('\n');
-                filelenghts.Add(0);
-                filestr = string.Concat(file);
-                filelenghts = lenghts(filestr);
-
-            }*/
-            
             if(line >= filelenghts.Count)
                 line = filelenghts.Count - 1;
             
@@ -1142,6 +1141,144 @@ namespace qse
             file1 = file;
             filelenghts1 = filelenghts;
         }
+        public static string ProjectManagementTUI()
+        {
+            string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            
+            string proj = File.ReadAllText(homeDirectory + "/.qse/projects/projects.list");
+            string[] project = proj.Split('\n');
+            
+            List<string>[] projects = Enumerable.Range(0, project.Length).Select(_ => new List<string>()).ToArray();
+            
+            for(int i = 0; i < projects.Length; i++)
+            {
+                for(int j = 0; j < project[i].Split(' ').Length; j++)
+                {
+                    projects[i].Add(project[i].Split(' ')[j]);
+                }
+            }
+            
+            string[] projectsnames = new string[projects.Length];
+            for(int i = 0; i < projects.Length; i++)
+            {
+                projectsnames[i] = projects[i][0];
+            }
+            
+            projectsnames[projectsnames.Length-1] = "Add a new project";
+            
+            int editingproject = writeMenu(projectsnames, "", "\n");
+            Console.Clear();
+            
+            if(editingproject != projectsnames.Length-1)
+            {
+                Console.WriteLine("You are adding to project " + projectsnames[editingproject]);
+                string rl = "";
+                do{
+                    Console.Write("What is the file name: [exit]");
+                    rl = Console.ReadLine();
+                    if(rl == "" || rl == "exit")
+                        break;
+                    if(rl.Contains(" "))
+                        continue;
+                    projects[editingproject].Add(rl);
+                    Console.Write("What is the file path ");
+                    rl = Console.ReadLine();
+                    if(rl.Contains(" "))
+                        continue;
+                    projects[editingproject].Add(rl);
+                    
+                }while(true);
+                proj = "";
+                for(int i = 0; i < projects.Length; i++)
+                {   for(int j = 0; j < projects[i].Count; j++)
+                    {
+                        proj = proj + projects[i][j] + " ";
+                    }
+                    proj = proj + "\n";
+                }
+            }
+            else
+            {
+                Console.Write("What is the project name: ");
+                string name = Console.ReadLine();
+                string rl = "";
+                string other = "";
+                do{
+                    Console.Write("What is the file name: [exit]");
+                    rl = Console.ReadLine();
+                    if(rl == "" || rl == "exit")
+                        break;
+                    if(rl.Contains(" "))
+                        continue;
+                    other = other + " " + rl;
+                    Console.Write("What is the file path ");
+                    rl = Console.ReadLine();
+                    if(rl.Contains(" "))
+                        continue;
+                    other = other + " " + rl;
+                    
+                }while(true);
+                proj = proj + name + other + "\n";
+            }
+            
+            return proj;
+        }
+        
+        
+        
+        public static int writeMenu(string[] array, string pfx, string pofx)
+        {
+            Console.Clear();
+            Console.CursorVisible=false;
+            foreach (string element in array)
+            {
+                Console.Write(pfx + element + pofx);
+            }
+            
+            Console.Write("\x1b[90m"+array[0]);
+            Console.ResetColor();
+            int sel = 0;
+            bool fl0 = true;
+            while (fl0)
+            {
+                ConsoleKeyInfo keyInfo1 = Console.ReadKey();
+                if (keyInfo1.Key == ConsoleKey.LeftArrow)
+                {
+                    Console.Clear();
+                    foreach (string element in array)
+                    {
+                        Console.Write(pfx + element + pofx);
+                    }
+                    
+                    sel--;
+                    if (sel < 0)
+                        sel = array.Length - 1;
+                    Console.Write("\x1b[90m"+array[sel]);
+                    Console.ResetColor();
+                }
+                else if (keyInfo1.Key == ConsoleKey.RightArrow)
+                {
+                    Console.Clear();
+                    foreach (string element in array)
+                    {
+                        Console.Write(pfx + element + pofx);
+                    }
+                    
+                    sel++;
+                    if (sel > array.Length - 1)
+                        sel = 0;
+                    Console.Write("\x1b[90m"+array[sel]);
+                    Console.ResetColor();
+                }
+                else if (keyInfo1.Key == ConsoleKey.Enter)
+                {
+                    fl0 = false;
+                }
+            }
+            Console.CursorVisible=true;
+            return sel;
+        }
+        
         public static List<char> OpenFile(string filename, out string originalfile)
         {
             List<char> file = new List<char>();

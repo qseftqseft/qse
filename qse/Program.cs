@@ -86,12 +86,8 @@ namespace qse
             string[] bcyan = settings[15].Split('Æ');
             string[] bwhite = settings[16].Split('Æ');
             
-            string normal = "\x1b[90m";
-            string number = "\x1b[95m";
             char strng = char.Parse(settings[17]);
-            string strgclr = "\x1b[91m";
-            string cmntclr = "\x1b[32m";
-                        
+            
             string term = settings[19];
             string tflags = settings[20];
             string tcommand = settings[21];
@@ -101,6 +97,8 @@ namespace qse
                 tcommand = filename + tcommand;
             }
             
+            
+            string[] colours = ["\x1b[38;2;080;080;080m","\x1b[38;2;150;025;075m","\x1b[38;2;025;150;100m","\x1b[38;2;175;175;025m","\x1b[38;2;075;050;175m","\x1b[38;2;125;050;125m","\x1b[38;2;050;125;125m","\x1b[38;2;125;125;150m","\x1b[38;2;100;100;100m","\x1b[38;2;200;075;125m","\x1b[38;2;075;200;150m","\x1b[38;2;225;225;075m","\x1b[38;2;125;100;225m","\x1b[38;2;175;100;175m","\x1b[38;2;075;175;175m","\x1b[38;2;175;175;200m","\x1b[38;2;115;115;150m","\x1b[38;2;150;115;150m","\x1b[38;2;175;050;075m","\x1b[38;2;050;175;100m","\x1b[48;2;175;175;025m","\x1b[48;2;000;000;020m","\x1b[48;2;000;000;050m","\x1b[38;2;025;025;075m","\x1b[38;2;075;075;150m"];
             
             string projectsstr = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "projects" + Path.DirectorySeparatorChar + "projects.list");
             string[] project = projectsstr.Split('\n');
@@ -140,7 +138,7 @@ namespace qse
                     top = Console.WindowHeight - 2;
                     bool r = false;
                     
-                    write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, strgclr, cmntclr, ignclr, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, normal, number, marked, mark);
+                    write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, marked, mark, colours);
                 
                     Console.SetCursorPosition(column, line);
                     
@@ -404,11 +402,9 @@ namespace qse
                                         bcyan = settings[15].Split('Æ');
                                         bwhite = settings[16].Split('Æ');
                                         
-                                        normal = "\x1b[90m";
-                                        number = "\x1b[95m";
                                         strng = char.Parse(settings[17]);
-                                        strgclr = "\x1b[91m";
-                                        cmntclr = "\x1b[32m";
+                                        
+                                        colours = ["\x1b[38;2;080;080;080m","\x1b[38;2;150;025;075m","\x1b[38;2;025;150;100m","\x1b[38;2;175;175;025m","\x1b[38;2;075;050;175m","\x1b[38;2;125;050;125m","\x1b[38;2;050;125;125m","\x1b[38;2;125;125;150m","\x1b[38;2;100;100;100m","\x1b[38;2;200;075;125m","\x1b[38;2;075;200;150m","\x1b[38;2;225;225;075m","\x1b[38;2;125;100;225m","\x1b[38;2;175;100;175m","\x1b[38;2;075;175;175m","\x1b[38;2;175;175;200m","\x1b[38;2;115;115;150m","\x1b[38;2;150;115;150m","\x1b[38;2;175;050;075m","\x1b[38;2;050;175;100m","\x1b[48;2;175;175;025m","\x1b[48;2;000;000;020m","\x1b[48;2;000;000;050m","\x1b[38;2;025;025;075m","\x1b[38;2;075;075;150m"];
                                         
                                         term = settings[19];
                                         tflags = settings[20];
@@ -486,10 +482,11 @@ namespace qse
                     if(keyInfo1.Key == ConsoleKey.P)
                     {
                         Console.ResetColor();
-                        Console.Clear();
+                        Console.Write(colours[21]);
+                        Console.Write("\x1b[2J");
                         int pf = -1;
                         int lp = -1;
-                        string proj = ProjectManagementTUI(out lp, out pf);
+                        string proj = ProjectManagementTUI(out lp, out pf, colours[21]);
                         File.WriteAllText(homeDirectory + "/.qse/projects/projects.list", proj);
                         projectsstr = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "projects" + Path.DirectorySeparatorChar + "projects.list");
                         project = projectsstr.Split('\n');
@@ -512,8 +509,19 @@ namespace qse
                             currentprojectindx = lp;
                             
                             filename = projects[lp][2+pf*2];
-                            if(File.Exists(filename))
+                            
+                            string dfromf = "";
+                            
+                            for (int i = 0; i < filename.Split(Path.DirectorySeparatorChar).Length - 1; i++)
                             {
+                                dfromf = dfromf + filename.Split(Path.DirectorySeparatorChar)[i] + "/";
+                            }
+                            
+                            if(Directory.Exists(dfromf))
+                            {
+                                if(!File.Exists(filename))
+                                    File.WriteAllText(filename, "\n");
+                                
                                 originalfile = File.ReadAllText(filename).Replace("\t", "    ");
                                 filestr = "";
                                 file = new List<char>();
@@ -521,6 +529,12 @@ namespace qse
                                 {
                                     file.Add(c);
                                 }
+                            }
+                            else
+                            {
+                                Console.Clear();
+                                Console.WriteLine("ERROR: wrong directory, try deleting from the list and adding it again");
+                                Console.ReadKey();
                             }
                         }
                     }
@@ -744,88 +758,88 @@ namespace qse
             return filelenghts;
         }
         
-        public static string colour(string str, string[] black, string[] red, string[] green, string[] yellow, string[] blue, string[] magenta, string[] cyan, string[] white, string[] bblack, string[] bred, string[] bgreen, string[] byellow, string[] bblue, string[] bmagenta, string[] bcyan, string[] bwhite, string normal, string number)
+        public static string colour(string str, string[] black, string[] red, string[] green, string[] yellow, string[] blue, string[] magenta, string[] cyan, string[] white, string[] bblack, string[] bred, string[] bgreen, string[] byellow, string[] bblue, string[] bmagenta, string[] bcyan, string[] bwhite, string[] colours)
         {
             if (Array.Exists(black, x => x == str))
             {
-                return "\x1b[30m";
+                return colours[0];
             }
             else if (Array.Exists(red, x => x == str))
             {
-                return "\x1b[31m";
+                return colours[1];
             }
             else if (Array.Exists(green, x => x == str))
             {
-                return "\x1b[32m";
+                return colours[2];
             }
             else if (Array.Exists(yellow, x => x == str))
             {
-                return "\x1b[33m";
+                return colours[3];
             }
             else if (Array.Exists(blue, x => x == str))
             {
-                return "\x1b[34m";
+                return colours[4];
             }
             else if (Array.Exists(magenta, x => x == str))
             {
-                return "\x1b[35m";
+                return colours[5];
             }
             else if (Array.Exists(cyan, x => x == str))
             {
-                return "\x1b[36m";
+                return colours[6];
             }
             else if (Array.Exists(white, x => x == str))
             {
-                return "\x1b[37m";
+                return colours[7];
             }
             else if (Array.Exists(bblack, x => x == str))
             {
-                return "\x1b[90m";
+                return colours[8];
             }
             else if (Array.Exists(bred, x => x == str))
             {
-                return "\x1b[91m";
+                return colours[9];
             }
             else if (Array.Exists(bgreen, x => x == str))
             {
-                return "\x1b[92m";
+                return colours[10];
             }
             else if (Array.Exists(byellow, x => x == str))
             {
-                return "\x1b[93m";
+                return colours[11];
             }
             else if (Array.Exists(bblue, x => x == str))
             {
-                return "\x1b[94m";
+                return colours[12];
             }
             else if (Array.Exists(bmagenta, x => x == str))
             {
-                return "\x1b[95m";
+                return colours[13];
             }
             else if (Array.Exists(bcyan, x => x == str))
             {
-                return "\x1b[96m";
+                return colours[14];
             }
             else if (Array.Exists(bwhite, x => x == str))
             {
-                return "\x1b[97m";
+                return colours[15];
             }
             
             else if (int.TryParse(str, out var num))
             {
-                return number;
+                return colours[17];
             }
             
             else
             {
-                return normal;
+                return colours[16];
             }
             
             
             
         }
         
-        public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column, string currentproject, char strng, string strgclr, string cmntclr, char[] ignclr, string[] black, string[] red, string[] green, string[] yellow, string[] blue, string[] magenta, string[] cyan, string[] white, string[] bblack, string[] bred, string[] bgreen, string[] byellow, string[] bblue, string[] bmagenta, string[] bcyan, string[] bwhite, string normal, string number, bool marked, int mark)
+        public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column, string currentproject, char strng, char[] ignclr, string[] black, string[] red, string[] green, string[] yellow, string[] blue, string[] magenta, string[] cyan, string[] white, string[] bblack, string[] bred, string[] bgreen, string[] byellow, string[] bblue, string[] bmagenta, string[] bcyan, string[] bwhite, bool marked, int mark, string[] colours)
         {
             int[] filespec = ColourOverrides(file, strng);
             
@@ -869,11 +883,11 @@ namespace qse
                         {
                             if (filelenghts[i] + indx + i >= mark && marked)
                             {
-                                expression=expression+"\x1b[43m";
+                                expression=expression+colours[20];
                             }
                             if ( marked && filelenghts[i] + indx + i >= filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll + 2)
                             {
-                                expression=expression+"\x1b[49m";
+                                expression=expression+"\x1b[0000000000000049m";
                             }
                             
                             expression = expression + writeline[indx];
@@ -881,21 +895,21 @@ namespace qse
                             indx++;
                         }
                         
-                        if (comment || mlcomment) { outp = outp + cmntclr; }
-                        else if(filelenghts[i] + indx + i > 0) if(!(comment || mlcomment) && filespec[filelenghts[i] + indx + i - 1] == 2) expression = strgclr + expression;
-                        else if(filespec[filelenghts[i] + indx + i - 1] != 2) {outp = outp + colour(expression, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, normal, number);}
-                        else outp = outp + strgclr;
+                        if (comment || mlcomment) { outp = outp + colours[19]; }
+                        else if(filelenghts[i] + indx + i > 0) if(!(comment || mlcomment) && filespec[filelenghts[i] + indx + i - 1] == 2) expression = colours[18] + expression;
+                        else if(filespec[filelenghts[i] + indx + i - 1] != 2) {outp = outp + colour(expression, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, colours);}
+                        else outp = outp + colours[19];
                         outp = outp + expression;
                     }
                     if (indx < writeline.Length)
                     {
                         if (filelenghts[i] + indx + i >= mark && marked)
                         {
-                            outp=outp+"\x1b[43m";
+                            outp=outp+colours[20];
                         }
                         if (marked && filelenghts[i] + indx + i >= filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll + 2)
                         {
-                            outp=outp+"\x1b[49m";
+                            outp=outp+"\x1b[0000000000000049m";
                         }
                         
                         
@@ -909,9 +923,9 @@ namespace qse
                             mlcomment = false;
                         }
                         
-                        if (comment || mlcomment) { outp = outp + cmntclr; }
-                        else if(filespec[filelenghts[i] + indx + i] != 2 && writeline[indx] != strng) {outp = outp + "\x1b[39m";}
-                        else outp = outp + strgclr;
+                        if (comment || mlcomment) { outp = outp + colours[19]; }
+                        else if(filespec[filelenghts[i] + indx + i] != 2 && writeline[indx] != strng) {outp = outp + colours[15];}
+                        else outp = outp + colours[18];
                         
                         outp = outp + writeline[indx];
                         chcklne = chcklne + writeline[indx];
@@ -919,7 +933,7 @@ namespace qse
                         indx++;
                     }
                 }
-                
+                //hscroll calc
                 int windx = hscroll;
                 while (windx > 0)
                 {
@@ -931,13 +945,13 @@ namespace qse
                         }
                         else
                         {
-                            while (outp[5] == '\x1b')
+                            while (outp[19] == '\x1b')
                             {
-                                outp = outp.Remove(0, 5);
+                                outp = outp.Remove(0, 19);
                             }
-                            if (outp.Length > 6)
+                            if (outp.Length > 20) //this needs to be 20
                             {
-                                outp = outp.Remove(5, 1);
+                                outp = outp.Remove(19, 1);
                             }
                         }
                     }
@@ -947,18 +961,18 @@ namespace qse
                 
                 int indx1 = (filelenghts[i + 1] - filelenghts[i]) - hscroll;
                 
+                //text cutoff
                 if (indx1 > left - filelenghts.Count.ToString().Length)
                 {
                     while (indx1 > left - 1 - filelenghts.Count.ToString().Length)
                     {
-                        if (outp[outp.Length - 5] == '\x1b')
-                            indx1 = indx1 + 5;
+                        if(outp.Length-19 >= 0) if (outp[outp.Length-19] == '\x1b') indx1 = indx1+19;
                         outp = outp.Substring(0, outp.Length - 1);
                         indx1--;
                     }
-                    outp = outp + "\x1b[00m>\n";
+                    outp = outp + colours[21] + ">\n";
                 }
-                 
+                
                 Console.Write(outp);
             }
             
@@ -966,7 +980,9 @@ namespace qse
             string output = stringWriter.ToString();
             
             Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true });
-            Console.Clear();
+            
+            Console.Write(colours[21]);
+            Console.Write("\x1b[2J");
             
             Console.SetCursorPosition (0, 1);
             Console.WriteLine(output);
@@ -980,9 +996,9 @@ namespace qse
             {
                 Console.SetCursorPosition(left-((filelenghts.Count).ToString().Length) + 1 , i);
                 for(int j = 0; j < ((filelenghts.Count).ToString().Length) - (i+scroll).ToString().Length; j++)
-                    Console.Write("\x1b[38;5;245m" + "\x1b[48;5;234m" + "0");
+                    Console.Write(colours[22] + colours[23] + "0");
                 
-                Console.Write("\x1b[38;5;245m" + "\x1b[48;5;234m" +(i+scroll));
+                Console.Write(colours[22] +colours[24] +(i+scroll));
             }
             
             Console.SetCursorPosition(0, 0);
@@ -1177,7 +1193,7 @@ namespace qse
             file1 = file;
             filelenghts1 = filelenghts;
         }
-        public static string ProjectManagementTUI(out int lp, out int pf)
+        public static string ProjectManagementTUI(out int lp, out int pf, string bg)
         {
             string texto = "\x1b[47;30m QSE ";
             string textt = "\x1b[47;30m Project editor ";
@@ -1218,7 +1234,7 @@ namespace qse
             
             projectsnames[projectsnames.Length-1] = "Add a new project";
             
-            int editingproject = writeMenu(projectsnames, 0, texto, textt, true);
+            int editingproject = writeMenu(projectsnames, 0, texto, textt, true, bg);
             if (editingproject == -1)
                 return proj;
             
@@ -1231,15 +1247,15 @@ namespace qse
                     pfnames[Array.FindIndex(pfnames, j => j == null || j.Length == 0)] = projects[editingproject][i];
                 }
                 pfnames[pfnames.Length-1] = "Add a new file";
-                int whattodo = writeMenu(pfnames, projectsnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+5,texto, textt, false);
+                int whattodo = writeMenu(pfnames, projectsnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+5,texto, textt, false, bg);
                 if(whattodo == -1)
                     continue;
                 
-                Console.SetCursorPosition(0, Console.WindowHeight/2);
+                
                 
                 if(whattodo != pfnames.Length-1)
                 {
-                    int oped = writeMenu(["Open", "Delete"], (projectsnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+5) + (pfnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+5), texto, textt, false);
+                    int oped = writeMenu(["Open", "Delete"], (projectsnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+5) + (pfnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+5), texto, textt, false, bg);
                     Console.SetCursorPosition(0, Console.WindowHeight/2);
                     if(oped == 0)
                     {
@@ -1255,48 +1271,52 @@ namespace qse
                         {
                             projects[editingproject].RemoveAt(whattodo*2+2);
                             projects[editingproject].RemoveAt(whattodo*2+1);
-                        }
-                        
-                        proj = "";
-                        for(int i = 0; i < projects.Length; i++)
-                        {   for(int j = 0; j < projects[i].Count; j++)
-                            {
-                                if(j != projects[i].Count-1)
-                                    proj = proj + projects[i][j] + " ";
-                                else
-                                    proj = proj + projects[i][j];
+                            
+                            proj = "";
+                            for(int i = 0; i < projects.Length; i++)
+                            {   for(int j = 0; j < projects[i].Count; j++)
+                                {
+                                    if(j != projects[i].Count-1)
+                                        proj = proj + projects[i][j] + " ";
+                                    else
+                                        proj = proj + projects[i][j];
+                                }
+                                if(i!=projects.Length-1)
+                                    proj = proj + "\n";
                             }
-                            if(i!=projects.Length-1)
-                                proj = proj + "\n";
+                            
+                            Console.Write("Project file deleted!\n");
+                            Stopwatch sw = new Stopwatch();
+                            sw.Start();
+                            do{}while(sw.ElapsedMilliseconds <= 500);
                         }
-                        
-                        Console.Write("deleted, new project file is: \n" + proj);
-                        
-                        Console.ReadKey();
                     }
                 }
                 else
                 {
-                    Console.WriteLine("You are adding to project " + projectsnames[editingproject]);
+                    Console.CursorLeft = projectsnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+10;
                     string rl = "";
                     do{
-                        Console.Write("What is the file name: [exit]");
+                        Console.Write("name          ");
+                        Console.CursorLeft -= 14;
                         rl = Console.ReadLine();
                         if(rl == "" || rl == "exit")
                             break;
                         if(rl.Contains(" "))
                             continue;
                         projects[editingproject].Add(rl);
-                        Console.Write("\n*"+projects[editingproject][projects[editingproject].Count()-1]+"*\n");
-                        Console.Write("What is the file path ");
+                        
+                        Console.CursorLeft = projectsnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+10;
+                        Console.CursorTop -= 1;
+                        Console.Write("path"); for(int i = 4; i < rl.Length; i++) Console.Write(" ");
+                        Console.CursorLeft = projectsnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+10;
                         rl = Console.ReadLine();
                         if(rl.Contains(" "))
                             continue;
                         projects[editingproject].Add(rl);
                         Console.Write("\n*"+projects[editingproject][projects[editingproject].Count()-1]+"*\n");
-                        
-                        
-                    }while(true);
+                    }
+                    while(false);
                     
                     proj = "";
                     for(int i = 0; i < projects.Length; i++)
@@ -1343,9 +1363,9 @@ namespace qse
             return proj;
         }
         
-        public static int writeMenu(string[] array, int pfx, string top, string bottom, bool clrsc)
+        public static int writeMenu(string[] array, int pfx, string top, string bottom, bool clrsc, string bg)
         {
-            if(clrsc) Console.Clear();
+            if(clrsc) Console.Write(bg+"\x1b[2J");
             Console.SetCursorPosition(0,Console.WindowHeight-2);
             Console.WriteLine(bottom);
             Console.SetCursorPosition(0,0);
@@ -1360,9 +1380,9 @@ namespace qse
                 {
                     Console.CursorLeft=pfx;
                     if(i != indx)
-                        Console.Write("\x1b[90m [ ] \x1b[39m" + array[i] + "\n");
+                        Console.Write(bg+"\x1b[90m [ ] "+ array[i] + "\n");
                     if(i == indx)
-                        Console.Write("\x1b[1;90m [*] \x1b[0m\x1b[1;30;47m" + array[i] + "\n");
+                        Console.Write(bg+"\x1b[1;90m [*] \x1b[0m\x1b[1;30m" + array[i] + "\n");
                     Console.CursorLeft=pfx;
                     Console.Write("\x1b[0m");
                 }
@@ -1393,7 +1413,7 @@ namespace qse
                     for (int i = 0; i < array.Length; i++)
                     {
                         Console.CursorLeft=pfx;
-                        Console.Write("\x1b[0m     ");
+                        Console.Write("\x1b[0m"+bg+"     ");
                         if(array[i] != null) for (int j = 0; j < array[i].Length; j++) Console.Write(" ");
                         Console.Write("\n");
                     }

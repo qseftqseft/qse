@@ -97,8 +97,13 @@ namespace qse
                 tcommand = filename + tcommand;
             }
             
-            
-            string[] colours = ["\x1b[38;2;080;080;080m","\x1b[38;2;150;025;075m","\x1b[38;2;025;150;100m","\x1b[38;2;175;175;025m","\x1b[38;2;075;050;175m","\x1b[38;2;125;050;125m","\x1b[38;2;050;125;125m","\x1b[38;2;125;125;150m","\x1b[38;2;100;100;100m","\x1b[38;2;200;075;125m","\x1b[38;2;075;200;150m","\x1b[38;2;225;225;075m","\x1b[38;2;125;100;225m","\x1b[38;2;175;100;175m","\x1b[38;2;075;175;175m","\x1b[38;2;175;175;200m","\x1b[38;2;115;115;150m","\x1b[38;2;150;115;150m","\x1b[38;2;175;050;075m","\x1b[38;2;050;175;100m","\x1b[48;2;175;175;025m","\x1b[48;2;000;000;020m","\x1b[48;2;000;000;050m","\x1b[38;2;025;025;075m","\x1b[38;2;075;075;150m"];
+            string themefile = "theme";
+            string[] theme = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile).Split('\n');
+            string[] colours = new string[25];
+            for(int i = 0; i < 25; i++)
+            {
+                colours[i] = "\x1b[" + theme[i] + "m";
+            }
             
             string projectsstr = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "projects" + Path.DirectorySeparatorChar + "projects.list");
             string[] project = projectsstr.Split('\n');
@@ -404,8 +409,6 @@ namespace qse
                                         
                                         strng = char.Parse(settings[17]);
                                         
-                                        colours = ["\x1b[38;2;080;080;080m","\x1b[38;2;150;025;075m","\x1b[38;2;025;150;100m","\x1b[38;2;175;175;025m","\x1b[38;2;075;050;175m","\x1b[38;2;125;050;125m","\x1b[38;2;050;125;125m","\x1b[38;2;125;125;150m","\x1b[38;2;100;100;100m","\x1b[38;2;200;075;125m","\x1b[38;2;075;200;150m","\x1b[38;2;225;225;075m","\x1b[38;2;125;100;225m","\x1b[38;2;175;100;175m","\x1b[38;2;075;175;175m","\x1b[38;2;175;175;200m","\x1b[38;2;115;115;150m","\x1b[38;2;150;115;150m","\x1b[38;2;175;050;075m","\x1b[38;2;050;175;100m","\x1b[48;2;175;175;025m","\x1b[48;2;000;000;020m","\x1b[48;2;000;000;050m","\x1b[38;2;025;025;075m","\x1b[38;2;075;075;150m"];
-                                        
                                         term = settings[19];
                                         tflags = settings[20];
                                         tcommand = settings[21];
@@ -478,6 +481,28 @@ namespace qse
                             Console.ReadKey();
                         }
                         
+                    }
+                    if (keyInfo1.Key == ConsoleKey.T)
+                    {
+                        do{
+                            Console.SetCursorPosition(0, top - 1);
+                            Console.ForegroundColor = ConsoleColor.DarkGray;
+                            Console.Write("enter theme name: ");
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            themefile = AutoPrompt.PromptForInput("", themefile);
+                            Console.SetCursorPosition(0, top - 1);
+                            for (int i = 0; i < left; i++)
+                            {
+                                Console.Write(" ");
+                            }
+                        } while (!File.Exists(homeDirectory + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile));
+                        themefile = "theme";
+                        theme = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile).Split('\n');
+                        colours = new string[25];
+                        for(int i = 0; i < 25; i++)
+                        {
+                            colours[i] = "\x1b[" + theme[i] + "m";
+                        }
                     }
                     if(keyInfo1.Key == ConsoleKey.P)
                     {
@@ -1458,6 +1483,18 @@ namespace qse
             if (!File.Exists(homeDirectory + "/.qse/projects/projects.list"))
             {
                 File.WriteAllText(homeDirectory + "/.qse/projects/projects.list", "\n");
+                r=false;
+            }
+            
+            
+            if (!Directory.Exists(homeDirectory + "/.qse/themes"))
+            {
+                Directory.CreateDirectory(homeDirectory + "/.qse/themes");
+                r=false;
+            }
+            if (!File.Exists(homeDirectory + "/.qse/themes/theme"))
+            {
+                File.WriteAllText(homeDirectory + "/.qse/themes/theme", "38;2;080;080;080\n38;2;150;025;075\n38;2;025;150;100\n38;2;175;175;025\n38;2;075;050;175\n38;2;125;050;125\n38;2;050;125;125\n38;2;125;125;150\n38;2;100;100;100\n38;2;200;075;125\n38;2;075;200;150\n38;2;225;225;075\n38;2;125;100;225\n38;2;175;100;175\n38;2;075;175;175\n38;2;175;175;200\n38;2;115;115;150\n38;2;150;115;150\n38;2;175;050;075\n38;2;050;175;100\n38;2;175;175;025\n48;2;000;000;020\n48;2;000;000;050\n38;2;025;025;075\n38;2;075;075;150\n");
                 r=false;
             }
             

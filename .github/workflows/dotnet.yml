@@ -52,5 +52,6 @@ jobs:
       with:
         tag_name: ${{ steps.versioning.outputs.version }}
         files: linbuild.zip
+        prerelease: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

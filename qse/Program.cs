@@ -99,8 +99,8 @@ namespace qse
             
             string themefile = "theme";
             string[] theme = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile).Split('\n');
-            string[] colours = new string[25];
-            for(int i = 0; i < 25; i++)
+            string[] colours = new string[27];
+            for(int i = 0; i < 27; i++)
             {
                 colours[i] = "\x1b[" + theme[i] + "m";
             }
@@ -139,8 +139,17 @@ namespace qse
                 
                 while (run)
                 {
-                    left = Console.WindowWidth - 1;
-                    top = Console.WindowHeight - 2;
+                    if(left != Console.WindowWidth - 1)
+                    {
+                        Console.Clear();
+                        left = Console.WindowWidth - 1;
+                    }
+                    if(top != Console.WindowHeight - 2)
+                    {
+                        Console.Clear();
+                        top = Console.WindowHeight - 2;
+                    }
+                    
                     bool r = false;
                     
                     write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, marked, mark, colours);
@@ -160,10 +169,14 @@ namespace qse
                             ClipboardService.SetText(pclip);
                             marked = false;
                         }
-                     };
+                    };
                     
-                    
-                        keyInfo1 = Console.ReadKey(true);
+                    if(!Console.KeyAvailable)
+                    {
+                        System.Threading.Thread.Sleep(16);
+                        continue;
+                    }
+                    keyInfo1 = Console.ReadKey(true);
                     
                                         
                     if (((keyInfo1.Modifiers & ConsoleModifiers.Alt) != 0))
@@ -258,12 +271,12 @@ namespace qse
                     
                 }
                 
+                
                 if ((((keyInfo1.Modifiers & ConsoleModifiers.Alt) != 0)) && (keyInfo1.Modifiers & ConsoleModifiers.Shift) == 0)
                 {
                     Console.SetCursorPosition(0, top - 1);
                     
-                    Console.BackgroundColor = ConsoleColor.Gray;
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write(colours[25]+colours[26]);//change to 27 and 28
                     
                     for (int i = 0; i <= left; i++)
                     {
@@ -301,7 +314,7 @@ namespace qse
                     if (keyInfo1.Key == ConsoleKey.G)
                     {
                         Console.Write("got line: ");
-                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write(colours[25]+colours[26]);//change to 27 and 28
                         string inp = Console.ReadLine();
                         int lne = scroll+line;
                         
@@ -315,9 +328,8 @@ namespace qse
                         do
                         {
                             Console.SetCursorPosition(0, top - 1);
-                            Console.ForegroundColor = ConsoleColor.DarkGray;
+                            Console.Write(colours[25]+colours[26]);//change to 27 and 28
                             Console.Write("enter filepath: ");
-                            Console.ForegroundColor = ConsoleColor.Black;
                             filename = AutoPrompt.PromptForInput("", filename);
                             Console.SetCursorPosition(0, top - 1);
                             for (int i = 0; i < left; i++)
@@ -345,7 +357,7 @@ namespace qse
                     if (keyInfo1.Key == ConsoleKey.C)
                     {
                         Console.Write("enter command: ");
-                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write(colours[25]+colours[26]);//change to 27 and 28
                         string command = Console.ReadLine();
                         if(command.Length > 1)
                         {
@@ -472,8 +484,7 @@ namespace qse
                     if (keyInfo1.Key == ConsoleKey.Q)
                     {
                         Console.Write("u sure?");
-                        ConsoleKeyInfo r = Console.ReadKey();
-                        if (r.Key == ConsoleKey.Enter)
+                        if ("" == Console.ReadLine())
                         {
                             Console.CursorLeft = 0;
                             Console.Write("you can press ctrl+c to exit now");
@@ -486,9 +497,8 @@ namespace qse
                     {
                         do{
                             Console.SetCursorPosition(0, top - 1);
-                            Console.ForegroundColor = ConsoleColor.DarkGray;
+                            Console.Write(colours[25]+colours[26]);//change to 27 and 28
                             Console.Write("enter theme name: ");
-                            Console.ForegroundColor = ConsoleColor.Black;
                             themefile = AutoPrompt.PromptForInput("", themefile);
                             Console.SetCursorPosition(0, top - 1);
                             for (int i = 0; i < left; i++)
@@ -498,8 +508,8 @@ namespace qse
                         } while (!File.Exists(homeDirectory + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile));
                         themefile = "theme";
                         theme = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile).Split('\n');
-                        colours = new string[25];
-                        for(int i = 0; i < 25; i++)
+                        colours = new string[27];
+                        for(int i = 0; i < 27; i++)
                         {
                             colours[i] = "\x1b[" + theme[i] + "m";
                         }
@@ -767,6 +777,7 @@ namespace qse
                 }
                 HandleRC(line, column, scroll, hscroll, file, false, out line, out column, out scroll, out hscroll, out file, out filelenghts);
                 run = true;
+                
             }
         }
         
@@ -1027,8 +1038,7 @@ namespace qse
             }
             
             Console.SetCursorPosition(0, 0);
-            Console.BackgroundColor = ConsoleColor.Gray;
-            Console.ForegroundColor = ConsoleColor.Black;
+            Console.Write(colours[25]+colours[26]);
             Console.Write(" QSE");
             for (int i = 0; i < left-(4+filename.Length); i++)
                 Console.Write(" ");
@@ -1405,9 +1415,9 @@ namespace qse
                 {
                     Console.CursorLeft=pfx;
                     if(i != indx)
-                        Console.Write(bg+"\x1b[90m [ ] "+ array[i] + "\n");
+                        Console.Write(bg+"\x1b[0;90m [ ] "+ array[i] + "\n");
                     if(i == indx)
-                        Console.Write(bg+"\x1b[1;90m [*] \x1b[0m\x1b[1;30m" + array[i] + "\n");
+                        Console.Write(bg+"\x1b[1;37m [*] \x1b[0m\x1b[1;37m" + array[i] + "\n");
                     Console.CursorLeft=pfx;
                     Console.Write("\x1b[0m");
                 }
@@ -1494,7 +1504,7 @@ namespace qse
             }
             if (!File.Exists(homeDirectory + "/.qse/themes/theme"))
             {
-                File.WriteAllText(homeDirectory + "/.qse/themes/theme", "38;2;080;080;080\n38;2;150;025;075\n38;2;025;150;100\n38;2;175;175;025\n38;2;075;050;175\n38;2;125;050;125\n38;2;050;125;125\n38;2;125;125;150\n38;2;100;100;100\n38;2;200;075;125\n38;2;075;200;150\n38;2;225;225;075\n38;2;125;100;225\n38;2;175;100;175\n38;2;075;175;175\n38;2;175;175;200\n38;2;115;115;150\n38;2;150;115;150\n38;2;175;050;075\n38;2;050;175;100\n38;2;175;175;025\n48;2;000;000;020\n48;2;000;000;050\n38;2;025;025;075\n38;2;075;075;150\n");
+                File.WriteAllText(homeDirectory + "/.qse/themes/theme", "38;2;080;080;080\n38;2;150;025;075\n38;2;025;150;100\n38;2;175;175;025\n38;2;075;050;175\n38;2;125;050;125\n38;2;050;125;125\n38;2;125;125;150\n38;2;100;100;100\n38;2;200;075;125\n38;2;075;200;150\n38;2;225;225;075\n38;2;125;100;225\n38;2;175;100;175\n38;2;075;175;175\n38;2;175;175;200\n38;2;115;115;150\n38;2;200;100;200\n38;2;175;050;075\n38;2;050;175;100\n48;2;175;175;025\n48;2;000;000;020\n48;2;000;000;050\n38;2;025;025;075\n38;2;075;075;150\n");
                 r=false;
             }
             

@@ -91,11 +91,17 @@ namespace qse
             string term = settings[19];
             string tflags = settings[20];
             string tcommand = settings[21];
+            bool code = false;
             
-            if (settings[18] == "1")
+            if (settings[18][0] == '1')
             {
                 tcommand = filename + tcommand;
             }
+            if (settings[18][1] == '1')
+            {
+                code = true;
+            }
+            
             
             string themefile = "theme";
             string[] theme = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile).Split('\n');
@@ -234,6 +240,8 @@ namespace qse
                             {
                                 tab++;
                             }
+                            if(file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll] != ';' && code)
+                                tab=tab+4;
                             
                             file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, '\n');
                                                         
@@ -327,6 +335,7 @@ namespace qse
                         string dfromf = "";
                         do
                         {
+                            dfromf = "";
                             Console.SetCursorPosition(0, top - 1);
                             Console.Write(colours[25]+colours[26]);//change to 27 and 28
                             Console.Write("enter filepath: ");
@@ -428,6 +437,11 @@ namespace qse
                                         if (settings[18] == "1")
                                         {
                                             tcommand = filename + tcommand;
+                                        }
+                                        code = false;
+                                        if (settings[18][1] == '1')
+                                        {
+                                            code = true;
                                         }
                                     }
                                     break;

@@ -93,7 +93,7 @@ namespace qse
             string tcommand = settings[21];
             bool code = false;
             
-            if (settings[18][0] == '1')
+            if (settings[18][0] != '0')
             {
                 tcommand = filename + tcommand;
             }
@@ -101,7 +101,6 @@ namespace qse
             {
                 code = true;
             }
-            
             
             string themefile = "theme";
             string[] theme = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile).Split('\n');
@@ -245,7 +244,7 @@ namespace qse
                             {
                                 tab++;
                             }
-                            if(file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll] != ';' && code)
+                            if (filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll > 0) if(file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll] != ';' && file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll] != '}' && code)
                                 tab=tab+4;
                             
                             file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, '\n');
@@ -439,7 +438,7 @@ namespace qse
                                         tflags = settings[20];
                                         tcommand = settings[21];
                                         
-                                        if (settings[18] == "1")
+                                        if (settings[18][0] != '0')
                                         {
                                             tcommand = filename + tcommand;
                                         }
@@ -480,7 +479,7 @@ namespace qse
                         tflags = settings[20];
                         tcommand = settings[21];
                         
-                        if (settings[18] == "1")
+                        if (settings[18][0] != '0')
                         {
                             tcommand = filename + tcommand;
                         }
@@ -488,7 +487,7 @@ namespace qse
                         ProcessStartInfo psi = new ProcessStartInfo
                         {
                             FileName = term,
-                            Arguments = tflags + " " + tcommand,
+                            Arguments = tflags + " " + tcommand + " && sleep 10",
                             UseShellExecute = false
                         };
                         Console.ResetColor();

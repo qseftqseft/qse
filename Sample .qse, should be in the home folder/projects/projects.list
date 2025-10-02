@@ -1,3 +1,4 @@
 qse program /home/qseft/Documents/GitHub/qse/qse/Program.cs test /home/qseft/test
-test testfile /home/qseft/test
+test testfile /home/qseft/test helloWorld /home/qseft/test0 hellworld /home/qseft/test0 Hell /home/qseft/hell
 PR current /home/qseft/Documents/GitHub/PR1_2024_ULRICH/2.ročník/ConsoleAppEins/Program.cs
+sug program /home/qseft/Documents/GitHub/suggestsion-engine/suggestsion-engine/Program.cs

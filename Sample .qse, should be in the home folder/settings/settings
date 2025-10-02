@@ -16,7 +16,9 @@ usingÆargsÆcase
 Console
 
 "
-0
-st
--f "monospace:size=18" -e
-bash -c "pushd /home/qseft/Documents/GitHub/qse && dotnet build && /home/qseft/Documents/GitHub/qse/qse/bin/Debug/net9.0/qse; popd; exec bash"
+111
+/usr/bin/st
+ -f "monospace:size=18" -e /usr/bin/bash -c "/home/qseft/.dotnet/dotnet run --project $(dirname '
+'); exec /usr/bin/bash"
+
+

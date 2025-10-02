@@ -1,6 +1,20 @@
+rrrrQSE - qseft's simple editor - the C# console-based text editor
+Copyright (C) 2025 Václav Ulrich
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 Welcome to QSE, here's a list of basic shortcuts:
-
 
 CTRL shortcuts
     CTRL+L/R arrow -> jump to next thing
@@ -12,6 +26,7 @@ CTRL shortcuts
     CTRL+SHIFT+U/D arrow -> fast scrolling
     CTRL+SHIFT+R arrow -> jump to end of line
     CTRL+SHIFT+L arrow -> jump to start of line
+
 
 ALT shortcuts
     ALT+M -> scroll right
@@ -26,7 +41,6 @@ ALT shortcuts
 
 Other shortcuts
     Page Up/Down -> scrolls a page (surprisingly)
-
 
 Be sure to check out the wiki
 qseftweb.wz.cz/qse/wiki

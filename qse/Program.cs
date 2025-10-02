@@ -131,6 +131,7 @@ namespace qse
             string currentproject = projects[0][0];
             int currentprojectindx = 0;
             
+            bool iterate = true;
             
             while (true)
             {
@@ -145,17 +146,6 @@ namespace qse
                 
                 while (run)
                 {
-                    if(left != Console.WindowWidth - 1)
-                    {
-                        Console.Clear();
-                        left = Console.WindowWidth - 1;
-                    }
-                    if(top != Console.WindowHeight - 2)
-                    {
-                        Console.Clear();
-                        top = Console.WindowHeight - 2;
-                    }
-                    
                     bool r = false;
                     
                     write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, marked, mark, colours);
@@ -177,11 +167,26 @@ namespace qse
                         }
                     };
                     
-                    if(!Console.KeyAvailable)
+                    while(!Console.KeyAvailable)
                     {
-                        System.Threading.Thread.Sleep(16);
-                        continue;
+                        if(left != Console.WindowWidth - 1)
+                        {
+                            left = Console.WindowWidth - 1;
+                            iterate = true;
+                            break;
+                        }
+                        if(top != Console.WindowHeight - 2)
+                        {
+                            top = Console.WindowHeight - 2;
+                            iterate = true;
+                            break;
+                        }
                     }
+                    if(iterate){
+                        iterate = false;
+                        continue;}
+                    
+                    
                     keyInfo1 = Console.ReadKey(true);
                     
                                         

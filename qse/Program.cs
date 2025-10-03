@@ -244,7 +244,7 @@ namespace qse
                             {
                                 tab++;
                             }
-                            if (filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll > 0) if(file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll] != ';' && file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll] != '}' && code)
+                            if (filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll > 0) if(!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll]) && code)
                                 tab=tab+4;
                             
                             file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, '\n');

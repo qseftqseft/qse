@@ -102,10 +102,21 @@ namespace qse
                 code = true;
             }
             
+            bool dosug = false;
+            string sugfile = "";
+            string[] match = [""];
+            if(filename.Split(Path.DirectorySeparatorChar)[filename.Split(Path.DirectorySeparatorChar).Length-1].Contains('.'))
+            {
+                if(File.Exists(homeDirectory + "/.qse/suggestsions/"+filename.Split(Path.DirectorySeparatorChar)[filename.Split(Path.DirectorySeparatorChar).Length-1].Split('.')[filename.Split(Path.DirectorySeparatorChar)[filename.Split(Path.DirectorySeparatorChar).Length-1].Split('.').Length-1]))
+                    sugfile = "."+filename.Split(Path.DirectorySeparatorChar)[filename.Split(Path.DirectorySeparatorChar).Length-1].Split('.')[filename.Split(Path.DirectorySeparatorChar)[filename.Split(Path.DirectorySeparatorChar).Length-1].Split('.').Length-1];
+                    match = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "suggestsions" + Path.DirectorySeparatorChar + sugfile).Split('\n');
+                    dosug = true;
+            }
+            
             string themefile = "theme";
             string[] theme = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile).Split('\n');
-            string[] colours = new string[27];
-            for(int i = 0; i < 27; i++)
+            string[] colours = new string[29];
+            for(int i = 0; i < 29; i++)
             {
                 colours[i] = "\x1b[" + theme[i] + "m";
             }
@@ -132,6 +143,9 @@ namespace qse
             
             bool iterate = true;
             
+            string prevstr = "";
+            string nowstr = "";
+            
             while (true)
             {
                 ConsoleKeyInfo keyInfo1 = new ConsoleKeyInfo('\u001b', ConsoleKey.Escape, shift: false, alt: false,
@@ -148,8 +162,38 @@ namespace qse
                     bool r = false;
                     
                     write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, marked, mark, colours);
-                
+                    
+                    int iindx = 0;
+                    prevstr = "";
+                    nowstr = "";
+                    do
+                    {
+                        iindx++;
+                        if(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll-iindx < 0)
+                            break;
+                        if(ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll-iindx]))
+                            break;
+                        nowstr = file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll-iindx] + nowstr;
+                    }while(true);
+                    
+                    do
+                    {
+                        iindx++;
+                        if(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll-iindx < 0)
+                            break;
+                        if(ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll-iindx]))
+                            break;
+                        prevstr = file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll-iindx] + prevstr;
+                    }while(true);
+                    
+                    if(dosug)
+                    {
+                        Console.SetCursorPosition(column, line);
+                        ArrayBlackBox(sug(prevstr, nowstr, match), colours[27]+colours[28], colours[21], nowstr.Length);
+                    }
+                    
                     Console.SetCursorPosition(column, line);
+                    
                     
                     Console.CancelKeyPress += (sender, e) => 
                     {
@@ -271,9 +315,11 @@ namespace qse
                             scroll = scroll + top - (top / 5);
                             break;
                         default:
-                            file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll,
-                                keyInfo1.KeyChar);
-                            column++;
+                            if (!char.IsControl(keyInfo1.KeyChar) && keyInfo1.KeyChar != '\0')
+                            {
+                                file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll,keyInfo1.KeyChar);
+                                column++;
+                            }
                             break;
                     }
                     
@@ -365,6 +411,19 @@ namespace qse
                         
                         
                         file = OpenFile(filename, out originalfile);
+                        
+                        dosug = false;
+                        sugfile = "";
+                        match = [""];
+                        if(filename.Split(Path.DirectorySeparatorChar)[filename.Split(Path.DirectorySeparatorChar).Length-1].Contains('.'))
+                        {
+                            if(File.Exists(homeDirectory + "/.qse/suggestsions/"+Path.GetExtension(filename)))
+                                
+                                sugfile = Path.GetExtension(filename);
+                                
+                                match = File.ReadAllText("/home/qseft/.qse/suggestions/" + Path.GetExtension(filename)).Split('\n');
+                                dosug = true;
+                        }
                     }
                     
                     if (keyInfo1.Key == ConsoleKey.C)
@@ -582,6 +641,18 @@ namespace qse
                                 {
                                     file.Add(c);
                                 }
+                                dosug = false;
+                                sugfile = "";
+                                match = [""];
+                                if(filename.Split(Path.DirectorySeparatorChar)[filename.Split(Path.DirectorySeparatorChar).Length-1].Contains('.'))
+                                {
+                                    if(File.Exists(homeDirectory + "/.qse/suggestsions/"+Path.GetExtension(filename)))
+                                        
+                                        sugfile = Path.GetExtension(filename);
+                                
+                                        match = File.ReadAllText("/home/qseft/.qse/suggestions/" + Path.GetExtension(filename)).Split('\n');
+                                        dosug = true;
+                                }
                             }
                             else
                             {
@@ -783,14 +854,12 @@ namespace qse
                         hscroll = 0;
                     }
                     else if (keyInfo1.Key == ConsoleKey.UpArrow)
-                    {
-                        scroll = scroll - 4;
-                        if(scroll < 0) scroll = 0;
+                    {                        
+                        if(scroll + 4 > 0) scroll = scroll - 4;
                     }
                     else if (keyInfo1.Key == ConsoleKey.DownArrow)
                     {
-                        scroll = scroll + 4;
-                        if(scroll > filelenghts.Count - top - 1 && filelenghts.Count > top) scroll = filelenghts.Count - top - 1;
+                        if (scroll - 4 < filelenghts.Count - top - 1) scroll = scroll + 4;
                     }
                 }
                 HandleRC(line, column, scroll, hscroll, file, false, out line, out column, out scroll, out hscroll, out file, out filelenghts);
@@ -910,7 +979,7 @@ namespace qse
             
             Console.SetOut(stringWriter);
             
-            int neededoutputlines = filelenghts.Count - 1;
+            int neededoutputlines = filelenghts.Count - 1 - scroll;
             if (neededoutputlines > top) neededoutputlines = top;
             
             for (int i = scroll; i < neededoutputlines+scroll - 1; i++)
@@ -1087,7 +1156,7 @@ namespace qse
                 if(file[i] == '/' && file[i + 1] == '/' && !bstrng) comment = true;
                 if (file[i] == '\n') comment = false;
                 if(file[i] == strng && !(comment || mlcomment)) bstrng = !bstrng;
-                if (i > 0){if((file[i-1] == '\\' || file[i-1] == '\'') && file[i] == strng) bstrng = false;}
+                if (i > 0){if((file[i-1] == '\\' || file[i-1] == '\'') && file[i] == strng) bstrng = !bstrng;}
                 
                 if (bstrng)
                     filespec[i] = 2;
@@ -1481,7 +1550,110 @@ namespace qse
             return indx;
         }
         
+        public static void ArrayBlackBox(string[] arr,string bgcol, string defcol, int offset)
+        {
+            int cl = Console.CursorLeft-offset;
+            int ct = Console.CursorTop;
+            for (int i = 0; i < arr.Length; i++)
+                if(arr[i].Length > Console.WindowWidth-cl) arr[i] = arr[i].Substring(0, Console.WindowWidth-cl);
+            if(arr.Length > 4) arr = [arr[0], arr[1], arr[2], arr[3]];
+            int width = arr.Aggregate(string.Empty, (seed, f) => (f == null ? 0 : f.Length) > seed.Length ? f : seed).Length;
+            int height = arr.Length;
+            
+            
+            
+            
+            for (int i = 0; i < height; i++)
+            {
+                Console.CursorLeft = cl+width;
+                
+                Console.CursorTop++;
+                Console.Write(defcol);
+                
+                Console.CursorLeft = cl;
+                
+                for (int j = 0; j < width; j++)
+                {
+                    Console.Write(bgcol+" ");
+                }
+                
+                Console.CursorLeft = cl;
+                
+                Console.Write(arr[i]);
+                
+            }
+            Console.Write(defcol);
+        }
         
+        
+        public static string[] sug(string prevstr, string str, string[] match)
+        {
+            List<string> sugg = new List<string>();
+            List<string> sugtwo = new List<string>();
+            List<string> classes = new List<string>();
+            List<string> sugfour = new List<string>();
+            List<string> sugthree = new List<string>();
+            List<string> classsug = new List<string>();
+            
+            for(int i = 0; i < match.Length; i++)
+            {
+                if(match[i].Contains('-'))
+                {
+                    string[] singleclass = match[i].Split('-');
+                    classes.Add(singleclass[0]);
+                    for (int j = 1; j < singleclass.Length; j++)
+                    {
+                        classsug.Add(singleclass[j] + "::" + singleclass[0]);
+                    }
+                }
+            }
+            
+            if(classes.Contains(prevstr) || str.Length > 0)
+            {
+            
+                for(int i = 0; i < match.Length; i++)
+                {
+                    if(match[i].Contains('-'))
+                    {
+                        string[] arr = match[i].Split('-');
+                        if (prevstr == arr[0])
+                        {
+                            for(int j = 1; j < arr.Length; j++)
+                            {
+                                if(StartsWith(arr[j], str))      sugg.Add(arr[j]);
+                                else if(arr[j].Contains(str))    sugtwo.Add(" "+arr[j]);
+                            }
+                            break;
+                        }
+                    }
+                    else if (!classes.Contains(prevstr))
+                    {
+                        if(StartsWith(match[i], str))      sugg.Add(match[i]);
+                        else if(match[i].Contains(str))    sugtwo.Add(" "+match[i]);
+                    }
+                }
+                for(int i = 0; i < classsug.Count; i++)
+                {
+                    if(StartsWith(classsug[i], str))      sugthree.Add(classsug[i]);
+                    else if(classsug[i].Contains(str))    sugfour.Add(" "+classsug[i]);
+                }
+                return sugg.ToArray().Concat(sugtwo.ToArray()).ToArray().Concat(sugthree.ToArray()).ToArray().Concat(sugfour.ToArray()).ToArray();
+            
+            }
+            return [];
+        }
+        public static bool StartsWith(string what, string s)
+        {
+            if(what.Length >= s.Length)
+            {
+                for(int i = 0; i < s.Length; i++)
+                {
+                    if(s[i] != what[i]) return false;
+                }
+                return true;
+            }
+            return false;
+        }
         
         public static List<char> OpenFile(string filename, out string originalfile)
         {
@@ -1548,7 +1720,11 @@ namespace qse
                 File.WriteAllText(homeDirectory + "/.qse/open/file","QSE - qseft's simple editor - the C# console-based text editor\nCopyright (C) 2025 Václav Ulrich\n\n    This program is free software: you can redistribute it and/or modify\n    it under the terms of the GNU General Public License as published by\n    the Free Software Foundation, either version 3 of the License, or\n    (at your option) any later version.\n\n    This program is distributed in the hope that it will be useful,\n    but WITHOUT ANY WARRANTY; without even the implied warranty of\n    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n    GNU General Public License for more details.\n\n    You should have received a copy of the GNU General Public License\n    along with this program.  If not, see <https://www.gnu.org/licenses/>.\n\nWelcome to QSE, here's a list of basic shortcuts:\n\nCTRL shortcuts\n    CTRL+L/R arrow -> jump to next thing\n    CTRL+U/D arrow -> scrolling\n    CTRL+V -> paste\n    CTRT+C -> copy\n    CTRL+X -> cut\n    CTRL+BACKSPACE/DELETE -> remove next thing\n    CTRL+SHIFT+U/D arrow -> fast scrolling\n    CTRL+SHIFT+R arrow -> jump to end of line\n    CTRL+SHIFT+L arrow -> jump to start of line\n\n\nALT shortcuts\n    ALT+M -> scroll right\n    ALT+N -> scroll left\n    ALT+S -> save file\n    ALT+G -> go to line\n    ALT+O -> open file\n    ALT+A -> set mark (for selecting text to copy/cut)\n    ALT+C -> Command mode\n    ALT+R -> Run\n    ALT+Q -> Quit (must confirm with ENTER)\n\nOther shortcuts\n    Page Up/Down -> scrolls a page (surprisingly)\n\nBe sure to check out the wiki\nqseftweb.wz.cz/qse/wiki\n\n");
                 r=false;
             }
-            
+            if (!Directory.Exists(homeDirectory + "/.qse/suggestions/"))
+            {
+                Directory.CreateDirectory(homeDirectory + "/.qse/suggestions/");
+                r=false;
+            }
             return r;
         }
     }

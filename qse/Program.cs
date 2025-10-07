@@ -164,6 +164,8 @@ namespace qse
             string prevstr = "";
             string nowstr = "";
             string[] suggest = [""];
+            int sugsc = 0;
+            string prevnowstr = "";
             
             while (true)
             {
@@ -211,21 +213,31 @@ namespace qse
                     if(dosug)
                     {
                         suggest = sug(prevstr, nowstr, match);
+                        if(prevnowstr != nowstr)
+                        {
+                            sugsc = 0;
+                        }
                     }
                     
                     
                     write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, marked, mark, colours);
                     
                     
+                    
                     if(dosug)
                     {
+                        if(sugsc > suggest.Length-6)
+                            sugsc = suggest.Length-6;
+                        if(sugsc < 0)
+                            sugsc = 0;
                         Console.SetCursorPosition(column, line);
-                        ArrayBlackBox(suggest, colours[27]+colours[28], colours[21], nowstr.Length);
+                        ArrayBlackBox(suggest, colours[27]+colours[28], colours[21], nowstr.Length, sugsc);
+                        prevnowstr = nowstr;
                     }
                     
                     Console.SetCursorPosition(column, line);
                     
-                    //debug here
+                    //
                     //debug(swone.ElapsedMilliseconds + " " + swtwo.ElapsedMilliseconds + " " + swthree.ElapsedMilliseconds);                    
                     
                     Console.CancelKeyPress += (sender, e) => 
@@ -346,6 +358,12 @@ namespace qse
                             break;
                         case ConsoleKey.PageDown:
                             scroll = scroll + top - (top / 5);
+                            break;
+                        case ConsoleKey.Home:
+                            if(sugsc > 0) sugsc--;
+                            break;
+                        case ConsoleKey.End:
+                            if(sugsc < suggest.Length - 6) sugsc++;
                             break;
                         default:
                             if (!char.IsControl(keyInfo1.KeyChar) && keyInfo1.KeyChar != '\0')
@@ -743,7 +761,7 @@ namespace qse
                             column--;
                             hscroll++;
                         }
-                        if (column < 0)
+                        if (column < 0 && line + scroll > 1)
                         {
                             hscroll = 0;
                             line--;
@@ -1210,7 +1228,7 @@ namespace qse
                 line = 1;
                 scroll--;
             }
-            
+             
             if (column < 0 && hscroll == 0 && line + scroll >= 2)
             {
                 line--;
@@ -1568,10 +1586,11 @@ namespace qse
             return indx;
         }
         
-        public static void ArrayBlackBox(string[] arr,string bgcol, string defcol, int offset)
+        public static void ArrayBlackBox(string[] arr,string bgcol, string defcol, int offset, int start)
         {
             int cl = Console.CursorLeft-offset;
             int ct = Console.CursorTop;
+            arr = arr.Skip(start).ToArray();
             for (int i = 0; i < arr.Length; i++)
                 if(arr[i].Length > Console.WindowWidth-cl) arr[i] = arr[i].Substring(0, Console.WindowWidth-cl);
             if(arr.Length > 6) arr = [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5]];

@@ -1,0 +1,312 @@
+Æ
+accent-color (color) UI theme color
+align-content (start/end/center) Align flex lines
+align-items (start/end/center) Align items in container
+align-self (start/end/center) Align single item
+all (initial/inherit/unset) Reset all styles
+animation (name/time/curve) Animate element
+animation-delay (s/ms) Delay animation start
+animation-direction (normal/reverse) Animation flow
+animation-duration (s/ms) Animation length
+animation-fill-mode (none/forwards) Style before/after
+animation-iteration-count (number/infinite) Repeat count
+animation-name (string) Animation ID
+animation-play-state (running/paused) Play or pause
+animation-timing-function (ease/linear) Speed curve
+aspect-ratio (number) Width/height ratio
+backdrop-filter (blur/brightness) Background effects
+backface-visibility (visible/hidden) Show back face
+background (color/url/position) Background shorthand
+background-attachment (scroll/fixed) Scroll behavior
+background-blend-mode (multiply/screen) Blend layers
+background-clip (border-box) Clip area
+background-color (color) Background fill
+background-image (url) Background image
+background-origin (padding-box) Image origin
+background-position (px/%/top/left) Image position
+background-position-x (px/%) X-axis position
+background-position-y (px/%) Y-axis position
+background-repeat (repeat/no-repeat) Repeat image
+background-size (px/%/cover) Image size
+block-size (px/em/%) Logical height
+border (px/style/color) Border shorthand
+border-block (px/style/color) Logical border
+border-block-color (color) Block border color
+border-block-end (px/style/color) End block border
+border-block-end-color (color) End block color
+border-block-end-style (solid/dashed) End block style
+border-block-end-width (px/em) End block width
+border-block-start (px/style/color) Start block border
+border-block-start-color (color) Start block color
+border-block-start-style (solid/dashed) Start block style
+border-block-start-width (px/em) Start block width
+border-block-style (solid/dashed) Block border style
+border-block-width (px/em) Block border width
+border-bottom (px/style/color) Bottom border
+border-bottom-color (color) Bottom border color
+border-bottom-left-radius (px/%) Round corner
+border-bottom-right-radius (px/%) Round corner
+border-bottom-style (solid/dashed) Bottom border style
+border-bottom-width (px/em) Bottom border width
+border-collapse (collapse/separate) Table borders
+border-color (color) Border color
+border-end-end-radius (px/%) End-end corner radius
+border-end-start-radius (px/%) End-start corner radius
+border-image (url/slice/repeat) Image border
+border-image-outset (px/%) Extend image border
+border-image-repeat (repeat/round) Repeat image border
+border-image-slice (number/%) Slice image border
+border-image-source (url) Border image source
+border-image-width (px/%) Image border width
+border-inline (px/style/color) Inline border
+border-inline-color (color) Inline border color
+border-inline-end (px/style/color) End inline border
+border-inline-end-color (color) End inline color
+border-inline-end-style (solid/dashed) End inline style
+border-inline-end-width (px/em) End inline width
+border-inline-start (px/style/color) Start inline border
+border-inline-start-color (color) Start inline color
+border-inline-start-style (solid/dashed) Start inline style
+border-inline-start-width (px/em) Start inline width
+border-inline-style (solid/dashed) Inline border style
+border-inline-width (px/em) Inline border width
+border-left (px/style/color) Left border
+border-left-color (color) Left border color
+border-left-style (solid/dashed) Left border style
+border-left-width (px/em) Left border width
+border-radius (px/%) Round corners
+border-right (px/style/color) Right border
+border-right-color (color) Right border color
+border-right-style (solid/dashed) Right border style
+border-right-width (px/em) Right border width
+border-spacing (px/em) Table cell gap
+border-start-end-radius (px/%) Start-end corner radius
+border-start-start-radius (px/%) Start-start corner radius
+border-style (solid/dashed/none) Border look
+border-top (px/style/color) Top border
+border-top-color (color) Top border color
+border-top-left-radius (px/%) Round corner
+border-top-right-radius (px/%) Round corner
+border-top-style (solid/dashed) Top border style
+border-top-width (px/em) Top border width
+border-width (px/em) Border thickness
+bottom (px/%) Position from bottom
+box-decoration-break (slice/clone) Break decoration
+box-reflect (below/left/right) Mirror element
+box-shadow (offset/color/blur) Shadow effect
+box-sizing (content-box/border-box) Size model
+break-after (auto/always) Page break
+break-before (auto/always) Page break
+break-inside (avoid/auto) Prevent break
+caption-side (top/bottom) Table caption
+caret-color (color) Cursor color
+clear (left/right/both) Clear floats
+clip (rect/auto) Clip element
+clip-path (shape/url) Clip shape
+color (color) Text color
+color-scheme (light/dark) Theme preference
+column-count (number) Column number
+column-fill (auto/balance) Fill columns
+column-gap (px/em/%) Column spacing
+column-rule (px/style/color) Column divider
+column-rule-color (color) Column line color
+column-rule-style (solid/dashed) Column line style
+column-rule-width (px/em) Column line width
+column-span (all/none) Span columns
+column-width (px/em/%) Column size
+columns (width/count) Columns shorthand
+content (text/url/attr) Generated content
+counter-increment (name/number) Increase counter
+counter-reset (name/number) Reset counter
+counter-set (name/number) Set counter value
+cursor (pointer/move/text) Mouse style
+direction (ltr/rtl) Text direction
+display (block/flex/grid) Layout type
+empty-cells (show/hide) Table cell visibility
+filter (blur/brightness) Visual effects
+flex (grow/shrink/basis) Flex shorthand
+flex-basis (px/em/%) Initial size
+flex-direction (row/column) Item flow
+flex-flow (direction/wrap) Flex shorthand
+flex-grow (number) Grow ratio
+flex-shrink (number) Shrink ratio
+flex-wrap (wrap/nowrap) Wrap items
+float (left/right/none) Float element
+font (style/weight/size) Font shorthand
+font-family (name) Font type
+font-feature-settings (string) Font features
+font-kerning (auto/normal/none) Letter spacing
+font-language-override (string) Language glyphs
+font-size (px/em/%) Text size
+font-size-adjust (number) Adjust fallback size
+font-stretch (normal/condensed) Stretch font
+font-style (normal/italic) Text style
+font-synthesis (none/style/weight) Synthesized styles
+font-variant (normal/small-caps) Font variant
+font-variant-alternates (string) Alternate glyphs
+font-variant-caps (normal/small-caps) Capital variants
+font-variant-east-asian (normal/ruby) East Asian glyphs
+font-variant-ligatures (none/common) Ligature control
+font-variant-numeric (ordinal/lining) Numeric glyphs
+font-variant-position (normal/sub/super) Position glyphs
+font-weight (number/bold) Text thickness
+gap (px/em/%) Space between items
+grid (template/area/auto) Grid shorthand
+grid-area (name/start/end) Grid item area
+grid-auto-columns (px/em/%) Auto column size
+grid-auto-flow (row/column) Auto item flow
+grid-auto-rows (px/em/%) Auto row size
+grid-column (start/end) Grid column span
+grid-column-end (number) Grid column end
+grid-column-start (number) Grid column start
+grid-row (start/end) Grid row span
+grid-row-end (number) Grid row end
+grid-row-start (number) Grid row start
+grid-template (rows/columns/areas) Grid template
+grid-template-areas (string) Named grid areas
+grid-template-columns (px/em/%) Column template
+grid-template-rows (px/em/%) Row template
+height (px/em/%) Element height
+justify-content (start/end/center) Align items
+justify-items (start/end/center) Align grid items
+justify-self (start/end/center) Align self in grid
+left (px/%) Position from left
+letter-spacing (px/em) Space between letters
+line-height (number/%) Line spacing
+list-style (type/position/image) List bullets
+margin (px/em/%) Outer spacing
+max-height (px/em/%) Height limit
+max-width (px/em/%) Width limit
+max-block-size (px/em/%) Max block size
+max-inline-size (px/em/%) Max inline size
+min-height (px/em/%) Minimum height
+min-width (px/em/%) Minimum width
+min-block-size (px/em/%) Min block size
+min-inline-size (px/em/%) Min inline size
+mix-blend-mode (normal/multiply/screen) Blend content
+object-fit (fill/contain/cover) Fit replaced element
+object-position (px/%/top/left) Position replaced element
+offset (path/angle/px) Motion path shorthand
+offset-anchor (px/%/keywords) Anchor point
+offset-distance (px/%/em) Distance along path
+offset-path (path/url/none) Motion path
+offset-position (px/%/keywords) Initial offset
+offset-rotate (angle/auto) Rotation along path
+opacity (0–1) Transparency level
+order (number) Flex/grid order
+orphans (number) Min lines at bottom
+outline (px/style/color) Outline shorthand
+outline-color (color) Outline color
+outline-offset (px/em) Outline distance
+outline-style (solid/dashed/none) Outline style
+outline-width (px/em) Outline thickness
+overflow (visible/hidden/scroll) Overflow behavior
+overflow-anchor (auto/none) Scroll anchoring
+overflow-wrap (normal/break-word) Word breaking
+overflow-x (visible/hidden/scroll) Horizontal overflow
+overflow-y (visible/hidden/scroll) Vertical overflow
+overscroll-behavior (auto/contain/none) Scroll chaining
+overscroll-behavior-x (auto/contain/none) X scroll chaining
+overscroll-behavior-y (auto/contain/none) Y scroll chaining
+overscroll-behavior-block (auto/contain/none) Block scroll chaining
+overscroll-behavior-inline (auto/contain/none) Inline scroll chaining
+padding (px/em/%) Inner spacing
+padding-block (px/em/%) Block padding
+padding-block-start (px/em/%) Start block padding
+padding-block-end (px/em/%) End block padding
+padding-inline (px/em/%) Inline padding
+padding-inline-start (px/em/%) Start inline padding
+padding-inline-end (px/em/%) End inline padding
+padding-top (px/em/%) Top padding
+padding-right (px/em/%) Right padding
+padding-bottom (px/em/%) Bottom padding
+padding-left (px/em/%) Left padding
+page-break-after (auto/always/avoid) Break after page
+page-break-before (auto/always/avoid) Break before page
+page-break-inside (auto/avoid) Break inside page
+paint-order (normal/fill/stroke) Paint order
+perspective (px/none) 3D perspective
+perspective-origin (px/%/keywords) Perspective origin
+place-content (align/justify) Align grid/flex content
+place-items (align/justify) Align grid/flex items
+place-self (align/justify) Align single item
+pointer-events (auto/none) Mouse interaction
+position (static/relative/absolute/fixed/sticky) Positioning
+quotes (string/none) Quote marks
+resize (none/both/horizontal/vertical) Resizing
+right (px/%) Position from right
+rotate (angle) Rotate element
+row-gap (px/em/%) Row spacing
+scale (number/%) Scale element
+scroll-behavior (auto/smooth) Scroll animation
+scroll-margin (px/em/%) Snap margin
+scroll-margin-block (px/em/%) Block snap margin
+scroll-margin-block-start (px/em/%) Start block snap margin
+scroll-margin-block-end (px/em/%) End block snap margin
+scroll-margin-inline (px/em/%) Inline snap margin
+scroll-margin-inline-start (px/em/%) Start inline snap margin
+scroll-margin-inline-end (px/em/%) End inline snap margin
+scroll-margin-top (px/em/%) Top snap margin
+scroll-margin-right (px/em/%) Right snap margin
+scroll-margin-bottom (px/em/%) Bottom snap margin
+scroll-margin-left (px/em/%) Left snap margin
+scroll-padding (px/em/%) Snap padding
+scroll-padding-block (px/em/%) Block snap padding
+scroll-padding-block-start (px/em/%) Start block snap padding
+scroll-padding-block-end (px/em/%) End block snap padding
+scroll-padding-inline (px/em/%) Inline snap padding
+scroll-padding-inline-start (px/em/%) Start inline snap padding
+scroll-padding-inline-end (px/em/%) End inline snap padding
+scroll-padding-top (px/em/%) Top snap padding
+scroll-padding-right (px/em/%) Right snap padding
+scroll-padding-bottom (px/em/%) Bottom snap padding
+scroll-padding-left (px/em/%) Left snap padding
+scroll-snap-align (start/end/center) Snap alignment
+scroll-snap-stop (normal/always) Snap stop
+scroll-snap-type (none/x/y/block/inline) Snap type
+scrollbar-color (color color) Scrollbar colors
+shape-outside (circle/ellipse/polygon/url) Float shape
+tab-size (number/px) Tab width
+table-layout (auto/fixed) Table layout
+text-align (left/right/center/justify) Text alignment
+text-align-last (auto/start/end/center/justify) Last line align
+text-combine-upright (none/all) Combine characters
+text-decoration (line/style/color) Decoration shorthand
+text-decoration-color (color) Decoration color
+text-decoration-line (underline/overline/line-through) Decoration line
+text-decoration-style (solid/dashed/wavy) Decoration style
+text-decoration-thickness (px/em/%) Decoration thickness
+text-emphasis (style/color) Emphasis shorthand
+text-emphasis-color (color) Emphasis color
+text-emphasis-position (over/under left/right) Emphasis position
+text-emphasis-style (dot/circle/none) Emphasis style
+text-indent (px/em/%) First line indent
+text-justify (auto/inter-word) Justify method
+text-orientation (mixed/upright/sideways) Text orientation
+text-overflow (clip/ellipsis) Overflow text
+text-shadow (offset/color/blur) Text shadow
+text-transform (uppercase/lowercase/capitalize) Text case
+text-underline-offset (px/em/%) Underline offset
+text-underline-position (auto/under/left/right) Underline position
+top (px/%) Position from top
+transform (rotate/scale/translate/skew) Transform element
+transform-origin (px/%/keywords) Transform origin
+transform-style (flat/preserve-3d) 3D rendering
+transition (property/time/curve) Transition shorthand
+transition-delay (s/ms) Transition delay
+transition-duration (s/ms) Transition length
+transition-property (all/name) Transition property
+transition-timing-function (ease/linear) Transition curve
+translate (px/%/em) Move element
+unicode-bidi (normal/embed/bidi-override) Text direction override
+user-select (auto/none/text/all) Text selection
+vertical-align (baseline/top/middle/bottom) Vertical align
+visibility (visible/hidden/collapse) Visibility
+white-space (normal/nowrap/pre) Whitespace handling
+widows (number) Min lines at top
+width (px/em/%) Element width
+word-break (normal/break-all/keep-all) Word breaking
+word-spacing (px/em/%) Space between words
+word-wrap (normal/break-word) Word wrapping
+writing-mode (horizontal-tb/vertical-rl/vertical-lr) Text flow
+z-index (number/auto) Stack order

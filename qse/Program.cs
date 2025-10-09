@@ -126,9 +126,12 @@ namespace qse
             string[] match = [""];
             if(filename.Split(Path.DirectorySeparatorChar)[filename.Split(Path.DirectorySeparatorChar).Length-1].Contains('.'))
             {
-                if(File.Exists(homeDirectory + "/.qse/suggestsions/"+Path.GetExtension(filename)))
-                    match = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "suggestsions" + Path.DirectorySeparatorChar + Path.GetExtension(filename)).Split('\n');
+                if(File.Exists(homeDirectory + "/.qse/suggestions/"+Path.GetExtension(filename)))
+                {
+                    sugfile = Path.GetExtension(filename);
+                    match = File.ReadAllText("/home/qseft/.qse/suggestions/" + Path.GetExtension(filename)).Split('\n');
                     dosug = true;
+                }
             }
             
             string themefile = "theme";
@@ -469,13 +472,14 @@ namespace qse
                         match = [""];
                         if(filename.Split(Path.DirectorySeparatorChar)[filename.Split(Path.DirectorySeparatorChar).Length-1].Contains('.'))
                         {
-                            if(File.Exists(homeDirectory + "/.qse/suggestsions/"+Path.GetExtension(filename)))
-                                
+                            if(File.Exists(homeDirectory + "/.qse/suggestions/"+Path.GetExtension(filename)))
+                            {
                                 sugfile = Path.GetExtension(filename);
-                                
                                 match = File.ReadAllText("/home/qseft/.qse/suggestions/" + Path.GetExtension(filename)).Split('\n');
                                 dosug = true;
+                            }
                         }
+                        
                     }
                     
                     if (keyInfo1.Key == ConsoleKey.C)
@@ -693,17 +697,18 @@ namespace qse
                                 {
                                     file.Add(c);
                                 }
+                                
                                 dosug = false;
                                 sugfile = "";
                                 match = [""];
                                 if(filename.Split(Path.DirectorySeparatorChar)[filename.Split(Path.DirectorySeparatorChar).Length-1].Contains('.'))
                                 {
-                                    if(File.Exists(homeDirectory + "/.qse/suggestsions/"+Path.GetExtension(filename)))
-                                        
+                                    if(File.Exists(homeDirectory + "/.qse/suggestions/"+Path.GetExtension(filename)))
+                                    {
                                         sugfile = Path.GetExtension(filename);
-                                
                                         match = File.ReadAllText("/home/qseft/.qse/suggestions/" + Path.GetExtension(filename)).Split('\n');
                                         dosug = true;
+                                    }
                                 }
                             }
                             else
@@ -1636,18 +1641,21 @@ namespace qse
         
         public static string[] sug(string prevstr, string str, string[] match)
         {
+            
             List<string> sugg = new List<string>();
             List<string> sugtwo = new List<string>();
             List<string> classes = new List<string>();
             List<string> sugfour = new List<string>();
             List<string> sugthree = new List<string>();
             List<string> classsug = new List<string>();
+            string sep = match[0];
+            match = match.Skip(1).ToArray();
             
             for(int i = 0; i < match.Length; i++)
             {
-                if(match[i].Contains('-'))
+                if(match[i].Contains(sep))
                 {
-                    string[] singleclass = match[i].Split('-');
+                    string[] singleclass = match[i].Split(sep);
                     classes.Add(singleclass[0]);
                     for (int j = 1; j < singleclass.Length; j++)
                     {
@@ -1661,9 +1669,9 @@ namespace qse
             
                 for(int i = 0; i < match.Length; i++)
                 {
-                    if(match[i].Contains('-'))
+                    if(match[i].Contains(sep))
                     {
-                        string[] arr = match[i].Split('-');
+                        string[] arr = match[i].Split(sep);
                         if (prevstr == arr[0])
                         {
                             for(int j = 1; j < arr.Length; j++)

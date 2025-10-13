@@ -55,13 +55,13 @@ namespace qse
                 {
                     filename=Directory.GetCurrentDirectory() + args[0].Substring(1);
                 }
-                else if (args[0][0] == '/')
+                else if (args[0][0] == Path.DirectorySeparatorChar)
                 {
                     filename = args[0];
                 }
                 else
                 {
-                    filename = Directory.GetCurrentDirectory() + "/" + args[0];
+                    filename = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + args[0];
                 }
             }
             
@@ -126,10 +126,10 @@ namespace qse
             string[] match = [""];
             if(filename.Split(Path.DirectorySeparatorChar)[filename.Split(Path.DirectorySeparatorChar).Length-1].Contains('.'))
             {
-                if(File.Exists(homeDirectory + "/.qse/suggestions/"+Path.GetExtension(filename)))
+                if(File.Exists(homeDirectory + Path.DirectorySeparatorChar+".qse"+Path.DirectorySeparatorChar+"suggestions"+Path.DirectorySeparatorChar+Path.GetExtension(filename)))
                 {
                     sugfile = Path.GetExtension(filename);
-                    match = File.ReadAllText("/home/qseft/.qse/suggestions/" + Path.GetExtension(filename)).Split('\n');
+/* end of checks*/                    match = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar+".qse"+Path.DirectorySeparatorChar+"suggestions"+Path.DirectorySeparatorChar+Path.GetExtension(filename)).Split('\n');
                     dosug = true;
                 }
             }
@@ -1100,8 +1100,8 @@ namespace qse
                         }
                 
                         if (comment || mlcomment) { outp = outp + colours[19]; }
-                        else if(filelenghts[i] + indx + i > 0) if(!(comment || mlcomment) && filespec[filelenghts[i] + indx + i - 1] == 2) expression = colours[18] + expression;
-                        else if(filespec[filelenghts[i] + indx + i - 1] != 2) {outp = outp + colour(expression, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, colours);}
+                        else if(filelenghts[i] + indx + i > 0) if(!(comment || mlcomment) && filespec[filelenghts[i] + indx + i - 1 + hscroll] == 2) expression = colours[18] + expression;
+                        else if(filespec[filelenghts[i] + indx + i - 1+ hscroll] != 2) {outp = outp + colour(expression, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, colours);}
                         else outp = outp + colours[19];
                         outp = outp + expression;
                     }
@@ -1128,7 +1128,7 @@ namespace qse
                         }
                 
                         if (comment || mlcomment) { outp = outp + colours[19]; }
-                        else if(filespec[filelenghts[i] + indx + i] != 2 && writeline[indx] != strng) {outp = outp + colours[15];}
+                        else if(filespec[filelenghts[i] + indx + i + hscroll] != 2 && writeline[indx] != strng) {outp = outp + colours[15];}
                         else outp = outp + colours[18];
 
                         outp = outp + writeline[indx];
@@ -1594,37 +1594,40 @@ namespace qse
         public static void ArrayBlackBox(string[] arr,string bgcol, string defcol, int offset, int start)
         {
             int cl = Console.CursorLeft-offset;
-            int ct = Console.CursorTop;
-            arr = arr.Skip(start).ToArray();
-            for (int i = 0; i < arr.Length; i++)
-                if(arr[i].Length > Console.WindowWidth-cl) arr[i] = arr[i].Substring(0, Console.WindowWidth-cl);
-            if(arr.Length > 6) arr = [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5]];
-            int width = arr.Aggregate(string.Empty, (seed, f) => (f == null ? 0 : f.Length) > seed.Length ? f : seed).Length;
-            int height = arr.Length;
-            
-            
-            
-            
-            for (int i = 0; i < height; i++)
+            if(cl >= 0)
             {
-                Console.CursorLeft = cl+width;
+                int ct = Console.CursorTop;
+                arr = arr.Skip(start).ToArray();
+                for (int i = 0; i < arr.Length; i++)
+                    if(arr[i].Length > Console.WindowWidth-cl) arr[i] = arr[i].Substring(0, Console.WindowWidth-cl);
+                if(arr.Length > 6) arr = [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5]];
+                int width = arr.Aggregate(string.Empty, (seed, f) => (f == null ? 0 : f.Length) > seed.Length ? f : seed).Length;
+                int height = arr.Length;
                 
-                Console.CursorTop++;
-                Console.Write(defcol);
                 
-                Console.CursorLeft = cl;
                 
-                for (int j = 0; j < width; j++)
+                
+                for (int i = 0; i < height; i++)
                 {
-                    Console.Write(bgcol+" ");
+                    Console.CursorLeft = cl+width;
+                    
+                    Console.CursorTop++;
+                    Console.Write(defcol);
+                    
+                    Console.CursorLeft = cl;
+                    
+                    for (int j = 0; j < width; j++)
+                    {
+                        Console.Write(bgcol+" ");
+                    }
+                    
+                    Console.CursorLeft = cl;
+                    
+                    Console.Write(arr[i]);
+                    
                 }
-                
-                Console.CursorLeft = cl;
-                
-                Console.Write(arr[i]);
-                
+                Console.Write(defcol);
             }
-            Console.Write(defcol);
         }
         
         public static void debug(string info)

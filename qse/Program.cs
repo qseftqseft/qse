@@ -1098,11 +1098,13 @@ namespace qse
                             chcklne = chcklne + writeline[indx];
                             indx++;
                         }
-                
-                        if (comment || mlcomment) { outp = outp + colours[19]; }
-                        else if(filelenghts[i] + indx + i > 0) if(!(comment || mlcomment) && filespec[filelenghts[i] + indx + i - 1 + hscroll] == 2) expression = colours[18] + expression;
-                        else if(filespec[filelenghts[i] + indx + i - 1+ hscroll] != 2) {outp = outp + colour(expression, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, colours);}
-                        else outp = outp + colours[19];
+                        
+                        try{
+                            if (comment || mlcomment) { outp = outp + colours[19]; }
+                            else if(filelenghts[i] + indx + i > 0) if(!(comment || mlcomment) && filespec[filelenghts[i] + indx + i - 1 + hscroll] == 2) expression = colours[18] + expression;
+                            else if(filespec[filelenghts[i] + indx + i - 1+ hscroll] != 2) {outp = outp + colour(expression, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, colours);}
+                            else outp = outp + colours[19];
+                        }catch(Exception e){}
                         outp = outp + expression;
                     }
                     if (indx < writeline.Length)
@@ -1126,11 +1128,13 @@ namespace qse
                         {
                             mlcomment = false;
                         }
-                
-                        if (comment || mlcomment) { outp = outp + colours[19]; }
-                        else if(filespec[filelenghts[i] + indx + i + hscroll] != 2 && writeline[indx] != strng) {outp = outp + colours[15];}
-                        else outp = outp + colours[18];
-
+                        
+                        try{
+                            if (comment || mlcomment) { outp = outp + colours[19]; }
+                            else if(filespec[filelenghts[i] + indx + i + hscroll] != 2 && writeline[indx] != strng) {outp = outp + colours[15];}
+                            else outp = outp + colours[18];
+                        }catch(Exception e){}
+                        
                         outp = outp + writeline[indx];
                         chcklne = chcklne + writeline[indx];
                 

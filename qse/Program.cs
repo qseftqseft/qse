@@ -88,22 +88,7 @@ namespace qse
             
             char[] ignclr = (settings[0] + "Æ\n").Split('Æ').SelectMany(s => s.ToCharArray()).ToArray();
             
-            string[] black = settings[1].Split('Æ');
-            string[] red = settings[2].Split('Æ');
-            string[] green = settings[3].Split('Æ');
-            string[] yellow = settings[4].Split('Æ');
-            string[] blue = settings[5].Split('Æ');
-            string[] magenta = settings[6].Split('Æ');
-            string[] cyan = settings[7].Split('Æ');
-            string[] white = settings[8].Split('Æ');
-            string[] bblack = settings[9].Split('Æ');
-            string[] bred = settings[10].Split('Æ');
-            string[] bgreen = settings[11].Split('Æ');
-            string[] byellow = settings[12].Split('Æ');
-            string[] bblue = settings[13].Split('Æ');
-            string[] bmagenta = settings[14].Split('Æ');
-            string[] bcyan = settings[15].Split('Æ');
-            string[] bwhite = settings[16].Split('Æ');
+            string[][] efs = [ settings[1].Split('Æ'), settings[2].Split('Æ'), settings[3].Split('Æ'), settings[4].Split('Æ'),  settings[5].Split('Æ'), settings[6].Split('Æ'), settings[7].Split('Æ'), settings[8].Split('Æ'), settings[9].Split('Æ'), settings[10].Split('Æ'), settings[11].Split('Æ'), settings[12].Split('Æ'), settings[13].Split('Æ'), settings[14].Split('Æ'), settings[15].Split('Æ'), settings[16].Split('Æ') ];
             
             char strng = char.Parse(settings[17]);
             
@@ -223,7 +208,7 @@ namespace qse
                     }
                     
                     
-                    write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, marked, mark, colours);
+                    write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, efs,  marked, mark, colours);
                     
                     
                     
@@ -530,22 +515,7 @@ namespace qse
                                         
                                         ignclr = (settings[0] + "Æ\n").Split('Æ').SelectMany(s => s.ToCharArray()).ToArray();
                                         
-                                        black = settings[1].Split('Æ');
-                                        red = settings[2].Split('Æ');
-                                        green = settings[3].Split('Æ');
-                                        yellow = settings[4].Split('Æ');
-                                        blue = settings[5].Split('Æ');
-                                        magenta = settings[6].Split('Æ');
-                                        cyan = settings[7].Split('Æ');
-                                        white = settings[8].Split('Æ');
-                                        bblack = settings[9].Split('Æ');
-                                        bred = settings[10].Split('Æ');
-                                        bgreen = settings[11].Split('Æ');
-                                        byellow = settings[12].Split('Æ');
-                                        bblue = settings[13].Split('Æ');
-                                        bmagenta = settings[14].Split('Æ');
-                                        bcyan = settings[15].Split('Æ');
-                                        bwhite = settings[16].Split('Æ');
+                                        efs = [ settings[1].Split('Æ'), settings[2].Split('Æ'), settings[3].Split('Æ'), settings[4].Split('Æ'),  settings[5].Split('Æ'), settings[6].Split('Æ'), settings[7].Split('Æ'), settings[8].Split('Æ'), settings[9].Split('Æ'), settings[10].Split('Æ'), settings[11].Split('Æ'), settings[12].Split('Æ'), settings[13].Split('Æ'), settings[14].Split('Æ'), settings[15].Split('Æ'), settings[16].Split('Æ') ];
                                         
                                         strng = char.Parse(settings[17]);
                                         
@@ -612,7 +582,7 @@ namespace qse
                         {
                              proc.WaitForExit();
                         }
-                        
+                        HandleRC(line, column, scroll, hscroll, file, false, out line, out column, out scroll, out hscroll, out file, out filelenghts);
                     }
                     if (keyInfo1.Key == ConsoleKey.Q)
                     {
@@ -930,82 +900,45 @@ namespace qse
             int num = 0;
             List<int> filelenghts = new List<int>();
             filelenghts.Add(0);
+            
             foreach (string lne in file.Split('\n'))
             {
-                num = num + lne.Length;
+                num = num + lne.Count(c => !char.IsControl(c));
                 filelenghts.Add(num);
             }
+            
             return filelenghts;
         }
         
-        public static string colour(string str, string[] black, string[] red, string[] green, string[] yellow, string[] blue, string[] magenta, string[] cyan, string[] white, string[] bblack, string[] bred, string[] bgreen, string[] byellow, string[] bblue, string[] bmagenta, string[] bcyan, string[] bwhite, string[] colours)
+        public static string colour(string str, string[][] efs, string[] colours, char[] ignclr, int h, int i, List<char> file, char strng, string filestring, List<int>[] overrides)
         {
-            if (Array.Exists(black, x => x == str))
+            
+            if(overrides[h][i] == 1 ) { return colours[19];}
+            if(overrides[h][i] == 2 ) { return colours[18];}
+            
+            return colourString(str, efs, colours, ignclr);
+        }
+        
+        public static string colourString(string str, string[][] efs, string[] colours, char[] ignclr)
+        {
+            if(str == "" )
             {
-                return colours[0];
+                return colours[15];
             }
-            else if (Array.Exists(red, x => x == str))
-            {
-                return colours[1];
-            }
-            else if (Array.Exists(green, x => x == str))
-            {
-                return colours[2];
-            }
-            else if (Array.Exists(yellow, x => x == str))
-            {
-                return colours[3];
-            }
-            else if (Array.Exists(blue, x => x == str))
-            {
-                return colours[4];
-            }
-            else if (Array.Exists(magenta, x => x == str))
-            {
-                return colours[5];
-            }
-            else if (Array.Exists(cyan, x => x == str))
-            {
-                return colours[6];
-            }
-            else if (Array.Exists(white, x => x == str))
-            {
-                return colours[7];
-            }
-            else if (Array.Exists(bblack, x => x == str))
-            {
-                return colours[8];
-            }
-            else if (Array.Exists(bred, x => x == str))
-            {
-                return colours[9];
-            }
-            else if (Array.Exists(bgreen, x => x == str))
-            {
-                return colours[10];
-            }
-            else if (Array.Exists(byellow, x => x == str))
-            {
-                return colours[11];
-            }
-            else if (Array.Exists(bblue, x => x == str))
-            {
-                return colours[12];
-            }
-            else if (Array.Exists(bmagenta, x => x == str))
-            {
-                return colours[13];
-            }
-            else if (Array.Exists(bcyan, x => x == str))
-            {
-                return colours[14];
-            }
-            else if (Array.Exists(bwhite, x => x == str))
+            if(char.TryParse(str, out _)) if(ignclr.Contains(char.Parse(str)))
             {
                 return colours[15];
             }
             
-            else if (int.TryParse(str, out var num))
+            for(int i = 0; i <= 15; i++)
+            {
+                if (Array.Exists(efs[i], x => x == str))
+                {
+                    return colours[i];
+                }
+            }
+            
+            if (int.TryParse(str, out _))
             {
                 return colours[17];
             }
@@ -1014,148 +947,118 @@ namespace qse
             {
                 return colours[16];
             }
+        } 
+        
+        
+        public static string listColourAndCutoff(List<char> file, int maxWidth, string dcolour, char[] ignclr, string[][] efs, string[] colours, int top, int height, int hscroll, char strng)
+        {
+            // maxWidth, dcolour, []ignclr, [][]efs, []colours, top, height, hscroll
             
+            List<string> filestr = string.Concat(file).Split('\n').Skip(top).Take(height).ToList();
+            List<int>[] overrides = ColourOverrides(file, strng);
+            List<char> output = new List<char>();
             
+            for(int h = 0; h < filestr.Count(); h++)
+            {
+                string lne = filestr[h];
+                
+                bool isfirst = false;
+                int i = hscroll;
+                
+                if(lne.Length > i) while(i > 0 && !ignclr.Contains(lne[i])) {  i--;  isfirst = true;  }
+                if(isfirst) while( ignclr.Contains(lne[i]) && i < lne.Length-1) {i++;}
+                int j = i;
+                
+                if(i < lne.Length) while(ignclr.Contains(lne[i]) && i < lne.Length)
+                {
+                    foreach(char c in ( colour(lne[i] + "", efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides) )) output.Add(c);
+                    output.Add(lne[i]);
+                    if(i+1 < lne.Length) i++;
+                    else break;
+                }
+                
+                while(i < lne.Length && i < hscroll+maxWidth)
+                {
+                    List<char> expression = new List<char>();
+                    while(!ignclr.Contains(lne[i]) && i < lne.Length){    expression.Add(lne[i]);    if(i < lne.Length-1 && !ignclr.Contains(lne[i+1])) i++; else break;    }
+                    
+                    string expr = "";
+                    string addi = "";
+                    
+                    
+                    expr = string.Concat(expression);
+                    
+                    if(isfirst && (hscroll-j) < expression.Count())
+                        addi = expr.Substring(hscroll - j);
+                    else if ((hscroll-j) < expression.Count())
+                        addi = expr;
+                    
+                    
+                    foreach( char c in (colour(expr, efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides) + addi)) output.Add(c);
+                    
+                    
+                    isfirst=false;
+                    
+                    i++;
+                    
+                    if(i < lne.Length) while(ignclr.Contains(lne[i]) && i < lne.Length && i < hscroll+maxWidth)    //yes, this is the exact same code
+                    {
+                        foreach(char c in ( colour(lne[i] + "", efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides) )) output.Add(c);
+                        output.Add(lne[i]);
+                        
+                        if(i+1 < lne.Length) i++;
+                        else break;
+                    }
+                    
+                    //i++;
+                    
+                }
+                
+                while(i > hscroll+maxWidth && output.Count() > 0 ) {i--; output.RemoveAt(output.Count()-1); }
+                
+                foreach(char c in colours[15]) output.Add(c);
+                output.Add('\n');
+                
+                
+            }
             
+            return String.Join("", output);
         }
         
-        public static void write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line, int column, string currentproject, char strng, char[] ignclr, string[] black, string[] red, string[] green, string[] yellow, string[] blue, string[] magenta, string[] cyan, string[] white, string[] bblack, string[] bred, string[] bgreen, string[] byellow, string[] bblue, string[] bmagenta, string[] bcyan, string[] bwhite, bool marked, int mark, string[] colours)
+        public static void writeCutoffs(int scroll, int hscroll, int maxLeft, List<int> filelenghts, int height, string colour)
         {
-            int[] filespec = ColourOverrides(file, strng);
-
-            bool mlcomment = false;
-            bool comment = false;
-
-            Console.CursorVisible = false;
-            Console.Title = "Qseft's simple editor - editing " + filename;
-
-
-            Console.ResetColor();
-
-            StringWriter stringWriter = new StringWriter();
-
-            Console.SetOut(stringWriter);
-
-            int neededoutputlines = filelenghts.Count - 1 - scroll;
-            if (neededoutputlines > top) neededoutputlines = top;
-
-            for (int i = scroll; i < neededoutputlines+scroll - 1; i++)
+            Console.SetCursorPosition(0, 1);
+            
+            for(int i = scroll; i < scroll+height; i++)
             {
-                string writeline = "";
-                
-                /*if (filelenghts[i] + i + hscroll > filelenghts[i + 1] + i + hscroll)
+                if(filelenghts[i+1] - filelenghts[i] > maxLeft+hscroll)
                 {
-                    Console.Write("\n");
-                    continue;
-                }*/
-                
-                /*for (int j = filelenghts[i] + i + hscroll; j <= filelenghts[i + 1] + i + hscroll; j++)
-                {   if(writeline.Length >= left-4-hscroll)
-                    {   writeline = writeline + " >\n";
-                        j = filelenghts[i + 1]+i+hscroll+1;
-                        continue;    }
-                    else if(j < file.Count) writeline = writeline + file[j];    }*/
-                
-                int lnlen = filelenghts.Count.ToString().Length;
-                
-                for (int j = filelenghts[i] + i + hscroll; j < filelenghts[i+1] + i; j++)
-                {
-                    if(writeline.Length <= left - lnlen)
-                    {
-                        writeline = writeline + file[j];
-                    }
-                    else
-                    {
-                        writeline = writeline[0..^1];
-                        writeline = writeline + ">";
-                        break;
-                    }
+                    Console.SetCursorPosition(maxLeft-1, 1+i-scroll);
+                    Console.Write(colour+">");
                 }
-                
-                writeline = writeline + "\n";
-                string expression = "";
-                string chcklne = "";
-                int indx = 0;
-                string outp = "";
-                while (chcklne.Length < writeline.Length)
-                {
-                    expression = "";
-                
-                    if (indx < writeline.Length)
-                    {
-                        while (!ignclr.Contains(writeline[indx]))
-                        {
-                            if (filelenghts[i] + indx + i == mark && marked)
-                            {
-                                expression=expression+colours[20];
-                            }
-                            if ( marked && filelenghts[i] + indx + i == filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll + 2)
-                            {
-                                expression=expression+colours[21];
-                            }
-                
-                            expression = expression + writeline[indx];
-                            chcklne = chcklne + writeline[indx];
-                            indx++;
-                        }
-                
-                        if (comment || mlcomment) { outp = outp + colours[19]; }
-                        else if(filelenghts[i] + indx + i > 0) if(!(comment || mlcomment) && filespec[filelenghts[i] + indx + i - 1 + hscroll] == 2) expression = colours[18] + expression;
-                        else if(filespec[filelenghts[i] + indx + i - 1+ hscroll] != 2) {outp = outp + colour(expression, black, red, green, yellow, blue, magenta, cyan, white, bblack, bred, bgreen, byellow, bblue, bmagenta, bcyan, bwhite, colours);}
-                        else outp = outp + colours[19];
-                        outp = outp + expression;
-                    }
-                    if (indx < writeline.Length)
-                    {
-                        if (filelenghts[i] + indx + i == mark && marked)
-                        {
-                            outp=outp+colours[20];
-                        }
-                        if (marked && filelenghts[i] + indx + i == filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll + 2)
-                        {
-                            outp=outp+colours[21];
-                        }
-                
-                
-                        if(filespec[filelenghts[i] + indx + i] == 1)
-                        {
-                            mlcomment = true;
-                        }
-                
-                        if(filespec[filelenghts[i] + indx + i] == 0)
-                        {
-                            mlcomment = false;
-                        }
-                
-                        if (comment || mlcomment) { outp = outp + colours[19]; }
-                        else if(filespec[filelenghts[i] + indx + i + hscroll] != 2 && writeline[indx] != strng) {outp = outp + colours[15];}
-                        else outp = outp + colours[18];
-
-                        outp = outp + writeline[indx];
-                        chcklne = chcklne + writeline[indx];
-                
-                        indx++;
-                    }
-                }
-                Console.Write(outp);
             }
-
-
-            string output = stringWriter.ToString();
-
-            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true });
-
+        }
+        
+        public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, char strng, char[] ignclr, string[][] efs, bool marked, int mark, string[] colours)
+        {    
+            string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length), colours[16], ignclr, efs, colours, scroll,  Console.WindowHeight - 3, hscroll, strng);
+            
+            
             Console.Write(colours[21]);
             Console.Write("\x1b[2J");
-
+            
             Console.SetCursorPosition (0, 1);
-            Console.WriteLine(output);
-
+            
+            Console.Write(write);
+            
+            writeCutoffs(scroll, hscroll, Console.WindowWidth-((filelenghts.Count).ToString().Length), filelenghts, Console.WindowHeight - 3, colours[15]);
+            
+            //linunumbers
             Console.SetCursorPosition (0, 1);
             int max = top;
             if (max > filelenghts.Count - 1)
                 max = filelenghts.Count - 1;
-
+            
             for(int i = 1; i < max; i++)
             {
                 Console.SetCursorPosition(left-((filelenghts.Count).ToString().Length) + 1 , i);
@@ -1164,7 +1067,8 @@ namespace qse
 
                 Console.Write(colours[22] +colours[24] +(i+scroll));
             }
-
+            
+            //UI
             Console.SetCursorPosition(0, 0);
             Console.Write(colours[25]+colours[26]);
             Console.Write(" QSE");
@@ -1176,36 +1080,43 @@ namespace qse
             for (int i = 0; i < left-(14+(filelenghts.Count-2).ToString().Count()+currentproject.ToString().Count()); i++)
                 Console.Write(" ");
             Console.Write(currentproject + " ");
+            
             Console.ResetColor();
             Console.CursorVisible = true;
+            
+            return write;
         }
         
-        public static int[] ColourOverrides(List<char> file, char strng)
+        public static List<int>[] ColourOverrides(List<char> file, char strng)
         {
-            int[] filespec = new int[file.Count()];
+            List<int>[] filespec = new List<int>[file.Where(s=>s!=null && s == '\n').Count()+1];
+            for(int i = 0; i < filespec.Length; i++) filespec[i] = new List<int>();
+            List<string> filet = String.Concat(file).Split('\n').ToList();
             
             bool mlcomment = false;
             bool comment = false;
             bool bstrng = false;
             
-            for (int i = 0; i < file.Count(); i++)
+            for (int h = 0; h < filet.Count(); h++)
             {
+                string str = filet[h];
+                for(int i = 0; i < str.Length; i++)
+                {
+                    if(i+1 < str.Length) if(str[i] == '/' && str[i + 1] == '*' && !bstrng) mlcomment = true;
+                    if (i > 0) if(str[i] == '/' && str[i - 1] == '*' && !bstrng) mlcomment = false;
+                    if(i+1 < str.Length)if(str[i] == '/' && str[i + 1] == '/' && !bstrng) comment = true;
+                    if(str[i] == strng && !(comment || mlcomment)) bstrng = !bstrng;
+                    if (i > 0){if((str[i-1] == '\\' || str[i-1] == '\'') && str[i] == strng) bstrng = !bstrng;}
+                    
+                    if (bstrng)
+                        filespec[h].Add(2);
+                    else if (mlcomment == true || comment == true)
+                        filespec[h].Add(1);
+                    else
+                        filespec[h].Add(0);
+                }
                 
-                
-                if(file[i] == '/' && file[i + 1] == '*' && !bstrng) mlcomment = true;
-                if (i > 0) if(file[i] == '/' && file[i - 1] == '*' && !bstrng) mlcomment = false;
-                if(file[i] == '/' && file[i + 1] == '/' && !bstrng) comment = true;
-                if (file[i] == '\n') comment = false;
-                if(file[i] == strng && !(comment || mlcomment)) bstrng = !bstrng;
-                if (i > 0){if((file[i-1] == '\\' || file[i-1] == '\'') && file[i] == strng) bstrng = !bstrng;}
-                
-                if (bstrng)
-                    filespec[i] = 2;
-                else if (mlcomment == true || comment == true)
-                    filespec[i] = 1;
-                else
-                    filespec[i] = 0;
-                
+                comment = false;
             }
             
             return filespec;

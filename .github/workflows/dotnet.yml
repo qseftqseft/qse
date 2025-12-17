@@ -34,12 +34,12 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
-        name: linbuild
+        name: qse_linux-x64
         path: ./publish
     - name: Zip published files
       run: |
         cd publish
-        zip -r ../linbuild.zip .
+        zip -r ../qse_linux-x64.zip .
     - name: Auto Semver
       uses: oss-actions/auto-semver@v0.1.11
       id: versioning
@@ -51,7 +51,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ steps.versioning.outputs.version }}
-        files: linbuild.zip
+        files: qse_linux-x64.zip
         prerelease: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

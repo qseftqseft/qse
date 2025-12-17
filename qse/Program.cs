@@ -1,3 +1,4 @@
+
 /*
     QSE - qseft's simple editor - the C# console-based text editor
     Copyright (C) 2025 Václav Ulrich
@@ -70,7 +71,6 @@ namespace qse
             bool marked = false;
             int mark = 0;
             
-            
             List<int> filelenghts = new List<int>();
             
             Console.CursorVisible = false;
@@ -83,7 +83,7 @@ namespace qse
             int hscroll = 0;
             int tab = 0;
             bool run = true;
-                                    
+            
             string[] settings = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "settings" + Path.DirectorySeparatorChar + settingsfile).Split('\n');
             
             char[] ignclr = (settings[0] + "Æ\n").Split('Æ').SelectMany(s => s.ToCharArray()).ToArray();
@@ -147,7 +147,7 @@ namespace qse
             string currentproject = projects[0][0];
             int currentprojectindx = 0;
             
-            bool iterate = true;
+            Stopwatch ressw = new Stopwatch();
             
             string prevstr = "";
             string nowstr = "";
@@ -243,24 +243,21 @@ namespace qse
                         }
                     };
                     
+                    
+                    ressw.Start();
+                    
                     while(!Console.KeyAvailable)
                     {
                         if(left != Console.WindowWidth - 1)
                         {
                             left = Console.WindowWidth - 1;
-                            iterate = true;
-                            break;
                         }
                         if(top != Console.WindowHeight - 2)
                         {
                             top = Console.WindowHeight - 2;
-                            iterate = true;
-                            break;
                         }
                     }
-                    if(iterate){
-                        iterate = false;
-                        continue;}
+                    
                     
                     keyInfo1 = Console.ReadKey(true);
                     
@@ -1031,7 +1028,7 @@ namespace qse
             
             for(int i = scroll; i < scroll+height; i++)
             {
-                if(filelenghts[i+1] - filelenghts[i] > maxLeft+hscroll)
+                if(filelenghts.Count() > i+1) if(filelenghts[i+1] - filelenghts[i] > maxLeft+hscroll)
                 {
                     Console.SetCursorPosition(maxLeft-1, 1+i-scroll);
                     Console.Write(colour+">");

@@ -188,5 +188,4 @@
 /home/qseft/Documents/GitHub/qse/qse/bin/Release/net9.0/linux-x64/publish/libmscordaccore.so
 /home/qseft/Documents/GitHub/qse/qse/bin/Release/net9.0/linux-x64/publish/libmscordbi.so
 /home/qseft/Documents/GitHub/qse/qse/bin/Release/net9.0/linux-x64/publish/Microsoft.Extensions.DependencyInjection.Abstractions.dll
-/home/qseft/Documents/GitHub/qse/qse/bin/Release/net9.0/linux-x64/publish/AutoPrompt.dll
 /home/qseft/Documents/GitHub/qse/qse/bin/Release/net9.0/linux-x64/publish/TextCopy.dll

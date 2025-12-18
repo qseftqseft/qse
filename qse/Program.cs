@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Linq;
-using rohankapoor.AutoPrompt;
 using TextCopy;
 
 namespace qse
@@ -41,7 +40,7 @@ namespace qse
             
             int left = Console.WindowWidth-1;
             int top = Console.WindowHeight-2;
-            int num = 0;
+            
             string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             
             string settingsfile = "settings";
@@ -161,7 +160,6 @@ namespace qse
                     control: false);
                 left = Console.WindowWidth - 1;
                 top = Console.WindowHeight - 2;
-                num = 0;
                 filelenghts.Add(0);
                 filestr = string.Concat(file);
                 filelenghts = lenghts(filestr);
@@ -219,7 +217,7 @@ namespace qse
                         if(sugsc < 0)
                             sugsc = 0;
                         Console.SetCursorPosition(column, line);
-                        ArrayBlackBox(suggest, colours[27]+colours[28], colours[21], nowstr.Length, sugsc);
+                        ArrayBlackBox(suggest, colours[27] + colours[28], colours[21], nowstr.Length, sugsc);
                         prevnowstr = nowstr;
                     }
                     
@@ -244,6 +242,11 @@ namespace qse
                     };
                     
                     
+                    
+                    
+                    
+                    
+                    bool iterate = false;
                     ressw.Start();
                     
                     while(!Console.KeyAvailable)
@@ -251,12 +254,18 @@ namespace qse
                         if(left != Console.WindowWidth - 1)
                         {
                             left = Console.WindowWidth - 1;
+                            iterate = true;
+                            break;
                         }
                         if(top != Console.WindowHeight - 2)
                         {
                             top = Console.WindowHeight - 2;
+                            iterate = true;
+                            break;
                         }
                     }
+                    if(iterate)
+                        continue;
                     
                     
                     keyInfo1 = Console.ReadKey(true);
@@ -369,22 +378,22 @@ namespace qse
                 
                 if ((((keyInfo1.Modifiers & ConsoleModifiers.Alt) != 0)) && (keyInfo1.Modifiers & ConsoleModifiers.Shift) == 0)
                 {
-                    Console.SetCursorPosition(0, top - 1);
+                    Console.SetCursorPosition(0, top + 1);
                     
-                    Console.Write(colours[25]+colours[26]);//change to 27 and 28
+                    Console.Write(colours[21]+colours[15]);//change to 27 and 28
                     
                     for (int i = 0; i <= left; i++)
                     {
                         Console.Write(" ");
                     }
                     
-                    Console.SetCursorPosition(0, top - 1);
+                    Console.SetCursorPosition(0, top + 1);
                     
                     if (keyInfo1.Key == ConsoleKey.S || keyInfo1.Key == ConsoleKey.R)
                     {
                         if(keyInfo1.Key == ConsoleKey.S)
-                            filename = AutoPrompt.PromptForInput("save to: ", filename);
-                        Console.SetCursorPosition(0, top - 1);
+                        filename = prompt("save to: ", filename);
+                        Console.SetCursorPosition(0, top + 1);
                         Console.Write("SAVING, DO NOT EXIT!!!");
                         File.WriteAllText(filename, filestr);
                         Console.CursorLeft = 0;
@@ -409,12 +418,17 @@ namespace qse
                     if (keyInfo1.Key == ConsoleKey.G)
                     {
                         Console.Write("got line: ");
-                        Console.Write(colours[25]+colours[26]);//change to 27 and 28
-                        string inp = Console.ReadLine();
+                        Console.Write(colours[21]+colours[15]);//change to 27 and 28
+                        string inp = Console.ReadLine() ?? string.Empty;
                         int lne = scroll+line;
+                        int col = column + hscroll;
                         
-                        if(int.TryParse(inp, out lne))                        
+                        string[] got = inp.Split(' ');
+                        
+                        if(got.Length > 0) if(int.TryParse(got[0], out lne))
                             scroll = lne - line;
+                        if(got.Length > 1) if(int.TryParse(got[1], out col))
+                            hscroll = col - column;
                     }
                     
                     if (keyInfo1.Key == ConsoleKey.O)
@@ -423,17 +437,13 @@ namespace qse
                         do
                         {
                             dfromf = "";
-                            Console.SetCursorPosition(0, top - 1);
-                            Console.Write(colours[25]+colours[26]);//change to 27 and 28
+                            
+                            Console.Write(colours[21]+colours[15]);//change to 27 and 28
+                            Console.SetCursorPosition(0, top+1);
                             Console.Write("enter filepath: ");
-                            filename = AutoPrompt.PromptForInput("", filename);
-                            Console.SetCursorPosition(0, top - 1);
-                            for (int i = 0; i < left; i++)
-                            {
-                                Console.Write(" ");
-                            }
                             
-                            
+                            filename = prompt("", filename);
+                                                        
                             for (int i = 0; i < filename.Split(Path.DirectorySeparatorChar).Length - 1; i++)
                             {
                                 dfromf = dfromf + filename.Split(Path.DirectorySeparatorChar)[i] + "/";
@@ -467,8 +477,8 @@ namespace qse
                     if (keyInfo1.Key == ConsoleKey.C)
                     {
                         Console.Write("enter command: ");
-                        Console.Write(colours[25]+colours[26]);//change to 27 and 28
-                        string command = Console.ReadLine();
+                        Console.Write(colours[21]+colours[15]);//change to 27 and 28
+                        string command = Console.ReadLine() ?? string.Empty;
                         if(command.Length > 1)
                         {
                             string cmdinpt = "";
@@ -572,10 +582,11 @@ namespace qse
                             Arguments = tflags + " " + tcommand + " && sleep 10",
                             UseShellExecute = false
                         };
+                        
                         Console.ResetColor();
                         Console.Clear();
                         Console.Write("\x1b[92m" + Environment.UserName + "@" + Environment.MachineName + " \x1b[34m" + System.IO.Directory.GetCurrentDirectory() + " $ \x1b[37m" + term + tflags +  " " +  tcommand + "\n\x1b[90m");
-                        using (Process proc = Process.Start(psi))
+                        using (Process proc = Process.Start(psi) ?? new Process())
                         {
                              proc.WaitForExit();
                         }
@@ -596,23 +607,23 @@ namespace qse
                     if (keyInfo1.Key == ConsoleKey.T)
                     {
                         do{
-                            Console.SetCursorPosition(0, top - 1);
-                            Console.Write(colours[25]+colours[26]);//change to 27 and 28
+                            Console.SetCursorPosition(0, top + 1);
+                            Console.Write(colours[21]+colours[15]);//change to 27 and 28
                             Console.Write("enter theme name: ");
-                            themefile = AutoPrompt.PromptForInput("", themefile);
-                            Console.SetCursorPosition(0, top - 1);
+                            themefile = prompt("", "");
+                            Console.SetCursorPosition(0, top + 1);
                             for (int i = 0; i < left; i++)
                             {
                                 Console.Write(" ");
                             }
                         } while (!File.Exists(homeDirectory + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile));
-                        themefile = "theme";
                         theme = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile).Split('\n');
-                        colours = new string[27];
-                        for(int i = 0; i < 27; i++)
+                        colours = new string[29];
+                        for(int i = 0; i < 29; i++)
                         {
                             colours[i] = "\x1b[" + theme[i] + "m";
                         }
+                        Console.Clear();
                     }
                     if(keyInfo1.Key == ConsoleKey.P)
                     {
@@ -718,7 +729,6 @@ namespace qse
                     }
                     else if (keyInfo1.Key == ConsoleKey.LeftArrow)
                     {
-                        bool slashn = false;
                         int aposition = position;
                         do
                         {
@@ -754,7 +764,7 @@ namespace qse
                     }
                     else if (keyInfo1.Key == ConsoleKey.V)
                     {
-                        string pclip = ClipboardService.GetText();
+                        string pclip = ClipboardService.GetText() ?? string.Empty;
                         for (int i = 0; i < pclip.Length; i++)
                         {
                             file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, pclip[i]);
@@ -892,6 +902,65 @@ namespace qse
             }
         }
         
+        public static string prompt(string tex, string pr, string dftex = "")
+        {
+            Console.Write(tex);
+            int defcl = Console.CursorLeft;
+            List<char> inp = pr.ToList();
+            int col = pr.Length;
+            int prevln = pr.Length;
+            Console.Write(dftex);
+            ConsoleKeyInfo keyInfo1 = new ConsoleKeyInfo();
+            
+            while(keyInfo1.Key != ConsoleKey.Enter)
+            {
+                Console.CursorLeft = defcl;
+                for(int i = 0; i < prevln; i++) Console.Write(" ");
+                Console.CursorLeft = defcl;
+                Console.Write(String.Concat(inp));
+                Console.CursorLeft = col+defcl;
+                
+                prevln = inp.Count();
+                keyInfo1 = Console.ReadKey(true);
+                
+                switch (keyInfo1.Key)
+                {
+                    case ConsoleKey.LeftArrow:
+                        if(col > 0) col--;
+                        break;
+                    
+                    case ConsoleKey.RightArrow:
+                        if(col < inp.Count) col++;
+                        break;
+                    
+                    case ConsoleKey.Backspace:
+                        if(col > 0)
+                        {
+                            inp.RemoveAt(col-1);
+                            col--;
+                        }
+                        break;
+                    
+                    case ConsoleKey.Enter:
+                        continue;
+                        
+                    
+                    case ConsoleKey.Delete:
+                        if(col < inp.Count) inp.RemoveAt(col);
+                        break;
+                    
+                    default:
+                        if (!char.IsControl(keyInfo1.KeyChar) && keyInfo1.KeyChar != '\0')
+                        {
+                            inp.Insert(col, keyInfo1.KeyChar);
+                            col++;
+                        }
+                        break;
+                }
+            }
+            return String.Concat(inp);
+        }
+        
         public static List<int> lenghts(string file)
         {
             int num = 0;
@@ -987,7 +1056,7 @@ namespace qse
                     
                     if(isfirst && (hscroll-j) < expression.Count())
                         addi = expr.Substring(hscroll - j);
-                    else if ((hscroll-j) < expression.Count())
+                    else
                         addi = expr;
                     
                     
@@ -1086,7 +1155,7 @@ namespace qse
         
         public static List<int>[] ColourOverrides(List<char> file, char strng)
         {
-            List<int>[] filespec = new List<int>[file.Where(s=>s!=null && s == '\n').Count()+1];
+            List<int>[] filespec = new List<int>[file.Where(s=>s == '\n').Count()+1];
             for(int i = 0; i < filespec.Length; i++) filespec[i] = new List<int>();
             List<string> filet = String.Concat(file).Split('\n').ToList();
             
@@ -1123,7 +1192,6 @@ namespace qse
         {
             int left = Console.WindowWidth - 1;
             int top = Console.WindowHeight - 2;
-            int num = 0;
             List<int> filelenghts = new List<int>();
             filelenghts.Add(0);
             string filestr = string.Concat(file);
@@ -1318,15 +1386,15 @@ namespace qse
                     pfnames[Array.FindIndex(pfnames, j => j == null || j.Length == 0)] = projects[editingproject][i];
                 }
                 pfnames[pfnames.Length-1] = "Add a new file";
-                int whattodo = writeMenu(pfnames, projectsnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+5,texto, textt, false, bg);
+                int whattodo = writeMenu(pfnames ?? [""], projectsnames.OrderByDescending(s =>  s?.Length ?? 0).FirstOrDefault()?.Length+5 ?? 5,texto, textt, false, bg);
                 if(whattodo == -1)
                     continue;
                 
                 
                 
-                if(whattodo != pfnames.Length-1)
+                if(whattodo != pfnames?.Length-1)
                 {
-                    int oped = writeMenu(["Open", "Delete"], (projectsnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+5) + (pfnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+5), texto, textt, false, bg);
+                    int oped = writeMenu(["Open", "Delete"], (projectsnames.OrderByDescending(s => s?.Length ?? 0).FirstOrDefault()?.Length+5 ?? 5) + (pfnames?.OrderByDescending(s => s?.Length ?? 0).FirstOrDefault()?.Length+5 ?? 5), texto, textt, false, bg);
                     Console.SetCursorPosition(0, Console.WindowHeight/2);
                     if(oped == 0)
                     {
@@ -1337,7 +1405,7 @@ namespace qse
                     else if (oped == 1)
                     {
                         Console.Write("Are you sure you want to delete " + projects[editingproject][whattodo*2+1] + " "+ projects[editingproject][whattodo*2+2]+" from this list? [y, N] ");
-                        string r = Console.ReadLine();
+                        string r = Console.ReadLine() ?? string.Empty;
                         if (r == "y" || r == "Y")
                         {
                             projects[editingproject].RemoveAt(whattodo*2+2);
@@ -1365,23 +1433,23 @@ namespace qse
                 }
                 else
                 {
-                    Console.CursorLeft = projectsnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+10;
+                    Console.CursorLeft = projectsnames.OrderByDescending(s => s.Length).FirstOrDefault()?.Length+10 ?? 10;
                     string rl = "";
                     do{
                         Console.Write("name          ");
                         Console.CursorLeft -= 14;
-                        rl = Console.ReadLine();
+                        rl = Console.ReadLine() ?? string.Empty;
                         if(rl == "" || rl == "exit")
                             break;
                         if(rl.Contains(" "))
                             continue;
                         projects[editingproject].Add(rl);
                         
-                        Console.CursorLeft = projectsnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+10;
+                        Console.CursorLeft = projectsnames.OrderByDescending(s => s.Length).FirstOrDefault()?.Length+10 ?? 10;
                         Console.CursorTop -= 1;
                         Console.Write("path"); for(int i = 4; i < rl.Length; i++) Console.Write(" ");
-                        Console.CursorLeft = projectsnames.OrderByDescending(s => s.Length).FirstOrDefault().Length+10;
-                        rl = Console.ReadLine();
+                        Console.CursorLeft = projectsnames.OrderByDescending(s => s.Length).FirstOrDefault()?.Length+10 ?? 10;
+                        rl = Console.ReadLine() ?? string.Empty;
                         if(rl.Contains(" "))
                             continue;
                         projects[editingproject].Add(rl);
@@ -1407,19 +1475,19 @@ namespace qse
             else
             {
                 Console.Write("What is the project name: ");
-                string name = Console.ReadLine();
+                string name = Console.ReadLine() ?? string.Empty;
                 string rl = "";
                 string other = "";
                 do{
                     Console.Write("What is the file name: [exit]");
-                    rl = Console.ReadLine();
+                    rl = Console.ReadLine() ?? string.Empty;
                     if(rl == "" || rl == "exit")
                         break;
                     if(rl.Contains(" "))
                         continue;
                     other = other + " " + rl;
                     Console.Write("What is the file path ");
-                    rl = Console.ReadLine();
+                    rl = Console.ReadLine() ?? string.Empty;
                     if(rl.Contains(" "))
                         continue;
                     other = other + " " + rl;
@@ -1509,7 +1577,7 @@ namespace qse
                 for (int i = 0; i < arr.Length; i++)
                     if(arr[i].Length > Console.WindowWidth-cl) arr[i] = arr[i].Substring(0, Console.WindowWidth-cl);
                 if(arr.Length > 6) arr = [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5]];
-                int width = arr.Aggregate(string.Empty, (seed, f) => (f == null ? 0 : f.Length) > seed.Length ? f : seed).Length;
+                int width = arr.Aggregate(string.Empty, (seed, f) => f.Length > seed.Length ? f : seed).Length;
                 int height = arr.Length;
                 
                 

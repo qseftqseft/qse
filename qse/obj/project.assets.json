@@ -18,17 +18,38 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "rohankapoor.AutoPrompt/1.0.6": {
+      "TextCopy/6.2.1": {
         "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0"
+        },
         "compile": {
-          "lib/net40/AutoPrompt.dll": {
-            "related": ".XML"
+          "lib/net6.0/TextCopy.dll": {
+            "related": ".xml"
           }
         },
         "runtime": {
-          "lib/net40/AutoPrompt.dll": {
-            "related": ".XML"
+          "lib/net6.0/TextCopy.dll": {
+            "related": ".xml"
           }
+        }
+      }
+    },
+    "net9.0/linux-x64": {
+      "Microsoft.Extensions.DependencyInjection.Abstractions/7.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net7.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net6.0/_._": {}
         }
       },
       "TextCopy/6.2.1": {
@@ -79,19 +100,6 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "rohankapoor.AutoPrompt/1.0.6": {
-      "sha512": "Bo/zymDwaX8YkrJuGgy4/VjvA+Pud+//cz239IqS5rYj7teON5+AGS9mJXOKgrCnYBDD5uagErYGQS6g3Ujm1A==",
-      "type": "package",
-      "path": "rohankapoor.autoprompt/1.0.6",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/net40/AutoPrompt.XML",
-        "lib/net40/AutoPrompt.dll",
-        "rohankapoor.autoprompt.1.0.6.nupkg.sha512",
-        "rohankapoor.autoprompt.nuspec"
-      ]
-    },
     "TextCopy/6.2.1": {
       "sha512": "ryejViUBmHQ2XMie2AiRBn7KVKu2Gh/hqrctGSAUf1BufwfPjr+MWuACNBaiG+40TMbWRDJZgV73Tpl9hggeRw==",
       "type": "package",
@@ -119,8 +127,7 @@
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "TextCopy >= 6.2.1",
-      "rohankapoor.AutoPrompt >= 1.0.6"
+      "TextCopy >= 6.2.1"
     ]
   },
   "packageFolders": {
@@ -169,10 +176,6 @@
           "TextCopy": {
             "target": "Package",
             "version": "[6.2.1, )"
-          },
-          "rohankapoor.AutoPrompt": {
-            "target": "Package",
-            "version": "[1.0.6, )"
           }
         },
         "imports": [
@@ -186,6 +189,16 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
+            "version": "[9.0.7, 9.0.7]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Runtime.linux-x64",
+            "version": "[9.0.7, 9.0.7]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
@@ -193,18 +206,11 @@
         },
         "runtimeIdentifierGraphPath": "/home/qseft/.dotnet/sdk/9.0.303/PortableRuntimeIdentifierGraph.json"
       }
+    },
+    "runtimes": {
+      "linux-x64": {
+        "#import": []
+      }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'rohankapoor.AutoPrompt 1.0.6' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net9.0'. This package may not be fully compatible with your project.",
-      "libraryId": "rohankapoor.AutoPrompt",
-      "targetGraphs": [
-        "net9.0"
-      ]
-    }
-  ]
+  }
 }

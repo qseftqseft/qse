@@ -19,7 +19,6 @@
 /home/qseft/Documents/GitHub/qse/qse/bin/Debug/net9.0/qse.pdb
 /home/qseft/Documents/GitHub/qse/qse/bin/Debug/net9.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
 /home/qseft/Documents/GitHub/qse/qse/bin/Debug/net9.0/TextCopy.dll
-/home/qseft/Documents/GitHub/qse/qse/bin/Debug/net9.0/AutoPrompt.dll
 /home/qseft/Documents/GitHub/qse/qse/obj/Debug/net9.0/qse.csproj.AssemblyReference.cache
 /home/qseft/Documents/GitHub/qse/qse/obj/Debug/net9.0/qse.GeneratedMSBuildEditorConfig.editorconfig
 /home/qseft/Documents/GitHub/qse/qse/obj/Debug/net9.0/qse.AssemblyInfoInputs.cache

@@ -41,6 +41,8 @@ namespace qse
             int left = Console.WindowWidth-1;
             int top = Console.WindowHeight-2;
             
+            int mode = 0;
+            
             string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             
             string settingsfile = "settings";
@@ -154,6 +156,7 @@ namespace qse
             int sugsc = 0;
             string prevnowstr = "";
             
+            
             while (true)
             {
                 ConsoleKeyInfo keyInfo1 = new ConsoleKeyInfo('\u001b', ConsoleKey.Escape, shift: false, alt: false,
@@ -163,6 +166,7 @@ namespace qse
                 filelenghts.Add(0);
                 filestr = string.Concat(file);
                 filelenghts = lenghts(filestr);
+                char prevch = '\0';
                 
                 while (run)
                 {
@@ -206,7 +210,7 @@ namespace qse
                     }
                     
                     
-                    write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, efs,  marked, mark, colours);
+                    write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, efs,  marked, mark, colours, mode);
                     
                     
                     
@@ -287,7 +291,7 @@ namespace qse
                     
                     
                     
-                    switch (keyInfo1.Key)
+                    if(mode == 0) switch (keyInfo1.Key)
                     {
                         case ConsoleKey.UpArrow:
                             line--;
@@ -368,6 +372,205 @@ namespace qse
                             break;
                     }
                     
+                    if(mode == 1)  switch (keyInfo1.KeyChar)
+                    {
+                        case 'h':
+                            column--;
+                            break;
+                        case 'j':
+                            line++;
+                            break;
+                        case 'k':
+                            line--;
+                            break;
+                        case 'l':
+                            column++;
+                            break;
+                        case 'H':
+                            line = 0;
+                            break;
+                        case 'M':
+                            line = -1 + Console.WindowHeight / 2;
+                            break;
+                        case 'L':
+                            line = Console.WindowHeight - 3;
+                            break;
+                        case 'w':
+                            //jump forwards to the start of a word
+                            
+                            break;
+                        case 'W':
+                            //jump forwards to the start of a word (words can contain punctuation)
+                            
+                            break;
+                        case 'e':
+                            if(prevch == 'g')
+                            {
+                                //jump backwards to the end of a word
+                            }
+                            else
+                            {
+                                //jump forwards to the end of a word
+                                
+                            }
+                            break;
+                        case 'E':
+                            if(prevch == 'g')
+                            {
+                                //jump backwards to the end of a word (words can contain punctuation)
+                                
+                            }
+                            else
+                            {
+                                //jump forwards to the end of a word (words can contain punctuation)
+                            }
+                            break;
+                        case 'b':
+                            if (prevch == 'z')
+                            {
+                                //position cursor on bottom of the screen
+                                
+                            }
+                            else
+                            {
+                                //jump backwards to the start of a word
+                                
+                            }
+                            break;
+                        case 'B':
+                            //jump backwards to the start of a word (words can contain punctuation)
+                            
+                            break;
+                        case '%':
+                            //move cursor to matching character (default supported pairs: '()', '{}', '[]' - use :h matchpairs in vim for more info)
+                            
+                            break;
+                        case '0':
+                            //jump to the start of the line
+                            
+                            break;
+                        case '^':
+                            //jump to the first non-blank character of the line
+                            
+                            break;
+                        case '$':
+                            //jump to the end of the line
+                            
+                            break;
+                        case '_':
+                            if(prevch == 'g')
+                            {
+                                //jump to the last non-blank character of the line
+                                
+                            }
+                            
+                            break;
+                        case 'G':
+                            //go to the last line of the document
+                            
+                            break;
+                        case 'd':
+                            if(prevch == 'g')
+                            {
+                                //move to local declaration
+                                
+                            }
+                            break;
+                        case 'D':
+                            if(prevch == 'g')
+                            {
+                                //move to global declaration
+                                
+                            }
+                            break;
+                        case 'x':
+                            if(prevch == 'f')
+                            {
+                                //jump to next occurrence of character x
+                                
+                            }
+                            else if (prevch == 't')
+                            {
+                                //jump to before next occurrence of character x
+                                
+                            }
+                            else if(prevch == 'F')
+                            {
+                                // jump to the previous occurrence of character x
+                                
+                            }
+                            else if (prevch == 'T')
+                            {
+                                //jump to after previous occurrence of character x
+                                
+                            }
+                            break;
+                        
+                        case ';':
+                            //repeat previous f, t, F or T movement
+                            
+                            break;
+                        case ',':
+                            //repeat previous f, t, F or T movement, backwards
+                            
+                            break;
+                        case '}':
+                            //jump to next paragraph (or function/block, when editing code)
+                            
+                            break;
+                        case '{':
+                            //jump to previous paragraph (or function/block, when editing code)
+                            
+                            break;
+                        
+                        
+                        
+                        
+                        case 'z':
+                            if(prevch == 'z')
+                            {
+                                //center cursor on screen
+                                
+                            }
+                            else
+                            {
+                                prevch = 'z';
+                            }
+                            break;
+                        case 'f':
+                            prevch = 'f';
+                            break;
+                        case 't':
+                            if (prevch == 'z')
+                            {
+                                //position cursor on top of the screen
+                                
+                            }
+                            else
+                            {
+                                prevch = 't';
+                            }
+                            break;
+                        case 'F':
+                            prevch = 'F';
+                            break;
+                        case 'T':
+                            prevch = 'T';
+                            break;
+                        case 'g':
+                            if(prevch == 'g')
+                            {
+                                //go to the first line of the document
+                                
+                            }
+                            else
+                            {
+                                prevch = 'g';
+                            }
+                            break;
+                    }
+                    if(keyInfo1.KeyChar != 'g' && keyInfo1.KeyChar != 'f' && keyInfo1.KeyChar != 't' && keyInfo1.KeyChar != 'F' && keyInfo1.KeyChar != 'T' && keyInfo1.KeyChar != 'z')
+                        prevch = '\0';
                     
                     
                     HandleRC(line, column, scroll, hscroll, file, r, out line, out column, out scroll, out hscroll, out file, out filelenghts);
@@ -401,18 +604,21 @@ namespace qse
                         {
                             Console.Write(" ");
                         }
-                        Console.CursorLeft = 0;
-                        if(keyInfo1.Key == ConsoleKey.S)
-                        {
-                            Console.Write("SAVED, PRESS ANY KEY TO RETURN");
-                            Console.ReadKey(true);
-                        }
                     }
                     
                     if (keyInfo1.Key == ConsoleKey.A)
                     {
                         marked = !marked;
                         mark = filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll;
+                    }
+                    
+                    if (keyInfo1.Key == ConsoleKey.F)
+                    {
+                        mode = 1;
+                    }
+                    else if (keyInfo1.Key == ConsoleKey.D)
+                    {
+                        mode = 0;
                     }
                     
                     if (keyInfo1.Key == ConsoleKey.G)
@@ -518,6 +724,7 @@ namespace qse
                                     if(File.Exists(homeDirectory + "/.qse/settings/" + cmdinpt))
                                     {
                                         settingsfile = cmdinpt;
+
                                         settings = File.ReadAllText(homeDirectory + "/.qse/settings/" + settingsfile).Split('\n');
                                         
                                         ignclr = (settings[0] + "Æ\n").Split('Æ').SelectMany(s => s.ToCharArray()).ToArray();
@@ -1105,7 +1312,7 @@ namespace qse
             }
         }
         
-        public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, char strng, char[] ignclr, string[][] efs, bool marked, int mark, string[] colours)
+        public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, char strng, char[] ignclr, string[][] efs, bool marked, int mark, string[] colours, int mode)
         {    
             string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length), colours[16], ignclr, efs, colours, scroll,  Console.WindowHeight - 3, hscroll, strng);
             
@@ -1137,9 +1344,19 @@ namespace qse
             //UI
             Console.SetCursorPosition(0, 0);
             Console.Write(colours[25]+colours[26]);
-            Console.Write(" QSE");
-            for (int i = 0; i < left-(4+filename.Length); i++)
-                Console.Write(" ");
+            if(mode == 0)
+            {
+                Console.Write(" QSE");
+                for (int i = 0; i < left-(4+filename.Length); i++)
+                    Console.Write(" ");
+            }
+            else if(mode == 1)
+            {
+                Console.Write(" QSE-nav");
+                for (int i = 0; i < left-(8+filename.Length); i++)
+                    Console.Write(" ");
+            }
+            
             Console.Write(filename+" ");
             Console.SetCursorPosition(0, top);
             Console.Write(" " + (filelenghts.Count-2).ToString() + " lines loaded");

@@ -167,10 +167,11 @@ namespace qse
                 filestr = string.Concat(file);
                 filelenghts = lenghts(filestr);
                 char prevch = '\0';
+                string autocomp = "";
                 
                 while (run)
                 {
-                    
+                    autocomp = "";
                     
                     
                     bool r = false;
@@ -210,7 +211,7 @@ namespace qse
                     }
                     
                     
-                    write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, efs,  marked, mark, colours, mode);
+                    write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, efs,  marked, mark, colours, mode, prevch);
                     
                     
                     
@@ -221,7 +222,7 @@ namespace qse
                         if(sugsc < 0)
                             sugsc = 0;
                         Console.SetCursorPosition(column, line);
-                        ArrayBlackBox(suggest, colours[27] + colours[28], colours[21], nowstr.Length, sugsc);
+                        autocomp = ArrayBlackBox(suggest, colours[27] + colours[28], colours[21], nowstr.Length, sugsc, ignclr);
                         prevnowstr = nowstr;
                     }
                     
@@ -288,7 +289,7 @@ namespace qse
                         break;
                     }
                     
-                    
+                    int curchar = filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll;
                     
                     
                     if(mode == 0) switch (keyInfo1.Key)
@@ -307,16 +308,27 @@ namespace qse
                             r = true;
                             break;
                         case ConsoleKey.Tab:
-                            file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, ' ');
-                            file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, ' ');
-                            file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, ' ');
-                            file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, ' ');
-                            column = column + 4;
+                            if(autocomp == "")
+                            {
+                                for(int i = 0; i < 4; i++)
+                                    file.Insert(curchar, ' ');
+                                column = column + 4;
+                            }
+                            else
+                            {
+                                char[] cha = autocomp.ToCharArray();
+                                Array.Reverse(cha);
+                                foreach(char c in cha)
+                                {
+                                    file.Insert(curchar, c);
+                                    column++;
+                                }
+                            }
                             break;
                         case ConsoleKey.Backspace:
-                            if(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll >= 0)
+                            if(curchar - 1 >= 0)
                             {
-                                file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll);
+                                file.RemoveAt(curchar - 1);
                                 column--;
                                 if (column < 0 && hscroll == 0 && line + scroll >= 2)
                                 {
@@ -331,14 +343,14 @@ namespace qse
                             {
                                 tab++;
                             }
-                            if (filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll > 0) if(!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll]) && code)
+                            if (curchar - 1 > 0) if(!ignclr.Contains(file[curchar - 1]) && code)
                                 tab=tab+4;
                             
-                            file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, '\n');
+                            file.Insert(curchar, '\n');
                                                         
                             for(int i = 0; i < tab; i++)
                             {
-                                file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll + 1, ' ');
+                                file.Insert(curchar + 1, ' ');
                             }
                             column = 0;
                             line++;
@@ -348,8 +360,10 @@ namespace qse
                             }
                             break;
                         case ConsoleKey.Delete:
-                            if(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll < file.Count && !(scroll + line + 3 > filelenghts.Count())){
-                            file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);}
+                            if(curchar+1 < file.Count)
+                            {
+                                file.RemoveAt(curchar);
+                            }
                             break;
                         case ConsoleKey.PageUp:
                             scroll = scroll - top + (top / 5);
@@ -366,13 +380,35 @@ namespace qse
                         default:
                             if (!char.IsControl(keyInfo1.KeyChar) && keyInfo1.KeyChar != '\0')
                             {
-                                file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll,keyInfo1.KeyChar);
+                                file.Insert(curchar ,keyInfo1.KeyChar);
                                 column++;
                             }
                             break;
                     }
                     
-                    if(mode == 1)  switch (keyInfo1.KeyChar)
+                    if(mode == 1){
+                    
+                    if (prevch == 'f')
+                    {
+                        //jump to next occurrence of character x
+                        
+                    }
+                    else if (prevch == 't')
+                    {
+                        //jump to before next occurrence of character x
+                        
+                    }
+                    else if (prevch == 'F')
+                    {
+                        // jump to the previous occurrence of character x
+                        
+                    }
+                    else if (prevch == 'T')
+                    {
+                        //jump to after previous occurrence of character x
+                        
+                    }
+                    else switch (keyInfo1.KeyChar)
                     {
                         case 'h':
                             column--;
@@ -430,6 +466,9 @@ namespace qse
                             {
                                 //position cursor on bottom of the screen
                                 
+                                scroll = (scroll - (top - 1 - line));
+                                line = top - 1;
+                                
                             }
                             else
                             {
@@ -447,7 +486,8 @@ namespace qse
                             break;
                         case '0':
                             //jump to the start of the line
-                            
+                            column = 0;
+                            hscroll = 0;
                             break;
                         case '^':
                             //jump to the first non-blank character of the line
@@ -455,6 +495,8 @@ namespace qse
                             break;
                         case '$':
                             //jump to the end of the line
+                            hscroll = 0;
+                            column = filelenghts[line + scroll] -  filelenghts[line - 1 + scroll];
                             
                             break;
                         case '_':
@@ -467,6 +509,8 @@ namespace qse
                             break;
                         case 'G':
                             //go to the last line of the document
+                            scroll = 0;
+                            line = filelenghts.Count;
                             
                             break;
                         case 'd':
@@ -483,28 +527,7 @@ namespace qse
                                 
                             }
                             break;
-                        case 'x':
-                            if(prevch == 'f')
-                            {
-                                //jump to next occurrence of character x
-                                
-                            }
-                            else if (prevch == 't')
-                            {
-                                //jump to before next occurrence of character x
-                                
-                            }
-                            else if(prevch == 'F')
-                            {
-                                // jump to the previous occurrence of character x
-                                
-                            }
-                            else if (prevch == 'T')
-                            {
-                                //jump to after previous occurrence of character x
-                                
-                            }
-                            break;
+                        
                         
                         case ';':
                             //repeat previous f, t, F or T movement
@@ -531,6 +554,7 @@ namespace qse
                             {
                                 //center cursor on screen
                                 
+                                prevch = '\0';
                             }
                             else
                             {
@@ -562,6 +586,7 @@ namespace qse
                             {
                                 //go to the first line of the document
                                 
+                                prevch = '\0';
                             }
                             else
                             {
@@ -572,6 +597,8 @@ namespace qse
                     if(keyInfo1.KeyChar != 'g' && keyInfo1.KeyChar != 'f' && keyInfo1.KeyChar != 't' && keyInfo1.KeyChar != 'F' && keyInfo1.KeyChar != 'T' && keyInfo1.KeyChar != 'z')
                         prevch = '\0';
                     
+                    
+                    }
                     
                     HandleRC(line, column, scroll, hscroll, file, r, out line, out column, out scroll, out hscroll, out file, out filelenghts);
                     
@@ -1312,7 +1339,7 @@ namespace qse
             }
         }
         
-        public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, char strng, char[] ignclr, string[][] efs, bool marked, int mark, string[] colours, int mode)
+        public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, char strng, char[] ignclr, string[][] efs, bool marked, int mark, string[] colours, int mode, char prevch)
         {    
             string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length), colours[16], ignclr, efs, colours, scroll,  Console.WindowHeight - 3, hscroll, strng);
             
@@ -1352,8 +1379,10 @@ namespace qse
             }
             else if(mode == 1)
             {
-                Console.Write(" QSE-nav");
-                for (int i = 0; i < left-(8+filename.Length); i++)
+                string topleft = " QSE-nav  ";
+                if(prevch != '\0') topleft = topleft + prevch;
+                Console.Write(topleft);
+                for (int i = 0; i < left-(topleft.Length+filename.Length); i++)
                     Console.Write(" ");
             }
             
@@ -1784,9 +1813,11 @@ namespace qse
             return indx;
         }
         
-        public static void ArrayBlackBox(string[] arr,string bgcol, string defcol, int offset, int start)
+        public static string ArrayBlackBox(string[] arr,string bgcol, string defcol, int offset, int start, char[] ignclr)
         {
             int cl = Console.CursorLeft-offset;
+            string outp = "";
+            
             if(cl >= 0)
             {
                 int ct = Console.CursorTop;
@@ -1821,6 +1852,19 @@ namespace qse
                 }
                 Console.Write(defcol);
             }
+            if(arr.Length > 0) outp=arr[0];
+            List<int> endarr = new List<int>();
+            
+            foreach(char c in ignclr)
+            {
+                int indxof = outp.IndexOf(c);
+                if(indxof > 0) endarr.Add(indxof);
+            }
+            
+            endarr.Add(outp.Length);
+            outp = outp.Substring(0, endarr.Min());
+            if(offset <= outp.Length) outp =  outp.Substring(offset);
+            return outp;
         }
         
         public static void debug(string info)

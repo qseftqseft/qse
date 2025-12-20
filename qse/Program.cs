@@ -217,8 +217,8 @@ namespace qse
                     
                     if(dosug)
                     {
-                        if(sugsc > suggest.Length-6)
-                            sugsc = suggest.Length-6;
+                        if(sugsc > suggest.Length-1)
+                            sugsc = suggest.Length-1;
                         if(sugsc < 0)
                             sugsc = 0;
                         Console.SetCursorPosition(column, line);

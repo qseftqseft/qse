@@ -10,17 +10,18 @@ namespace qse
 {
     class Write
     {
-        public static string colour(string str, string[][] efs, string[] colours, char[] ignclr, int h, int i, List<char> file, char strng, string filestring, List<int>[] overrides)
+        public static string colour(string str, string[][] efs, string[] colours, char[] ignclr, int h, int i, List<char> file, char strng, string filestring, List<int>[] overrides, string prevexp = "")
         {
 
             if(overrides[h][i] == 1 ) { return colours[19];}
             if(overrides[h][i] == 2 ) { return colours[18];}
 
-            return colourString(str, efs, colours, ignclr);
+            return colourString(str, efs, colours, ignclr, prevexp);
         }
 
-        public static string colourString(string str, string[][] efs, string[] colours, char[] ignclr)
+        public static string colourString(string str, string[][] efs, string[] colours, char[] ignclr, string prevexp)
         {
+            string[] prevexps = ["string", "int", "char"];
             if(str == "" )
             {
                 return colours[15];
@@ -42,7 +43,12 @@ namespace qse
             {
                 return colours[17];
             }
-
+            
+            else if (prevexps.Contains(prevexp))
+            {
+                return colours[10];
+            }
+            
             else
             {
                 return colours[16];
@@ -64,7 +70,8 @@ namespace qse
 
                 bool isfirst = false;
                 int i = hscroll;
-
+                string prevexp = "";
+                
                 if(lne.Length > i) while(i > 0 && !ignclr.Contains(lne[i])) {  i--;  isfirst = true;  }
                 if(isfirst) while( ignclr.Contains(lne[i]) && i < lne.Length-1) {i++;}
                 int j = i;
@@ -81,22 +88,24 @@ namespace qse
                 {
                     List<char> expression = new List<char>();
                     while(!ignclr.Contains(lne[i]) && i < lne.Length){    expression.Add(lne[i]);    if(i < lne.Length-1 && !ignclr.Contains(lne[i+1])) i++; else break;    }
-
+                    
                     string expr = "";
                     string addi = "";
-
-
+                    
+                    
                     expr = string.Concat(expression);
-
+                    
+                    
                     if(isfirst && (hscroll-j) < expression.Count())
                         addi = expr.Substring(hscroll - j);
                     else
                         addi = expr;
 
 
-                    foreach( char c in (colour(expr, efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides) + addi)) output.Add(c);
-
-
+                    foreach( char c in (colour(expr, efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides, prevexp) + addi)) output.Add(c);
+                    
+                    prevexp = expr;
+                    
                     isfirst=false;
 
                     i++;

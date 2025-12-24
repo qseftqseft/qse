@@ -10,10 +10,13 @@ namespace qse
 {
     class Input
     {
-        public static void modeone(ConsoleKeyInfo keyInfo1, int line, int column, bool r, string autocomp, List<char> file, int scroll, int hscroll, int curchar, List<int> filelenghts, int tab, char[] ignclr, bool code, int top, int sugsc, string[] suggest, out List<char> file2, out int line2, out int column2, out int scroll2, out int hscroll2, out int sugsc2, out bool r2)
+        public static void modeone(ConsoleKeyInfo keyInfo1, int line, int column, bool r, string autocomp, List<char> file, int scroll, int hscroll, int curchar, List<int> filelenghts, int tab, char[] ignclr, bool code, int top, int sugsc, string[] suggest, int mode, out List<char> file2, out int line2, out int column2, out int scroll2, out int hscroll2, out int sugsc2, out bool r2, out int mode2)
         {
             switch(keyInfo1.Key)
             {
+                case ConsoleKey.Escape:
+                    mode = 1;
+                    break;
                 case ConsoleKey.UpArrow:
                     line--;
                     break;
@@ -113,6 +116,7 @@ namespace qse
             hscroll2 = hscroll;
             sugsc2 = sugsc;
             r2 = r;
+            mode2 = mode;
 
         }
         public static void HandleRC(int line, int column, int scroll, int hscroll, List<char> file, bool r, out int line1, out int column1, out int scroll1, out int hscroll1, out List<char> file1, out List<int> filelenghts1)
@@ -143,9 +147,9 @@ namespace qse
                 column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
             }
 
-            if (column < 0 && hscroll > 0)
+            while (column < 0 && hscroll > 0)
             {
-                column = 0;
+                column++;
                 hscroll--;
             }
 

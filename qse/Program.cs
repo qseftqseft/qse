@@ -155,7 +155,8 @@ namespace qse
             string[] suggest = [""];
             int sugsc = 0;
             string prevnowstr = "";
-            
+            char prevtf = '\0';
+            int prevtfm = -1;
             
             while (true)
             {
@@ -289,33 +290,84 @@ namespace qse
                         break;
                     }
                     
-                    int curchar = filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll;
+                    int curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
                     
-                    Input.modeone(keyInfo1, line, column, r, autocomp, file, scroll, hscroll,  curchar, filelenghts, tab, ignclr, code, top, sugsc, suggest, 
-                    out file, out line, out column, out scroll, out hscroll, out sugsc, out r);
+                    if(mode == 0) Input.modeone(keyInfo1, line, column, r, autocomp, file, scroll, hscroll,  curchar, filelenghts, tab, ignclr, code, top, sugsc, suggest, mode, 
+                    out file, out line, out column, out scroll, out hscroll, out sugsc, out r, out mode);
                     
                     
                     if(mode == 1){
                     
+                    
+                    
                     if (prevch == 'f')
                     {
                         //jump to next occurrence of character x
-                        
+                        if(file[curchar] != '\n' && curchar < file.Count())
+                        {
+                            column++;
+                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                            while(file[curchar] != keyInfo1.KeyChar && file[curchar] != '\n' && curchar < file.Count())
+                            {
+                                column++;
+                                curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                            }
+                        }
+                        prevtf = keyInfo1.KeyChar;
+                        prevtfm = 0;
+                        prevch = '\0';
                     }
                     else if (prevch == 't')
                     {
                         //jump to before next occurrence of character x
                         
+                        if(file[curchar] != '\n' && curchar < file.Count())
+                        {
+                            column++;
+                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                            while(file[curchar+1] != keyInfo1.KeyChar && file[curchar+1] != '\n' && curchar+1 < file.Count())
+                            {
+                                column++;
+                                curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                            }
+                        }
+                        prevtf = keyInfo1.KeyChar;
+                        prevtfm = 1;
+                        prevch = '\0';
                     }
                     else if (prevch == 'F')
                     {
                         // jump to the previous occurrence of character x
-                        
+                        if(curchar > 0) if(file[curchar-1] != '\n')
+                        {
+                            column--;
+                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                            while(file[curchar] != keyInfo1.KeyChar && file[curchar] != '\n' && curchar < file.Count())
+                            {
+                                column--;
+                                curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                            }
+                        }
+                        prevtf = keyInfo1.KeyChar;
+                        prevtfm = 2;
+                        prevch = '\0';
                     }
                     else if (prevch == 'T')
                     {
                         //jump to after previous occurrence of character x
-                        
+                        if(curchar > 0) if(file[curchar-1] != '\n')
+                        {
+                            column--;
+                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                            if(curchar > 0) while(file[curchar-1] != keyInfo1.KeyChar && file[curchar-1] != '\n' && curchar-1 < file.Count())
+                            {
+                                column--;
+                                curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                            }
+                        }
+                        prevtf = keyInfo1.KeyChar;
+                        prevtfm = 3;
+                        prevch = '\0';
                     }
                     else switch (keyInfo1.KeyChar)
                     {
@@ -330,6 +382,7 @@ namespace qse
                             break;
                         case 'l':
                             column++;
+                            r = true;
                             break;
                         case 'H':
                             line = 0;
@@ -342,32 +395,137 @@ namespace qse
                             break;
                         case 'w':
                             //jump forwards to the start of a word
-                            
+                            if(curchar < file.Count())
+                            {
+                                if(file[curchar] == '\n'){ line++; column=0; hscroll=0;}
+                                else column++;
+                                
+                                curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                while(!ignclr.Contains(file[curchar]))
+                                {
+                                    column++;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                }
+                                while(ignclr.Contains(file[curchar]))
+                                {
+                                    if(file[curchar] == '\n'){ line++; column=0; hscroll=0;}
+                                    else column++;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                }
+                            }
                             break;
                         case 'W':
                             //jump forwards to the start of a word (words can contain punctuation)
-                            
+                            if(curchar < file.Count())
+                            {
+                                if(file[curchar] == '\n'){ line++; column=0; hscroll=0;}
+                                else column++;
+                                
+                                curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                
+                                while((file[curchar] != ' ' && file[curchar] != '\n'))
+                                {
+                                    if(file[curchar] == '\n'){ line++; column=0; hscroll=0;}
+                                    else column++;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                }
+                                
+                                while((file[curchar] == ' ') || file[curchar] == '\n')
+                                {
+                                    if(file[curchar] == '\n'){ line++; column=0; hscroll=0;}
+                                    else column++;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                }
+                            }
                             break;
                         case 'e':
                             if(prevch == 'g')
                             {
                                 //jump backwards to the end of a word
+                                if(curchar > 0)
+                                {
+                                    column--;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    while( !ignclr.Contains(file[curchar]) && curchar > 0)
+                                    {
+                                        column--;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    }
+                                    while( ignclr.Contains(file[curchar]) && curchar > 0)
+                                    {
+                                        column--;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    }
+                                }
                             }
                             else
                             {
                                 //jump forwards to the end of a word
-                                
+                                if(curchar < file.Count())
+                                {
+                                    if(file[curchar] == '\n'){ line++; column=0; hscroll=0;}
+                                    else column++;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    
+                                    while(ignclr.Contains(file[curchar])&& curchar < file.Count())
+                                    {
+                                        if(file[curchar] == '\n'){ line++; column=0; hscroll=0;}
+                                        else column++;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    }
+                                    
+                                    while(!ignclr.Contains(file[curchar+1])  && curchar+1 < file.Count())
+                                    {
+                                        if(file[curchar] == '\n'){ line++; column=0; hscroll=0;}
+                                        else column++;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    }
+                                }
                             }
                             break;
                         case 'E':
                             if(prevch == 'g')
                             {
                                 //jump backwards to the end of a word (words can contain punctuation)
-                                
+                                if(curchar > 0)
+                                {
+                                    column--;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    while( file[curchar] != ' '  && curchar > 0)
+                                    {
+                                        column--;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    }
+                                    while( file[curchar] == ' ' && curchar > 0)
+                                    {
+                                        column--;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    }
+                                }
                             }
                             else
                             {
                                 //jump forwards to the end of a word (words can contain punctuation)
+                                if(curchar < file.Count())
+                                {
+                                    if(file[curchar] == '\n'){ line++; column=0; hscroll=0;}
+                                    else column++;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    
+                                    while((file[curchar] == ' ' || file[curchar] == '\n')&& curchar < file.Count())
+                                    {
+                                        if(file[curchar] == '\n'){ line++; column=0; hscroll=0;}
+                                        else column++;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    }
+                                    
+                                    while((file[curchar+1] != ' ' && file[curchar+1] != '\n')  && curchar+1 < file.Count())
+                                    {
+                                        if(file[curchar] == '\n'){ line++; column=0; hscroll=0;}
+                                        else column++;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    }
+                                }
                             }
                             break;
                         case 'b':
@@ -382,15 +540,116 @@ namespace qse
                             else
                             {
                                 //jump backwards to the start of a word
-                                
+                                if(curchar > 0)
+                                {
+                                    column--;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    
+                                    while(ignclr.Contains(file[curchar])&& curchar < file.Count())
+                                    {
+                                        column--;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    }
+                                    
+                                    while(!ignclr.Contains(file[curchar-1])  && curchar-1 > 0)
+                                    {
+                                        column--;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    }
+                                }
                             }
                             break;
                         case 'B':
                             //jump backwards to the start of a word (words can contain punctuation)
-                            
+                            if(curchar > 0)
+                            {
+                                column--;
+                                curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                
+                                while(( file[curchar] == ' ' || file[curchar] == '\n')&& curchar < file.Count())
+                                {
+                                    column--;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                }
+                                
+                                while( file[curchar-1] != ' ' && file[curchar-1] != '\n'  && curchar-1 > 0)
+                                {
+                                    column--;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                }
+                            }
                             break;
                         case '%':
-                            //move cursor to matching character (default supported pairs: '()', '{}', '[]' - use :h matchpairs in vim for more info)
+                            //move cursor to matching character (default supported pairs: '()', '{}', '[]')
+                            int numc = 0;
+                            char cho = '\0';
+                            char cht = '\0';
+                            column = column + hscroll;
+                            hscroll = 0;
+                            
+                            switch(file[curchar])
+                            {
+                                case '(':
+                                    cho = '(';
+                                    cht = ')';
+                                    break;
+                                case ')':
+                                    cho = ')';
+                                    cht = '(';
+                                    break;
+                                case '{':
+                                    cho = '{';
+                                    cht = '}';
+                                    break;
+                                case '}':
+                                    cho = '}';
+                                    cht = '{';
+                                    break;
+                                case '[':
+                                    cho = '[';
+                                    cht = ']';
+                                    break;
+                                case ']':
+                                    cho = ']';
+                                    cht = '[';
+                                    break;
+                            }
+                            
+                            if(cho == '(' || cho == '{' || cho == '[')
+                            {
+                                do
+                                {
+                                    while(file[curchar] != '\n')
+                                    {
+                                        if(file[curchar] == cho) numc++;
+                                        else if (file[curchar] == cht){ numc--;}
+                                        if(numc < 1) break;
+                                        column++;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    }
+                                    
+                                    if(numc < 1) break;
+                                    hscroll = 0;
+                                    column = 0;
+                                    line++;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    
+                                }while(numc > 0);
+                            }
+                            else if(cho == ')' || cho == '}' || cho == ']')
+                            {
+                                do
+                                {
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    if(file[curchar] == cho) {numc++; }
+                                    else if (file[curchar] == cht){ numc--; Console.Write("suc");}
+                                    
+                                    if(numc < 1) break;
+                                    if(column > 0) column--; else {if(scroll > 0) scroll--; else if (line > 1) line--; else break; column = filelenghts[line+scroll] - filelenghts[line+scroll-1];}
+                                    
+                                }while(numc > 0);
+                            }
+                            
                             
                             break;
                         case '0':
@@ -400,19 +659,42 @@ namespace qse
                             break;
                         case '^':
                             //jump to the first non-blank character of the line
-                            
+                            column = 0;
+                            hscroll = 0;
+                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                            while(file[curchar] == ' ')
+                            {
+                                column++;
+                                curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                            }
                             break;
                         case '$':
                             //jump to the end of the line
                             hscroll = 0;
                             column = filelenghts[line + scroll] -  filelenghts[line - 1 + scroll];
+                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                            
+                            if(file[curchar-1] != '\n')
+                                column--;
                             
                             break;
                         case '_':
                             if(prevch == 'g')
                             {
                                 //jump to the last non-blank character of the line
+                                hscroll = 0;
+                                column = filelenghts[line + scroll] -  filelenghts[line - 1 + scroll];
+                                curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
                                 
+                                if(file[curchar-1] != '\n')
+                                    column--;
+                                
+                                curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                while(file[curchar] == ' ')
+                                {
+                                    column--;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                }
                             }
                             
                             break;
@@ -422,36 +704,184 @@ namespace qse
                             line = filelenghts.Count;
                             
                             break;
-                        case 'd':
-                            if(prevch == 'g')
-                            {
-                                //move to local declaration
-                                
-                            }
-                            break;
-                        case 'D':
-                            if(prevch == 'g')
-                            {
-                                //move to global declaration
-                                
-                            }
-                            break;
-                        
-                        
                         case ';':
                             //repeat previous f, t, F or T movement
-                            
+                            switch(prevtfm)
+                            {
+                                case 0:
+                                    if(file[curchar] != '\n' && curchar < file.Count())
+                                    {
+                                        column++;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        while(file[curchar] != prevtf && file[curchar] != '\n' && curchar < file.Count())
+                                        {
+                                            column++;
+                                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        }
+                                    }
+                                    break;
+                                case 1:
+                                    if(file[curchar] != '\n' && curchar < file.Count())
+                                    {
+                                        column++;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        while(file[curchar+1] != prevtf && file[curchar+1] != '\n' && curchar+1 < file.Count())
+                                        {
+                                            column++;
+                                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        }
+                                    }
+                                    break;
+                                case 2:
+                                    if(curchar > 0) if(file[curchar-1] != '\n')
+                                    {
+                                        column--;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        while(file[curchar] != prevtf && file[curchar] != '\n' && curchar < file.Count())
+                                        {
+                                            column--;
+                                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        }
+                                    }
+                                    break;
+                                case 3:
+                                    if(curchar > 0) if(file[curchar-1] != '\n')
+                                    {
+                                        column--;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        if(curchar > 0) while(file[curchar-1] != prevtf && file[curchar-1] != '\n' && curchar-1 < file.Count())
+                                        {
+                                            column--;
+                                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        }
+                                    }
+                                    break;
+                            }
                             break;
                         case ',':
                             //repeat previous f, t, F or T movement, backwards
-                            
+                            switch(prevtfm)
+                            {
+                                case 2:
+                                    if(file[curchar] != '\n' && curchar < file.Count())
+                                    {
+                                        column++;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        while(file[curchar] != prevtf && file[curchar] != '\n' && curchar < file.Count())
+                                        {
+                                            column++;
+                                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        }
+                                    }
+                                    break;
+                                case 3:
+                                    if(file[curchar] != '\n' && curchar < file.Count())
+                                    {
+                                        column++;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        while(file[curchar+1] != prevtf && file[curchar+1] != '\n' && curchar+1 < file.Count())
+                                        {
+                                            column++;
+                                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        }
+                                    }
+                                    break;
+                                case 0:
+                                    if(curchar > 0) if(file[curchar-1] != '\n')
+                                    {
+                                        column--;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        while(file[curchar] != prevtf && file[curchar] != '\n' && curchar < file.Count())
+                                        {
+                                            column--;
+                                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        }
+                                    }
+                                    break;
+                                case 1:
+                                    if(curchar > 0) if(file[curchar-1] != '\n')
+                                    {
+                                        column--;
+                                        curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        if(curchar > 0) while(file[curchar-1] != prevtf && file[curchar-1] != '\n' && curchar-1 < file.Count())
+                                        {
+                                            column--;
+                                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                        }
+                                    }
+                                    break;
+                            }
                             break;
                         case '}':
                             //jump to next paragraph (or function/block, when editing code)
+                            bool tfal = true;
+                            while(tfal)
+                            {
+                                while(file[curchar] != '\n')
+                                {
+                                    column++;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                }
+                                
+                                
+                                
+                                if(scroll >= String.Concat(file).Split('\n').Count() - Console.WindowHeight ) line++;
+                                    else scroll++;
+                                
+                                column = 0;
+                                hscroll = 0;
+                                curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                
+                                if(curchar >= file.Count()){line--; break;}
+                                
+                                while(file[curchar] != '\n')
+                                {
+                                    column++;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    
+                                    if(file[curchar] != '\n' && file[curchar] != ' ') break;
+                                    else if(file[curchar] == '\n') { tfal = false; break;}
+                                    else if (curchar+1 >= file.Count()) break;
+                                }
+                                if(file[curchar] == '\n') break;
+                            }
                             
                             break;
                         case '{':
                             //jump to previous paragraph (or function/block, when editing code)
+                            tfal = true;
+                            
+                            if(scroll <= 0 && line > 1) line--;
+                            else if (scroll > 0) scroll--;
+                            else break;
+                            column = 0;
+                            hscroll = 0;
+                            curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                            int num = 0;
+                            
+                            do
+                            {
+                                if(file[curchar] == '\n'){if(scroll <= 0 && line > 1) line--; else if (scroll > 0) scroll--; else break; curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);}
+                                
+                                column++;
+                                curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                num = 4;
+                                
+                                if(file[curchar] == '\n') {tfal = false; break;}
+                                
+                                else if(file[curchar] != ' ') 
+                                {
+                                    if(scroll <= 0 && line > 1) line--;
+                                    else if (scroll > 0) scroll--;
+                                    else break;
+                                    
+                                    column = 0;
+                                    hscroll = 0;
+                                    curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
+                                    continue;
+                                }
+                                else if (curchar+1 >= file.Count()) break;
+                            }while(file[curchar] != '\n');
                             
                             break;
                         
@@ -462,6 +892,9 @@ namespace qse
                             if(prevch == 'z')
                             {
                                 //center cursor on screen
+                                scroll = (scroll - (top/2 - 1 - line));
+                                line = top/2 - 1;
+                                
                                 
                                 prevch = '\0';
                             }
@@ -477,7 +910,9 @@ namespace qse
                             if (prevch == 'z')
                             {
                                 //position cursor on top of the screen
-                                
+                                scroll = (scroll + line );
+                                line = 0;
+                                prevch = '\0';
                             }
                             else
                             {
@@ -494,13 +929,17 @@ namespace qse
                             if(prevch == 'g')
                             {
                                 //go to the first line of the document
-                                
+                                line=0;
+                                scroll=0;
                                 prevch = '\0';
                             }
                             else
                             {
                                 prevch = 'g';
                             }
+                            break;
+                        case 'i':
+                            mode = 0;
                             break;
                     }
                     if(keyInfo1.KeyChar != 'g' && keyInfo1.KeyChar != 'f' && keyInfo1.KeyChar != 't' && keyInfo1.KeyChar != 'F' && keyInfo1.KeyChar != 'T' && keyInfo1.KeyChar != 'z')

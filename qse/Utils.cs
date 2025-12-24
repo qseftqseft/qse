@@ -225,5 +225,14 @@ namespace qse
             if(offset <= outp.Length) outp =  outp.Substring(offset);
             return outp;
         }
+        public static int curchar(List<int> filelenghts, int line, int scroll, int column, int hscroll)
+        {
+            return filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll;
+        }
+        
+        
+        
+        
+        
     }
 }

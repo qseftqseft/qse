@@ -150,18 +150,26 @@ namespace qse
 
         public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, char strng, char[] ignclr, string[][] efs, bool marked, int mark, string[] colours, int mode, char prevch)
         {
-            string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length), colours[16], ignclr, efs, colours, scroll,  Console.WindowHeight - 3, hscroll, strng);
-
-
+            string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length)-1, colours[16], ignclr, efs, colours, scroll,  Console.WindowHeight - 3, hscroll, strng);
+            
+            List<string> writel = write.Split('\n').ToList();
+            
+            int lnlen = (scroll + Console.WindowHeight - 3).ToString().Length;
+            
+            
             Console.Write(colours[21]);
             Console.Write("\x1b[2J");
-
-            Console.SetCursorPosition (0, 1);
-
-            Console.Write(write);
-
-            writeCutoffs(scroll, hscroll, Console.WindowWidth-((filelenghts.Count).ToString().Length), filelenghts, Console.WindowHeight - 3, colours[15]);
-
+            
+            Console.SetCursorPosition( lnlen + 1, 1);
+            foreach (string s in writel)
+            {
+                Console.WriteLine(s);
+                Console.CursorLeft = lnlen + 1;
+            }
+            writeCutoffs(scroll, hscroll-lnlen-1, Console.WindowWidth, filelenghts, Console.WindowHeight-3, colours[15]);
+            
+            
+            
             //linunumbers
             Console.SetCursorPosition (0, 1);
             int max = top;
@@ -170,13 +178,17 @@ namespace qse
 
             for(int i = 1; i < max; i++)
             {
-                Console.SetCursorPosition(left-((filelenghts.Count).ToString().Length) + 1 , i);
-                for(int j = 0; j < ((filelenghts.Count).ToString().Length) - (i+scroll).ToString().Length; j++)
+                Console.SetCursorPosition(0 , i);
+                for(int j = 0; j < lnlen - (i+scroll).ToString().Length; j++)
                     Console.Write(colours[22] + colours[23] + "0");
 
                 Console.Write(colours[22] +colours[24] +(i+scroll));
             }
-
+            
+            
+            
+            
+            
             //UI
             Console.SetCursorPosition(0, 0);
             Console.Write(colours[25]+colours[26]);

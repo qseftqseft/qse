@@ -1,4 +1,4 @@
-qse program /home/qseft/Documents/GitHub/qse/qse/Program.cs test /home/qseft/test
+qse program /home/qseft/Documents/GitHub/qse/qse/Program.cs input /home/qseft/Documents/GitHub/qse/qse/Input.cs utils /home/qseft/Documents/GitHub/qse/qse/Utils.cs write /home/qseft/Documents/GitHub/qse/qse/Write.cs files /home/qseft/Documents/GitHub/qse/qse/Files.cs suggest /home/qseft/Documents/GitHub/qse/qse/Suggest.cs pm /home/qseft/Documents/GitHub/qse/qse/PM.cs nav /home/qseft/Documents/GitHub/qse/qse/NavMode.cs
 test testfile /home/qseft/test helloWorld /home/qseft/test0 hellworld /home/qseft/test0 Hell /home/qseft/hell
 PR current /home/qseft/Documents/GitHub/PR1_2024_ULRICH/2.ročník/ConsoleAppEins/Program.cs
 sug program /home/qseft/Documents/GitHub/suggestsion-engine/suggestsion-engine/Program.cs

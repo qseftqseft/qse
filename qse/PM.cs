@@ -26,7 +26,7 @@ namespace qse
             string proj = "";
             while(one)
             {
-                proj = File.ReadAllText(homeDirectory + "/.qse/projects/projects.list");
+                proj = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "projects" + Path.DirectorySeparatorChar + "projects.list");
                 Console.Clear();
                 Console.WriteLine(proj);
                 string[] project = proj.Split('\n');
@@ -174,7 +174,7 @@ namespace qse
                     proj = proj + name + other + "\n";
 
                 }
-                File.WriteAllText(homeDirectory + "/.qse/projects/projects.list", proj);
+                File.WriteAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "projects" + Path.DirectorySeparatorChar + "projects.list", proj);
             }
 
             return proj;

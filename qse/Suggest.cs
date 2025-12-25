@@ -10,7 +10,7 @@ namespace qse
 {
     class Suggest
     {
-        public static string[] sug(string prevstr, string str, string[] match)
+        public static string[] sug(string prevstr, string str, string[] match, string[] vars)
         {
 
             List<string> sugg = new List<string>();
@@ -19,9 +19,19 @@ namespace qse
             List<string> sugfour = new List<string>();
             List<string> sugthree = new List<string>();
             List<string> classsug = new List<string>();
+            List<string> vnms = new List<string>();
+            
             string sep = match[0];
             match = match.Skip(1).ToArray();
-
+            
+            List<string> matc = match.ToList();
+            foreach(string s in vars) vnms.Insert(0, s.Split(sep)[1]);
+            
+            vnms.Sort((x, y) => y.Length.CompareTo(x.Length));
+            
+            foreach(string s in vnms) matc.Insert(0, s);
+            match = matc.ToArray();
+            
             for(int i = 0; i < match.Length; i++)
             {
                 if(match[i].Contains(sep))

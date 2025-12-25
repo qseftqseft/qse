@@ -10,18 +10,17 @@ namespace qse
 {
     class Write
     {
-        public static string colour(string str, string[][] efs, string[] colours, char[] ignclr, int h, int i, List<char> file, char strng, string filestring, List<int>[] overrides, string prevexp = "")
+        public static string colour(string str, string[][] efs, string[] colours, char[] ignclr, int h, int i, List<char> file, char strng, string filestring, List<int>[] overrides, string[] exps)
         {
 
             if(overrides[h][i] == 1 ) { return colours[19];}
             if(overrides[h][i] == 2 ) { return colours[18];}
 
-            return colourString(str, efs, colours, ignclr, prevexp);
+            return colourString(str, efs, colours, ignclr, exps);
         }
 
-        public static string colourString(string str, string[][] efs, string[] colours, char[] ignclr, string prevexp)
+        public static string colourString(string str, string[][] efs, string[] colours, char[] ignclr, string[] exps)
         {
-            string[] prevexps = ["string", "int", "char"];
             if(str == "" )
             {
                 return colours[15];
@@ -44,9 +43,9 @@ namespace qse
                 return colours[17];
             }
             
-            else if (prevexps.Contains(prevexp))
+            else if(exps.Contains(str))
             {
-                return colours[10];
+                return colours[29];
             }
             
             else
@@ -56,7 +55,7 @@ namespace qse
         }
 
 
-        public static string listColourAndCutoff(List<char> file, int maxWidth, string dcolour, char[] ignclr, string[][] efs, string[] colours, int top, int height, int hscroll, char strng)
+        public static string listColourAndCutoff(List<char> file, int maxWidth, string dcolour, char[] ignclr, string[][] efs, string[] colours, int top, int height, int hscroll, char strng, string[] exps)
         {
             // maxWidth, dcolour, []ignclr, [][]efs, []colours, top, height, hscroll
 
@@ -70,7 +69,6 @@ namespace qse
 
                 bool isfirst = false;
                 int i = hscroll;
-                string prevexp = "";
                 
                 if(lne.Length > i) while(i > 0 && !ignclr.Contains(lne[i])) {  i--;  isfirst = true;  }
                 if(isfirst) while( ignclr.Contains(lne[i]) && i < lne.Length-1) {i++;}
@@ -78,7 +76,7 @@ namespace qse
 
                 if(i < lne.Length) while(ignclr.Contains(lne[i]) && i < lne.Length)
                 {
-                    foreach(char c in ( colour(lne[i] + "", efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides) )) output.Add(c);
+                    foreach(char c in ( colour(lne[i] + "", efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides, exps) )) output.Add(c);
                     output.Add(lne[i]);
                     if(i+1 < lne.Length) i++;
                     else break;
@@ -102,9 +100,8 @@ namespace qse
                         addi = expr;
 
 
-                    foreach( char c in (colour(expr, efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides, prevexp) + addi)) output.Add(c);
+                    foreach( char c in (colour(expr, efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides, exps) + addi)) output.Add(c);
                     
-                    prevexp = expr;
                     
                     isfirst=false;
 
@@ -112,7 +109,7 @@ namespace qse
 
                     if(i < lne.Length) while(ignclr.Contains(lne[i]) && i < lne.Length && i < hscroll+maxWidth)    //yes, this is the exact same code
                     {
-                        foreach(char c in ( colour(lne[i] + "", efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides) )) output.Add(c);
+                        foreach(char c in ( colour(lne[i] + "", efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides, exps) )) output.Add(c);
                         output.Add(lne[i]);
 
                         if(i+1 < lne.Length) i++;
@@ -148,9 +145,9 @@ namespace qse
             }
         }
 
-        public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, char strng, char[] ignclr, string[][] efs, bool marked, int mark, string[] colours, int mode, char prevch)
+        public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, char strng, char[] ignclr, string[][] efs, bool marked, int mark, string[] colours, int mode, char prevch, string[] exps)
         {
-            string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length)-1, colours[16], ignclr, efs, colours, scroll,  Console.WindowHeight - 3, hscroll, strng);
+            string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length)-1, colours[16], ignclr, efs, colours, scroll,  Console.WindowHeight - 3, hscroll, strng, exps);
             
             List<string> writel = write.Split('\n').ToList();
             

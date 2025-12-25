@@ -107,6 +107,8 @@ namespace qse
                 code = true;
             }
             
+            string[] tpes = settings[22].Split('Æ');
+            
             bool dosug = false;
             string sugfile = "";
             string[] match = [""];
@@ -122,8 +124,8 @@ namespace qse
             
             string themefile = "theme";
             string[] theme = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile).Split('\n');
-            string[] colours = new string[29];
-            for(int i = 0; i < 29; i++)
+            string[] colours = new string[30];
+            for(int i = 0; i < 30; i++)
             {
                 colours[i] = "\x1b[" + theme[i] + "m";
             }
@@ -164,14 +166,16 @@ namespace qse
                     control: false);
                 left = Console.WindowWidth - 1;
                 top = Console.WindowHeight - 2;
-                filelenghts.Add(0);
                 filestr = string.Concat(file);
+                filelenghts.Add(0);
                 filelenghts = Utils.lenghts(filestr);
                 char prevch = '\0';
                 string autocomp = "";
                 
                 while (run)
                 {
+                    
+                    
                     autocomp = "";
                     
                     
@@ -201,10 +205,27 @@ namespace qse
                     }while(true);
                     
                     
+                    filestr = string.Concat(file);
+                    List<string> exps = new List<string>();
+                    string[] lnes = filestr.Split('\n');
+                    List<string> vars = new List<string>();
+                    
+                    foreach(string str in lnes)
+                    {
+                        string[] st = str.Split(ignclr, StringSplitOptions.RemoveEmptyEntries);
+                        for(int i = 1; i < st.Length; i++)
+                        {
+                            if( tpes.Contains(st[i-1]) )
+                            {
+                                exps.Add(st[i]);
+                                if(dosug) vars.Add(st[i-1] + match[0] + st[i]);
+                            }
+                        }
+                    }
                     
                     if(dosug)
                     {
-                        suggest = Suggest.sug(prevstr, nowstr, match);
+                        suggest = Suggest.sug(prevstr, nowstr, match, vars.ToArray() );
                         if(prevnowstr != nowstr)
                         {
                             sugsc = 0;
@@ -212,7 +233,10 @@ namespace qse
                     }
                     
                     
-                    Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, efs,  marked, mark, colours, mode, prevch);
+                    
+                    
+                    
+                    Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, efs,  marked, mark, colours, mode, prevch, exps.ToArray());
                     
                     
                     
@@ -474,6 +498,7 @@ namespace qse
                                         {
                                             code = true;
                                         }
+                                        tpes = settings[22].Split('Æ');
                                     }
                                     break;
                                 
@@ -553,8 +578,8 @@ namespace qse
                             }
                         } while (!File.Exists(homeDirectory + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile));
                         theme = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile).Split('\n');
-                        colours = new string[29];
-                        for(int i = 0; i < 29; i++)
+                        colours = new string[30];
+                        for(int i = 0; i < 30; i++)
                         {
                             colours[i] = "\x1b[" + theme[i] + "m";
                         }

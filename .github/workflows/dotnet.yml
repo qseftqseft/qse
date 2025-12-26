@@ -36,6 +36,10 @@ jobs:
       with:
         name: qse_linux-x64
         path: ./qse/publish
+    - name: Make file executable
+      run: |
+        cd qse/publish
+        chmod +x ./qse
     - name: Zip published files
       run: |
         cd qse/publish

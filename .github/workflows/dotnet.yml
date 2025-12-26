@@ -43,7 +43,7 @@ jobs:
     - name: Zip published files
       run: |
         cd qse/publish
-        zip -r ../qse_linux-x64.zip .
+        tar -cf ../qse_linux-x64.tar .
     - name: Auto Semver
       uses: oss-actions/auto-semver@v0.1.11
       id: versioning
@@ -55,7 +55,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ steps.versioning.outputs.version }}
-        files: qse/qse_linux-x64.zip
+        files: qse/qse_linux-x64.tar
         prerelease: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -51,7 +51,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ steps.versioning.outputs.version }}
-        files: qse_linux-x64.zip
+        files: qse/qse_linux-x64.zip
         prerelease: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

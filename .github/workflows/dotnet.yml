@@ -23,18 +23,15 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
-    - name: Cd to qse
-      run: cd qse
-    - name: List
-      run: ls
-    - name: Restore dependencies
-      run: dotnet restore
     - name: Build
-      run: dotnet build --configuration Release --no-restore      
-    - name: LinPub
-      run: dotnet publish --configuration Release --runtime linux-x64 --self-contained true --output ./publish
-    - name: Test
-      run: dotnet test --no-build --verbosity normal      
+      run: |
+        cd ./qse
+        ls
+        dotnet restore
+        dotnet build --configuration Release --no-restore      
+        dotnet publish --configuration Release --runtime linux-x64 --self-contained true --output ./publish
+        dotnet test --no-build --verbosity normal 
+      
     - name: Upload
       uses: actions/upload-artifact@v4
       with:

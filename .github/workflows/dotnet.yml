@@ -26,7 +26,6 @@ jobs:
     - name: Build
       run: |
         cd ./qse
-        ls
         dotnet restore
         dotnet build --configuration Release --no-restore      
         dotnet publish --configuration Release --runtime linux-x64 --self-contained true --output ./publish
@@ -36,10 +35,10 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: qse_linux-x64
-        path: ./publish
+        path: ./qse/publish
     - name: Zip published files
       run: |
-        cd publish
+        cd qse/publish
         zip -r ../qse_linux-x64.zip .
     - name: Auto Semver
       uses: oss-actions/auto-semver@v0.1.11

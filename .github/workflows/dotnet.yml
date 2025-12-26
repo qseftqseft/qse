@@ -36,14 +36,10 @@ jobs:
       with:
         name: qse_linux-x64
         path: ./qse/publish
-    - name: Make file executable
+    - name: Tar published files
       run: |
         cd qse/publish
-        chmod +x ./qse
-    - name: Zip published files
-      run: |
-        cd qse/publish
-        tar -cf ../qse_linux-x64.tar .
+        tar -czf ../qse_linux-x64.tar.gz .
     - name: Auto Semver
       uses: oss-actions/auto-semver@v0.1.11
       id: versioning

@@ -71,6 +71,7 @@ namespace qse
             string filestr = "";
             bool marked = false;
             int mark = 0;
+            int[] marka = [0, 0];
             
             List<int> filelenghts = new List<int>();
             
@@ -236,7 +237,7 @@ namespace qse
                     
                     
                     
-                    Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, efs,  marked, mark, colours, mode, prevch, exps.ToArray());
+                    Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, efs,  marked, marka, colours, mode, prevch, exps.ToArray(), [line+scroll, column+hscroll]);
                     
                     
                     
@@ -258,8 +259,8 @@ namespace qse
                     
                     Console.CancelKeyPress += (sender, e) => 
                     {
-                     e.Cancel = true;
-                     if(marked)
+                        e.Cancel = true;
+                        if(marked)
                         {
                             string pclip = "";
                             for(int i = mark; i <= filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll; i++)
@@ -268,6 +269,15 @@ namespace qse
                             }
                             ClipboardService.SetText(pclip);
                             marked = false;
+                            
+                            Console.SetCursorPosition(0, top + 1);
+                            Console.Write(colours[21]+colours[15]);//change to 27 and 28
+                            for (int i = 0; i <= left; i++)
+                            {
+                                Console.Write(" ");
+                            }
+                            Console.SetCursorPosition(0, top + 1);
+                            Console.Write("Copied text: " + pclip);
                         }
                     };
                     
@@ -362,6 +372,7 @@ namespace qse
                     {
                         marked = !marked;
                         mark = filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll;
+                        marka = [line+scroll, column+hscroll];
                     }
                     
                     if (keyInfo1.Key == ConsoleKey.F)

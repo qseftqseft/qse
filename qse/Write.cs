@@ -55,7 +55,7 @@ namespace qse
         }
 
 
-        public static string listColourAndCutoff(List<char> file, int maxWidth, string dcolour, char[] ignclr, string[][] efs, string[] colours, int top, int height, int hscroll, char strng, string[] exps)
+        public static string listColourAndCutoff(List<char> file, int maxWidth, string dcolour, char[] ignclr, string[][] efs, string[] colours, int top, int height, int hscroll, char strng, string[] exps, int[] mark, int[] pos, bool marked)
         {
             // maxWidth, dcolour, []ignclr, [][]efs, []colours, top, height, hscroll
 
@@ -65,6 +65,7 @@ namespace qse
 
             for(int h = 0; h < filestr.Count(); h++)
             {
+                int k = hscroll;
                 string lne = filestr[h];
 
                 bool isfirst = false;
@@ -73,11 +74,24 @@ namespace qse
                 if(lne.Length > i) while(i > 0 && !ignclr.Contains(lne[i])) {  i--;  isfirst = true;  }
                 if(isfirst) while( ignclr.Contains(lne[i]) && i < lne.Length-1) {i++;}
                 int j = i;
-
+                
+                if(marked && mark[0] == h+top+1 && mark[1] == k) foreach(char c in colours[20]) output.Add(c);
+                if(marked && pos[0] == h+top+1 && pos[1] == k) foreach(char ch in colours[21]) output.Add(ch);
+                
                 if(i < lne.Length) while(ignclr.Contains(lne[i]) && i < lne.Length)
                 {
-                    foreach(char c in ( colour(lne[i] + "", efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides, exps) )) output.Add(c);
+                    foreach(char c in ( colour(lne[i] + "", efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides, exps) ))
+                    {
+                        output.Add(c);
+                    }
+                    
+                    
                     output.Add(lne[i]);
+                    
+                    if(marked && mark[0] == h+top+1 && mark[1]-1 == k) foreach(char ch in colours[20]) output.Add(ch);
+                    if(marked && pos[0] == h+top+1 && pos[1] == k) foreach(char ch in colours[21]) output.Add(ch);
+                    k++;
+                    
                     if(i+1 < lne.Length) i++;
                     else break;
                 }
@@ -100,7 +114,15 @@ namespace qse
                         addi = expr;
 
 
-                    foreach( char c in (colour(expr, efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides, exps) + addi)) output.Add(c);
+                    foreach( char c in (colour(expr, efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides, exps)))
+                        output.Add(c);
+                    foreach( char c in addi)
+                    {
+                        output.Add(c);    //here
+                        if(marked && mark[0] == h+top+1 && mark[1]-1 == k) foreach(char ch in colours[20]) output.Add(ch);
+                        if(marked && pos[0] == h+top+1 && pos[1] == k) foreach(char ch in colours[21]) output.Add(ch);
+                        k++;
+                    }
                     
                     
                     isfirst=false;
@@ -110,7 +132,13 @@ namespace qse
                     if(i < lne.Length) while(ignclr.Contains(lne[i]) && i < lne.Length && i < hscroll+maxWidth)    //yes, this is the exact same code
                     {
                         foreach(char c in ( colour(lne[i] + "", efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides, exps) )) output.Add(c);
-                        output.Add(lne[i]);
+                        
+                        output.Add(lne[i]); //here
+                        
+                        if(marked && mark[0] == h+top+1 && mark[1]-1 == k) foreach(char c in colours[20]) output.Add(c);
+                        if(marked && pos[0] == h+top+1 && pos[1] == k) foreach(char ch in colours[21]) output.Add(ch);
+                        
+                        k++;
 
                         if(i+1 < lne.Length) i++;
                         else break;
@@ -145,9 +173,9 @@ namespace qse
             }
         }
 
-        public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, char strng, char[] ignclr, string[][] efs, bool marked, int mark, string[] colours, int mode, char prevch, string[] exps)
+        public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, char strng, char[] ignclr, string[][] efs, bool marked, int[] mark, string[] colours, int mode, char prevch, string[] exps, int[] pos)
         {
-            string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length)-1, colours[16], ignclr, efs, colours, scroll,  Console.WindowHeight - 3, hscroll, strng, exps);
+            string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length)-1, colours[16], ignclr, efs, colours, scroll,  Console.WindowHeight - 3, hscroll, strng, exps, mark, pos, marked);
             
             List<string> writel = write.Split('\n').ToList();
             

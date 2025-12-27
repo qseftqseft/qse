@@ -23,23 +23,23 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
-    - name: Restore dependencies
-      run: dotnet restore
     - name: Build
-      run: dotnet build --configuration Release --no-restore      
-    - name: LinPub
-      run: dotnet publish --configuration Release --runtime linux-x64 --self-contained true --output ./publish
-    - name: Test
-      run: dotnet test --no-build --verbosity normal      
+      run: |
+        cd ./qse
+        dotnet restore
+        dotnet build --configuration Release --no-restore      
+        dotnet publish --configuration Release --runtime linux-x64 --self-contained true --output ./publish
+        dotnet test --no-build --verbosity normal 
+      
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
         name: qse_linux-x64
-        path: ./publish
-    - name: Zip published files
+        path: ./qse/publish
+    - name: Tar published files
       run: |
-        cd publish
-        zip -r ../qse_linux-x64.zip .
+        cd qse/publish
+        tar -czf ../qse_linux-x64.tar.gz .
     - name: Auto Semver
       uses: oss-actions/auto-semver@v0.1.11
       id: versioning
@@ -51,7 +51,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ steps.versioning.outputs.version }}
-        files: qse_linux-x64.zip
+        files: qse/qse_linux-x64.tar.gz
         prerelease: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

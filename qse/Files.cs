@@ -13,7 +13,7 @@ namespace qse
         public static List<char> OpenFile(string filename, out string originalfile)
         {
             List<char> file = new List<char>();
-            originalfile = File.ReadAllText(filename).Replace("\t", "    ");
+            originalfile = File.ReadAllText(filename).Replace("\t", "    ").Replace("\r\n", "\n");
             foreach (char c in originalfile)
             {
                 file.Add(c);

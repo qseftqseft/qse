@@ -161,6 +161,10 @@ namespace qse
             char prevtf = '\0';
             int prevtfm = -1;
             
+            Console.Write(colours[21]);
+            Console.Write("\x1b[2J");
+            
+            
             while (true)
             {
                 ConsoleKeyInfo keyInfo1 = new ConsoleKeyInfo('\u001b', ConsoleKey.Escape, shift: false, alt: false,
@@ -172,6 +176,7 @@ namespace qse
                 filelenghts = Utils.lenghts(filestr);
                 char prevch = '\0';
                 string autocomp = "";
+                string prev = "";
                 
                 while (run)
                 {
@@ -237,7 +242,7 @@ namespace qse
                     
                     
                     
-                    Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, efs,  marked, marka, colours, mode, prevch, exps.ToArray(), [line+scroll, column+hscroll]);
+                    prev = Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, efs,  marked, marka, colours, mode, prevch, exps.ToArray(), [line+scroll, column+hscroll], prev);
                     
                     
                     

@@ -245,6 +245,7 @@ namespace qse
                     prev = Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, efs,  marked, marka, colours, mode, prevch, exps.ToArray(), [line+scroll, column+hscroll], prev);
                     
                     
+                    string[] prevs = prev.Split('\n');
                     
                     if(dosug)
                     {
@@ -256,18 +257,20 @@ namespace qse
                         autocomp = Utils.ArrayBlackBox(suggest, colours[27] + colours[28], colours[21], nowstr.Length, sugsc, ignclr);
                         prevnowstr = nowstr;
                         
-                        string[] prevs = prev.Split('\n');
-                        
-                        for(int i = 1; i <= 7; i++)
+                        for(int i = 1; i <= 7 && i + line < prevs.Length; i++)
                             prevs[i+line] = "";
-                        
-                        prev = String.Join('\n', prevs);
                     }
+                    
+                    
+                    prev = String.Join('\n', prevs);
+                    
+                    
                     
                     Console.SetCursorPosition(((scroll + Console.WindowHeight - 3).ToString().Length)+1+column, line);
                     
                     //
                     //debug(swone.ElapsedMilliseconds + " " + swtwo.ElapsedMilliseconds + " " + swthree.ElapsedMilliseconds);                    
+                    
                     
                     Console.CancelKeyPress += (sender, e) => 
                     {
@@ -289,8 +292,10 @@ namespace qse
                                 Console.Write(" ");
                             }
                             Console.SetCursorPosition(0, top + 1);
-                            Console.Write("Copied text: " + pclip);
+                            Console.Write("Copied!");
+                            Console.SetCursorPosition(((scroll + Console.WindowHeight - 3).ToString().Length)+1+column, line);
                         }
+                        
                     };
                     
                     
@@ -298,26 +303,25 @@ namespace qse
                     
                     
                     
-                    bool iterate = false;
-                    ressw.Start();
                     
-                    while(!Console.KeyAvailable)
+                    
+                    
+                    if(left != Console.WindowWidth - 1)
                     {
-                        if(left != Console.WindowWidth - 1)
-                        {
-                            left = Console.WindowWidth - 1;
-                            iterate = true;
-                            break;
-                        }
-                        if(top != Console.WindowHeight - 2)
-                        {
-                            top = Console.WindowHeight - 2;
-                            iterate = true;
-                            break;
-                        }
+                        left = Console.WindowWidth - 1;
+                        Console.Clear();
+                        prev = "";
+                        break;
                     }
-                    if(iterate)
-                        continue;
+                    if(top != Console.WindowHeight - 2)
+                    {
+                        top = Console.WindowHeight - 2;
+                        Console.Clear();
+                        prev = "";
+                        break;
+                    }
+                    
+                    
                     
                     
                     keyInfo1 = Console.ReadKey(true);
@@ -778,8 +782,20 @@ namespace qse
                                 file.RemoveAt(mark);
                             }
                             marked = false;
+                            
                         }
                     }
+                    
+                    else if (keyInfo1.Key == ConsoleKey.Y)
+                    {
+                        scroll -= 2;
+                    }
+                    
+                    else if (keyInfo1.Key == ConsoleKey.E)
+                    {
+                        scroll += 2;
+                    }
+                    
                     else if (keyInfo1.Key == ConsoleKey.Delete)
                     {
                         if(!(scroll + line + 3 > filelenghts.Count()))

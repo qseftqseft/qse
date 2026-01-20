@@ -88,7 +88,11 @@ namespace qse
                 if(isfirst) while( ignclr.Contains(lne[i]) && i < lne.Length-1) {i++;}
                 int j = i;
                 
-                if(marked && mark[0] == h+top+1 && mark[1] == k) foreach(char c in colours[20]) output.Add(c);
+                //top = hscroll
+                //k = current index
+                //mark[line+scroll, column+hscroll]
+                
+                if(marked && (mark[0] <= h+top+1 && pos[0] >= h+top+1) && (mark[1] <= k || (mark[0] < h+top+1 && pos[0] >= h+top+1))) foreach(char c in colours[20]) output.Add(c);
                 if(marked && pos[0] == h+top+1 && pos[1] == k) foreach(char ch in colours[21]) output.Add(ch);
                 
                 if(i < lne.Length) while(ignclr.Contains(lne[i]) && i < lne.Length)
@@ -103,6 +107,7 @@ namespace qse
                     
                     if(marked && mark[0] == h+top+1 && mark[1]-1 == k) foreach(char ch in colours[20]) output.Add(ch);
                     if(marked && pos[0] == h+top+1 && pos[1] == k) foreach(char ch in colours[21]) output.Add(ch);
+                    
                     k++;
                     
                     if(i+1 < lne.Length) i++;
@@ -148,7 +153,7 @@ namespace qse
                         
                         output.Add(lne[i]); //here
                         
-                        if(marked && mark[0] == h+top+1 && mark[1]-1 == k) foreach(char c in colours[20]) output.Add(c);
+                        if(marked && mark[0] == h+top+1 && mark[1]-1 == k) foreach(char ch in colours[20]) output.Add(ch);
                         if(marked && pos[0] == h+top+1 && pos[1] == k) foreach(char ch in colours[21]) output.Add(ch);
                         
                         k++;
@@ -195,7 +200,8 @@ namespace qse
             int max = top;
             if (max > filelenghts.Count - 1)
                 max = filelenghts.Count - 1;
-
+            
+            if(outp.Length < max) max = outp.Length - 1;
             for(int i = 1; i < max; i++)
             {
                 
@@ -243,6 +249,7 @@ namespace qse
             
             foreach(char c in filename+" ") outp[0].Add(c);
             
+            if(outp.Length < top) top = outp.Length - 1;
             foreach(char c in (colours[25]+colours[26])) outp[top].Add(c);
             
             foreach(char c in " " + (filelenghts.Count-2).ToString() + " lines loaded") outp[top].Add(c);
@@ -264,6 +271,13 @@ namespace qse
             
             quickWrite(previous, outpstr);
             
+            
+            
+            //last line clearing
+            Console.SetCursorPosition(0, Console.WindowHeight-1);
+            Console.Write(new string(' ', Console.WindowWidth-1));
+            Console.SetCursorPosition(0, 0);
+            
             //cutoffs            
             for(int i = scroll; i < scroll+Console.WindowHeight-3; i++)
             {
@@ -277,6 +291,7 @@ namespace qse
                     Console.Write(colours[15] + " ");
                 }
             }
+            
             Console.CursorVisible = true;
             
             return outpstr;
@@ -300,6 +315,8 @@ namespace qse
                     Console.Write(writearr[i]);
                 }
             }
+            
+            
             
         }
         

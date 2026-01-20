@@ -255,6 +255,13 @@ namespace qse
                         Console.SetCursorPosition(column, line);
                         autocomp = Utils.ArrayBlackBox(suggest, colours[27] + colours[28], colours[21], nowstr.Length, sugsc, ignclr);
                         prevnowstr = nowstr;
+                        
+                        string[] prevs = prev.Split('\n');
+                        
+                        for(int i = 1; i <= 7; i++)
+                            prevs[i+line] = "";
+                        
+                        prev = String.Join('\n', prevs);
                     }
                     
                     Console.SetCursorPosition(((scroll + Console.WindowHeight - 3).ToString().Length)+1+column, line);

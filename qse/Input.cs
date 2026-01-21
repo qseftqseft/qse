@@ -130,9 +130,10 @@ namespace qse
 
             if(line >= filelenghts.Count)
                 line = filelenghts.Count - 1;
-
-
-
+            
+            while(scroll + top > filelenghts.Count)
+                scroll--;
+            
             while (line >= top) { line--; scroll++; }
 
             if (line <= 0)

@@ -63,23 +63,23 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: qse-macOS-UNTESTED.tar
-        path: qse/qse-macOS-UNTESTED.tar
+        path: qse-macOS-UNTESTED.tar
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
         name: qse-windows-EXPERIMENTAL.tar
-        path: qse/qse-windows-EXPERIMENTAL.tar
+        path: qse-windows-EXPERIMENTAL.tar
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
         name: qse-linux.tar
-        path: qse/qse-linux.tar
+        path: qse-linux.tar
       
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ steps.versioning.outputs.version }}
-        files: qse/qse-*
+        files: qse-*
         prerelease: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

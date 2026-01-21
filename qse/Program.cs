@@ -535,6 +535,7 @@ namespace qse
                     if (keyInfo1.Key == ConsoleKey.M)
                     {
                         hscroll = hscroll + 2;
+                        prev="";
                     }
                     
                     if (keyInfo1.Key == ConsoleKey.N)
@@ -547,6 +548,7 @@ namespace qse
                         {
                             hscroll = 0;
                         }
+                        prev="";
                     }
                     if (keyInfo1.Key == ConsoleKey.R)
                     {
@@ -743,11 +745,13 @@ namespace qse
                     {
                         if(scroll + top < filelenghts.Count - 1)
                             scroll++;
+                        prev="";
                     }
                     else if (keyInfo1.Key == ConsoleKey.UpArrow)
                     {
                         if(scroll > 0)
                             scroll--;
+                        prev="";
                     }
                     else if (keyInfo1.Key == ConsoleKey.V)
                     {
@@ -789,11 +793,13 @@ namespace qse
                     else if (keyInfo1.Key == ConsoleKey.Y)
                     {
                         scroll -= 2;
+                        prev="";
                     }
                     
                     else if (keyInfo1.Key == ConsoleKey.E)
                     {
                         scroll += 2;
+                        prev="";
                     }
                     
                     else if (keyInfo1.Key == ConsoleKey.Delete)
@@ -889,10 +895,12 @@ namespace qse
                     else if (keyInfo1.Key == ConsoleKey.UpArrow)
                     {                        
                         if(scroll + 4 > 0) scroll = scroll - 4;
+                        prev="";
                     }
                     else if (keyInfo1.Key == ConsoleKey.DownArrow)
                     {
                         if (scroll - 4 < filelenghts.Count - top - 1) scroll = scroll + 4;
+                        prev="";
                     }
                 }
                 Input.HandleRC(line, column, scroll, hscroll, file, false, out line, out column, out scroll, out hscroll, out file, out filelenghts);

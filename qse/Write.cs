@@ -179,6 +179,7 @@ namespace qse
 
         public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, char strng, char[] ignclr, string[][] efs, bool marked, int[] mark, string[] colours, int mode, char prevch, string[] exps, int[] pos, string previous)
         {
+            
             string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length)-1, colours[16], ignclr, efs, colours, scroll,  Console.WindowHeight - 3, hscroll, strng, exps, mark, pos, marked);
             
             List<string> writel = write.Split('\n').ToList();
@@ -194,6 +195,7 @@ namespace qse
             {
                 foreach(char c in writel[i]) outp[i+1].Add(c);
             }
+            
             
             //linunumbers
             
@@ -223,9 +225,6 @@ namespace qse
                 //space between line numbers
                 outp[i].Insert((lnlen - (i+scroll).ToString().Length) + (colours[21] + colours[22] + colours[23] + colours[24]).Length + String.Concat((""+(i+scroll)).Reverse()).Length, ' ');
             }
-            
-            
-            
             
             
             //UI
@@ -261,22 +260,21 @@ namespace qse
             foreach(char c in (colours[21]+colours[16])) outp[top].Add(c);
             
             
-            
-            
             List<string> outplst = new List<string>();
             foreach(List<char> l in outp) outplst.Add(String.Concat(l));
             string outpstr = String.Join("\n", outplst);
             
             Console.CursorVisible = false;
             
+            
             quickWrite(previous, outpstr);
-            
-            
             
             //last line clearing
             Console.SetCursorPosition(0, Console.WindowHeight-1);
             Console.Write(new string(' ', Console.WindowWidth-1));
+            
             Console.SetCursorPosition(0, 0);
+            
             
             //cutoffs            
             for(int i = scroll; i < scroll+Console.WindowHeight-3; i++)
@@ -299,8 +297,17 @@ namespace qse
         
         public static void quickWrite(string prevwrite, string write, int offset=0)
         {
+            
+            
             List<string> prevwritelst = prevwrite.Split('\n').ToList();
             string[] writearr = write.Split('\n');
+            
+            if(prevwrite == "")
+            {
+                Console.SetCursorPosition(0, 0);
+                Console.Write(write);
+                return;
+            }
             
             while( writearr.Length >  prevwritelst.Count )
             {

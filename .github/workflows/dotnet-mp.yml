@@ -31,7 +31,7 @@ jobs:
         cd ./qse
         dotnet restore
         dotnet build --configuration Release --no-restore      
-        dotnet publish --configuration Release --self-contained true --output publish
+        dotnet publish --configuration Release --self-contained true --output qse-${{ steps.versioning.outputs.version }}-x64
       
     - name: Upload
       uses: actions/upload-artifact@v4

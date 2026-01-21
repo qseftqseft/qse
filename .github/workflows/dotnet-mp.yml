@@ -79,7 +79,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ steps.versioning.outputs.version }}
-        files: qse-*
+        files: qse-*/qse-*
         prerelease: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

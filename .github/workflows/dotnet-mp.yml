@@ -58,6 +58,7 @@ jobs:
         mv qse-macOS-latest-x64.tar qse-macOS-UNTESTED.tar
         mv qse-windows-latest-x64.tar qse-windows-EXPERIMENTAL.tar
         mv qse-ubuntu-latest-x64.tar qse-linux.tar
+        ls
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:

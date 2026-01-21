@@ -192,8 +192,9 @@ namespace qse
 
                 for (int i = 0; i < height; i++)
                 {
+                    while(cl+width >= Console.WindowWidth) width--;
                     Console.CursorLeft = cl+width;
-
+                    
                     Console.CursorTop++;
                     Console.Write(defcol);
 

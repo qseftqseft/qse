@@ -30,12 +30,15 @@ jobs:
       run: |  
         cd qse
         dotnet publish --configuration Release --self-contained true --output qse-${{ matrix.os }}-x64
-      
+    - name: Tar published files
+      run: |
+        cd qse
+        tar -czf qse-${{ matrix.os }}-x64.tar qse-${{ matrix.os }}-x64
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
-        name: qse-${{ matrix.os }}-x64
-        path: qse/qse-${{ matrix.os }}-x64
+        name: qse/qse-${{ matrix.os }}-x64.tar
+        path: qse/qse-${{ matrix.os }}-x64.tar
   release:
     needs: build
     runs-on:  ubuntu-latest
@@ -53,7 +56,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ steps.versioning.outputs.version }}
-        files: qse/qse-*/qse-*
+        files: qse-*/qse-*
         prerelease: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

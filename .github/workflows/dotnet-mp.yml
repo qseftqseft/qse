@@ -36,7 +36,7 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
-        name: qse-${{ matrix.os }}
+        name: qse-${{ matrix.os }}-x64
         path: qse-${{ matrix.os }}-x64
   release:
     needs: build

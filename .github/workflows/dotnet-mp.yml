@@ -52,6 +52,11 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         repository: ${{ github.repository }}
         type: patch
+    - name: Rename
+      run: |
+        mv qse-macOS-latest-x64/qse-macOS-latest-x64.tar qse-macOS-latest-x64/qse-macOS-UNTESTED.tar
+        mv qse-windows-latest-x64/qse-windows-latest-x64.tar qse-windows-latest-x64/qse-windows-EXPERIMENTAL.tar
+        mv qse-ubuntu-latest-x64/qse-ubuntu-latest-x64.tar qse-ubuntu-latest-x64/qse-linux.tar
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:

@@ -269,6 +269,15 @@ namespace qse
             
             quickWrite(previous, outpstr);
             
+            //empty space
+            //Console.SetCursorPosition(0, 10);
+            
+            //for(int i = Console.CursorTop; i < Console.WindowHeight - 3; i++)
+            //{
+            //    Console.Write(colours[21] + "\x1b[2K\r" + outpstr.Split('\n').Length);
+            //}
+            
+            
             //last line clearing
             Console.SetCursorPosition(0, Console.WindowHeight-1);
             Console.Write(new string(' ', Console.WindowWidth-1));
@@ -302,10 +311,15 @@ namespace qse
             List<string> prevwritelst = prevwrite.Split('\n').ToList();
             string[] writearr = write.Split('\n');
             
+            for(int i = 0; i < writearr.Length; i++)
+                    if(writearr[i].Length < 1)
+                        writearr[i] = new string(' ', Console.WindowWidth);
+            
             if(prevwrite == "")
             {
                 Console.SetCursorPosition(0, 0);
-                Console.Write(write);
+                Console.Write(String.Join("\n", writearr));
+                
                 return;
             }
             
@@ -316,12 +330,13 @@ namespace qse
             
             for(int i = 0; i < writearr.Length; i++)
             {
-                if( prevwritelst[i] != writearr[i] )
+                if( prevwritelst[i] != writearr[i]) 
                 {
                     Console.SetCursorPosition(0, i + offset);
                     Console.Write(writearr[i]);
                 }
             }
+            
             
             
             

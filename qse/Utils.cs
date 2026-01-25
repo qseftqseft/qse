@@ -124,9 +124,9 @@ namespace qse
                         break;
                 }
                 if(indx >= array.Length)
-                    indx = array.Length - 1;
-                if(indx < 0)
                     indx = 0;
+                if(indx < 0)
+                    indx = array.Length - 1;
                 if(k.Key == ConsoleKey.Escape)
                 {
                     Console.CursorTop=indx+2;

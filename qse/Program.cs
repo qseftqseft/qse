@@ -299,28 +299,27 @@ namespace qse
                     };
                     
                     
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    if(left != Console.WindowWidth - 1)
+                    bool iterate = false;
+                    while(!Console.KeyAvailable)
                     {
-                        left = Console.WindowWidth - 1;
-                        Console.Clear();
-                        prev = "";
-                        break;
+                        if(left != Console.WindowWidth - 1)
+                        {
+                            left = Console.WindowWidth - 1;
+                            iterate = true;
+                            prev = "";
+                            break;
+                        }
+                        if(top != Console.WindowHeight - 2)
+                        {
+                            top = Console.WindowHeight - 2;
+                            iterate = true;
+                            prev = "";
+                            break;
+                        }
                     }
-                    if(top != Console.WindowHeight - 2)
-                    {
-                        top = Console.WindowHeight - 2;
-                        Console.Clear();
-                        prev = "";
-                        break;
-                    }
-                    
+                    if(iterate){
+                        iterate = false;
+                        continue;}
                     
                     
                     

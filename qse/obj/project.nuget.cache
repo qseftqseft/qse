@@ -1,11 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "RkLQ0yV4BBs=",
+  "dgSpecHash": "kRKyT4wT+qY=",
   "success": true,
   "projectFilePath": "/home/qseft/Documents/GitHub/qse/qse/qse.csproj",
   "expectedPackageFiles": [
     "/home/qseft/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/7.0.0/microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",
-    "/home/qseft/.nuget/packages/textcopy/6.2.1/textcopy.6.2.1.nupkg.sha512"
+    "/home/qseft/.nuget/packages/textcopy/6.2.1/textcopy.6.2.1.nupkg.sha512",
+    "/home/qseft/.nuget/packages/microsoft.netcore.app.ref/9.0.12/microsoft.netcore.app.ref.9.0.12.nupkg.sha512",
+    "/home/qseft/.nuget/packages/microsoft.netcore.app.runtime.linux-x64/9.0.12/microsoft.netcore.app.runtime.linux-x64.9.0.12.nupkg.sha512",
+    "/home/qseft/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.12/microsoft.aspnetcore.app.ref.9.0.12.nupkg.sha512",
+    "/home/qseft/.nuget/packages/microsoft.aspnetcore.app.runtime.linux-x64/9.0.12/microsoft.aspnetcore.app.runtime.linux-x64.9.0.12.nupkg.sha512",
+    "/home/qseft/.nuget/packages/microsoft.netcore.app.host.linux-x64/9.0.12/microsoft.netcore.app.host.linux-x64.9.0.12.nupkg.sha512"
   ],
   "logs": []
 }

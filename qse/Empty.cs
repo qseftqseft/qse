@@ -1,0 +1,16 @@
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
+using System.Linq;
+using TextCopy;
+
+namespace qse
+{
+    class Empty
+    {
+        
+    }
+}
+

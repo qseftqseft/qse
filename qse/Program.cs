@@ -31,12 +31,12 @@ namespace qse
         public static void Main(string[] args)
         {
         
-            Stopwatch sw  = new Stopwatch();
-            Stopwatch swone  = new Stopwatch();
-            Stopwatch swtwo  = new Stopwatch();
-            Stopwatch swthree  = new Stopwatch();
+            //Stopwatch sw  = new Stopwatch();
+            //Stopwatch swone  = new Stopwatch();
+            //Stopwatch swtwo  = new Stopwatch();
+            //Stopwatch swthree  = new Stopwatch();
             
-            sw.Start();
+            //sw.Start();
             
             int left = Console.WindowWidth-1;
             int top = Console.WindowHeight-2;
@@ -86,29 +86,47 @@ namespace qse
             int tab = 0;
             bool run = true;
             
-            string[] settings = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "settings" + Path.DirectorySeparatorChar + settingsfile).Split('\n');
             
-            char[] ignclr = (settings[0] + "Æ\n").Split('Æ').SelectMany(s => s.ToCharArray()).ToArray();
             
-            string[][] efs = [ settings[1].Split('Æ'), settings[2].Split('Æ'), settings[3].Split('Æ'), settings[4].Split('Æ'),  settings[5].Split('Æ'), settings[6].Split('Æ'), settings[7].Split('Æ'), settings[8].Split('Æ'), settings[9].Split('Æ'), settings[10].Split('Æ'), settings[11].Split('Æ'), settings[12].Split('Æ'), settings[13].Split('Æ'), settings[14].Split('Æ'), settings[15].Split('Æ'), settings[16].Split('Æ') ];
+            //string[] settings = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "settings" + Path.DirectorySeparatorChar + settingsfile).Split('\n');
             
-            char strng = char.Parse(settings[17]);
+            Settings settings = new Settings(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "settings" + Path.DirectorySeparatorChar + settingsfile);
             
-            string term = settings[19];
-            string tflags = settings[20];
-            string tcommand = settings[21];
-            bool code = false;
+            //test area
+            char[] ignclr = settings.ignclr;
+            string[][] efs = [ settings.colours["black"],
+                                 settings.colours["red"],
+                               settings.colours["green"],
+                              settings.colours["yellow"],
+                                settings.colours["blue"],
+                             settings.colours["magenta"],
+                                settings.colours["cyan"],
+                               settings.colours["white"],
+                        settings.colours["bright black"],
+                          settings.colours["bright red"],
+                        settings.colours["bright green"],
+                       settings.colours["bright yellow"],
+                         settings.colours["bright blue"],
+                      settings.colours["bright magenta"],
+                         settings.colours["bright cyan"],
+                        settings.colours["bright white"] ];
             
-            if (settings[18][0] != '0')
+            char strng = settings.str;
+            
+            string term = settings.runexec;
+            string tflags = settings.runflags;
+            string tcommand = settings.runcommand;
+            
+            bool code = settings.code;
+            
+            if (settings.curfile)
             {
                 tcommand = filename + tcommand;
             }
-            if (settings[18][1] == '1')
-            {
-                code = true;
-            }
             
-            string[] tpes = settings[22].Split('Æ');
+            string[] tpes = settings.types;
+            
+            //end of test area
             
             bool dosug = false;
             string sugfile = "";
@@ -503,28 +521,45 @@ namespace qse
                                     {
                                         settingsfile = cmdinpt;
 
-                                        settings = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "settings" + Path.DirectorySeparatorChar + "" + settingsfile).Split('\n');
-                                        
-                                        ignclr = (settings[0] + "Æ\n").Split('Æ').SelectMany(s => s.ToCharArray()).ToArray();
-                                        
-                                        efs = [ settings[1].Split('Æ'), settings[2].Split('Æ'), settings[3].Split('Æ'), settings[4].Split('Æ'),  settings[5].Split('Æ'), settings[6].Split('Æ'), settings[7].Split('Æ'), settings[8].Split('Æ'), settings[9].Split('Æ'), settings[10].Split('Æ'), settings[11].Split('Æ'), settings[12].Split('Æ'), settings[13].Split('Æ'), settings[14].Split('Æ'), settings[15].Split('Æ'), settings[16].Split('Æ') ];
-                                        
-                                        strng = char.Parse(settings[17]);
-                                        
-                                        term = settings[19];
-                                        tflags = settings[20];
-                                        tcommand = settings[21];
-                                        
-                                        if (settings[18][0] != '0')
-                                        {
-                                            tcommand = filename + tcommand;
-                                        }
-                                        code = false;
-                                        if (settings[18][1] == '1')
-                                        {
-                                            code = true;
-                                        }
-                                        tpes = settings[22].Split('Æ');
+                                        settings = new Settings(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "settings" + Path.DirectorySeparatorChar + settingsfile);
+            
+                                        //test area
+                                        ignclr = settings.ignclr;
+                                        efs = [ settings.colours["black"],
+                                 settings.colours["red"],
+                               settings.colours["green"],
+                              settings.colours["yellow"],
+                                settings.colours["blue"],
+                             settings.colours["magenta"],
+                                settings.colours["cyan"],
+                               settings.colours["white"],
+                        settings.colours["bright black"],
+                          settings.colours["bright red"],
+                        settings.colours["bright green"],
+                       settings.colours["bright yellow"],
+                         settings.colours["bright blue"],
+                      settings.colours["bright magenta"],
+                         settings.colours["bright cyan"],
+                        settings.colours["bright white"] ];
+            
+            strng = settings.str;
+            
+            term = settings.runexec;
+            tflags = settings.runflags;
+            tcommand = settings.runcommand;
+            
+            code = settings.code;
+            
+            if (settings.curfile)
+            {
+                tcommand = filename + tcommand;
+            }
+            
+            tpes = settings.types;
+            
+            //end of test area
+            
+
                                     }
                                     break;
                                 
@@ -555,11 +590,11 @@ namespace qse
                         File.WriteAllText(filename, filestr);
                         do{}while(File.ReadAllText(filename) != filestr);
                         
-                        term = settings[19];
-                        tflags = settings[20];
-                        tcommand = settings[21];
+                        term = settings.runexec;
+                        tflags = settings.runflags;
+                        tcommand = settings.runcommand;
                         
-                        if (settings[18][0] != '0')
+                        if (settings.curfile)
                         {
                             tcommand = filename + tcommand;
                         }

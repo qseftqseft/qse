@@ -1,20 +1,49 @@
-
 /*
+    
+                  __________    _________    _________
+                 /  ____   /   /  ______/   /  ______/
+                /  /   /  /   /  /_____    /  /___
+               /  /   /  /   /_____   /   /  ____/
+              /  /___/  /   ______/  /   /  /_____
+             /_____   _/   /________/   /________/
+                  /__/
+    
+            qseft's       simple       editor
+    
+    
+    
     QSE - qseft's simple editor - the C# console-based text editor
     Copyright (C) 2025 Václav Ulrich
-
+    
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
+    
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
+    
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    
+          ________   _________   _______      ___   _____     ___   ___________
+         /  _____/  /  _ _   /  /  __   \    /  /  /    |    /  /  /  ________/
+        /  /       /  /  /  /  /  /  |  |   /  /  /  /| |   /  /  /  /
+       /  /       /  /  /  /  /  /   /  /  /  /  /  / | |  /  /  /  /  ______
+      /  /       /  /  /  /  /  /   /  /  /  /  /  /  | | /  /  /  /  /__   /
+     /  /____   /  /__/  /  /  /__ ╱  /  /  /  /  /   | |/  /  /  /_____/  /
+    /_______/  /________/  /_________╱  /__/  /__/    |____/  /___________/
+                          _______      __    _______    __________   ___   ___
+                         /  __   \    /  /  /  __   \  /___   ___/  /  /  /  /
+                        /  /  |  |   /  /  /  /  |  /     /  /     /  /  /  /
+                       /  /   /  /  /  /  /  /__╱  /     /  /     /  /__/  /
+                      /  /   /  /  /  /  /      __╱     /  /     /_____   /
+                     /  /__ ╱  /  /  /  /  / \  \      /  /     ______/  /
+                    /_________╱  /__/  /__/   \__\    /__/     /________/
+    
+                                                                      be prepared
 */
 using System;
 using System.IO;
@@ -24,26 +53,41 @@ using System.Text;
 using System.Linq;
 using TextCopy;
 
+
 namespace qse
 {
     class MainClass
     {
         public static void Main(string[] args)
         {
-        
-            //Stopwatch sw  = new Stopwatch();
-            //Stopwatch swone  = new Stopwatch();
-            //Stopwatch swtwo  = new Stopwatch();
-            //Stopwatch swthree  = new Stopwatch();
-            
-            //sw.Start();
-            
             int left = Console.WindowWidth-1;
             int top = Console.WindowHeight-2;
             
             int mode = 0;
             
             string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            
+            string themefile = "theme";
+            string[] theme = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile).Split('\n');
+            string[] colours = new string[30];
+            
+            for(int i = 0; i < 30; i++)
+            {
+                colours[i] = "\x1b[" + theme[i] + "m";
+            }
+            
+            Console.CursorVisible = false;
+            Screen.start(colours[21] + colours[16]);
+            
+            Stopwatch sw  = new Stopwatch();
+            sw.Start();
+            do{}while(sw.ElapsedMilliseconds < 400);
+            sw.Stop();
+            
+            //Console.Clear();
+            //Console.Write(cs.open());
+            //Console.ReadKey();
+            
             
             string settingsfile = "settings";
             Files.MakeSureConfDirExists(settingsfile, homeDirectory);
@@ -87,46 +131,9 @@ namespace qse
             bool run = true;
             
             
-            
-            //string[] settings = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "settings" + Path.DirectorySeparatorChar + settingsfile).Split('\n');
-            
             Settings settings = new Settings(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "settings" + Path.DirectorySeparatorChar + settingsfile);
             
-            //test area
-            char[] ignclr = settings.ignclr;
-            string[][] efs = [ settings.colours["black"],
-                                 settings.colours["red"],
-                               settings.colours["green"],
-                              settings.colours["yellow"],
-                                settings.colours["blue"],
-                             settings.colours["magenta"],
-                                settings.colours["cyan"],
-                               settings.colours["white"],
-                        settings.colours["bright black"],
-                          settings.colours["bright red"],
-                        settings.colours["bright green"],
-                       settings.colours["bright yellow"],
-                         settings.colours["bright blue"],
-                      settings.colours["bright magenta"],
-                         settings.colours["bright cyan"],
-                        settings.colours["bright white"] ];
             
-            char strng = settings.str;
-            
-            string term = settings.runexec;
-            string tflags = settings.runflags;
-            string tcommand = settings.runcommand;
-            
-            bool code = settings.code;
-            
-            if (settings.curfile)
-            {
-                tcommand = filename + tcommand;
-            }
-            
-            string[] tpes = settings.types;
-            
-            //end of test area
             
             bool dosug = false;
             string sugfile = "";
@@ -135,19 +142,14 @@ namespace qse
             {
                 if(File.Exists(homeDirectory + Path.DirectorySeparatorChar+".qse"+Path.DirectorySeparatorChar+"suggestions"+Path.DirectorySeparatorChar+Path.GetExtension(filename)))
                 {
+                    Console.Write("Loading, please wait");
                     sugfile = Path.GetExtension(filename);
-/* end of checks*/                    match = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar+".qse"+Path.DirectorySeparatorChar+"suggestions"+Path.DirectorySeparatorChar+Path.GetExtension(filename)).Split('\n');
+/* end of checks*/                    match = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar+".qse"+Path.DirectorySeparatorChar+"suggestions"+Path.DirectorySeparatorChar+Path.GetExtension(filename)).Split('\n').Concat(cs.open(filename).Split('\n')).ToArray();
                     dosug = true;
                 }
             }
             
-            string themefile = "theme";
-            string[] theme = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile).Split('\n');
-            string[] colours = new string[30];
-            for(int i = 0; i < 30; i++)
-            {
-                colours[i] = "\x1b[" + theme[i] + "m";
-            }
+            
             
             string projectsstr = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "projects" + Path.DirectorySeparatorChar + "projects.list");
             string[] project = projectsstr.Split('\n');
@@ -213,7 +215,7 @@ namespace qse
                         iindx++;
                         if(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll-iindx < 0)
                             break;
-                        if(ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll-iindx]))
+                        if(settings.ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll-iindx]))
                             break;
                         nowstr = file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll-iindx] + nowstr;
                     }while(true);
@@ -223,7 +225,7 @@ namespace qse
                         iindx++;
                         if(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll-iindx < 0)
                             break;
-                        if(ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll-iindx]))
+                        if(settings.ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll-iindx]))
                             break;
                         prevstr = file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll-iindx] + prevstr;
                     }while(true);
@@ -236,10 +238,10 @@ namespace qse
                     
                     foreach(string str in lnes)
                     {
-                        string[] st = str.Split(ignclr, StringSplitOptions.RemoveEmptyEntries);
+                        string[] st = str.Split(settings.ignclr, StringSplitOptions.RemoveEmptyEntries);
                         for(int i = 1; i < st.Length; i++)
                         {
-                            if( tpes.Contains(st[i-1]) )
+                            if( settings.types.Contains(st[i-1]) )
                             {
                                 exps.Add(st[i]);
                                 if(dosug) vars.Add(st[i-1] + match[0] + st[i]);
@@ -260,8 +262,9 @@ namespace qse
                     
                     
                     
-                    prev = Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject, strng, ignclr, efs,  marked, marka, colours, mode, prevch, exps.ToArray(), [line+scroll, column+hscroll], prev);
-                    
+                    prev = Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject/**/ /**/,  marked, marka/**/ /**/, mode, prevch, exps.ToArray(), [line+scroll, column+hscroll], prev, settings, colours);
+                    //if(vars.Count() > 0) Utils.debug(String.Join(",", vars[0]));
+                    //if(exps.Count() > 0) Utils.debug(String.Join(",", exps[0]));
                     
                     string[] prevs = prev.Split('\n');
                     
@@ -272,7 +275,7 @@ namespace qse
                         if(sugsc < 0)
                             sugsc = 0;
                         Console.SetCursorPosition(column, line);
-                        autocomp = Utils.ArrayBlackBox(suggest, colours[27] + colours[28], colours[21], nowstr.Length, sugsc, ignclr);
+                        autocomp = Utils.ArrayBlackBox(suggest, colours[27] + colours[28], colours[21], nowstr.Length, sugsc, settings.ignclr);
                         prevnowstr = nowstr;
                         
                         for(int i = 1; i <= 7 && i + line < prevs.Length; i++)
@@ -360,10 +363,10 @@ namespace qse
                     int curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
                     
                     
-                    if(mode == 0) Input.modeone(keyInfo1, line, column, r, autocomp, file, scroll, hscroll,  curchar, filelenghts, tab, ignclr, code, top, sugsc, suggest, mode, 
+                    if(mode == 0) Input.modeone(keyInfo1, line, column, r, autocomp, file, scroll, hscroll,  curchar, filelenghts, tab, top, sugsc, suggest, mode, settings,
                     out file, out line, out column, out scroll, out hscroll, out sugsc, out r, out mode);
                     
-                    if(mode == 1) NavMode.modetwo(keyInfo1, line, column, r, autocomp, file, scroll, hscroll,  curchar, filelenghts, tab, ignclr, code, top, sugsc, suggest, mode, prevch, prevtf, prevtfm,
+                    if(mode == 1) NavMode.modetwo(keyInfo1, line, column, r, autocomp, file, scroll, hscroll,  curchar, filelenghts, tab, top, sugsc, suggest, mode, prevch, prevtf, prevtfm, settings,
                     out file, out line, out column, out scroll, out hscroll, out sugsc, out r, out mode, out prevch, out prevtf, out prevtfm);
                     
                     
@@ -468,8 +471,9 @@ namespace qse
                         {
                             if(File.Exists(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "suggestions" + Path.DirectorySeparatorChar + ""+Path.GetExtension(filename)))
                             {
+                                Console.Write("Loading, please wait");
                                 sugfile = Path.GetExtension(filename);
-                                match = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "suggestions" + Path.DirectorySeparatorChar + "" + Path.GetExtension(filename)).Split('\n');
+                                match = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "suggestions" + Path.DirectorySeparatorChar + "" + Path.GetExtension(filename)).Split('\n').Concat(cs.open(filename).Split('\n')).ToArray();
                                 dosug = true;
                             }
                         }
@@ -520,46 +524,8 @@ namespace qse
                                     if(File.Exists(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "settings" + Path.DirectorySeparatorChar + "" + cmdinpt))
                                     {
                                         settingsfile = cmdinpt;
-
+                                        
                                         settings = new Settings(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "settings" + Path.DirectorySeparatorChar + settingsfile);
-            
-                                        //test area
-                                        ignclr = settings.ignclr;
-                                        efs = [ settings.colours["black"],
-                                 settings.colours["red"],
-                               settings.colours["green"],
-                              settings.colours["yellow"],
-                                settings.colours["blue"],
-                             settings.colours["magenta"],
-                                settings.colours["cyan"],
-                               settings.colours["white"],
-                        settings.colours["bright black"],
-                          settings.colours["bright red"],
-                        settings.colours["bright green"],
-                       settings.colours["bright yellow"],
-                         settings.colours["bright blue"],
-                      settings.colours["bright magenta"],
-                         settings.colours["bright cyan"],
-                        settings.colours["bright white"] ];
-            
-            strng = settings.str;
-            
-            term = settings.runexec;
-            tflags = settings.runflags;
-            tcommand = settings.runcommand;
-            
-            code = settings.code;
-            
-            if (settings.curfile)
-            {
-                tcommand = filename + tcommand;
-            }
-            
-            tpes = settings.types;
-            
-            //end of test area
-            
-
                                     }
                                     break;
                                 
@@ -590,25 +556,39 @@ namespace qse
                         File.WriteAllText(filename, filestr);
                         do{}while(File.ReadAllText(filename) != filestr);
                         
-                        term = settings.runexec;
-                        tflags = settings.runflags;
-                        tcommand = settings.runcommand;
+                        //term = settings.runexec;
+                        //tflags = settings.runflags;
+                        //tcommand = settings.runcommand;
                         
-                        if (settings.curfile)
-                        {
-                            tcommand = filename + tcommand;
-                        }
+                        //if (settings.curfile)
+                        //{
+                        //    tcommand = filename + tcommand;
+                        //}
+                        
+                        
                         
                         ProcessStartInfo psi = new ProcessStartInfo
                         {
-                            FileName = term,
-                            Arguments = tflags + " " + tcommand + " && sleep 10",
-                            UseShellExecute = false
+                            FileName = settings.runexec,
+                            Arguments = settings.runflags + " " + settings.runcommand + " && sleep 10",
+                            UseShellExecute = true
                         };
+                        if (settings.curfile)
+                        {
+                            psi = new ProcessStartInfo
+                            {
+                                FileName = settings.runexec,
+                                Arguments = settings.runflags + " " + filename + settings.runcommand + " && sleep 10",
+                                UseShellExecute = true
+                            };
+                        }
+                        
+                        
                         
                         Console.ResetColor();
                         Console.Clear();
-                        Console.Write("\x1b[92m" + Environment.UserName + "@" + Environment.MachineName + " \x1b[34m" + System.IO.Directory.GetCurrentDirectory() + " $ \x1b[37m" + term + tflags +  " " +  tcommand + "\n\x1b[90m");
+                        Console.Write("\x1b[92m" + Environment.UserName + "@" + Environment.MachineName + " \x1b[34m" + System.IO.Directory.GetCurrentDirectory() + " $ \x1b[37m" + settings.runexec + psi.Arguments + "\n\x1b[90m");
+                        
                         using (Process proc = Process.Start(psi) ?? new Process())
                         {
                              proc.WaitForExit();
@@ -706,8 +686,9 @@ namespace qse
                                 {
                                     if(File.Exists(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "suggestions" + Path.DirectorySeparatorChar + ""+Path.GetExtension(filename)))
                                     {
+                                        Console.Write("Loading, please wait");
                                         sugfile = Path.GetExtension(filename);
-                                        match = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "suggestions" + Path.DirectorySeparatorChar + "" + Path.GetExtension(filename)).Split('\n');
+                                        match = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "suggestions" + Path.DirectorySeparatorChar + "" + Path.GetExtension(filename)).Split('\n').Concat(cs.open(filename).Split('\n')).ToArray();
                                         dosug = true;
                                     }
                                 }
@@ -740,7 +721,7 @@ namespace qse
                                 aposition++;
                                 while(file[aposition] == ' ' && file[aposition + 1] == ' ') aposition++;
                                 
-                            } while (!ignclr.Contains(file[aposition]));
+                            } while (!settings.ignclr.Contains(file[aposition]));
                             if(file[aposition] == ' ') aposition++;
                             
                             column = column + (aposition - position);
@@ -758,7 +739,7 @@ namespace qse
                             aposition--;
                             if(aposition > 0) while (file[aposition] == ' ' && file[aposition - 1] == ' ') aposition--;
                             if(aposition < 0){ aposition = 0; break;}
-                        } while (!ignclr.Contains(file[aposition]));
+                        } while (!settings.ignclr.Contains(file[aposition]));
                          
                         column = column + (aposition - position);
                         while (column >= left - (left / 5))
@@ -840,12 +821,12 @@ namespace qse
                     {
                         if(!(scroll + line + 3 > filelenghts.Count()))
                         {
-                            if(!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll]))
+                            if(!settings.ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll]))
                             {
                                 do
                                 {
                                     file.RemoveAt(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll);
-                                } while (!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll]));
+                                } while (!settings.ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll]));
                             }  
                             else
                             { 
@@ -862,7 +843,7 @@ namespace qse
                     {
                         if(filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll > 0)
                         {
-                            if(!ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll]))
+                            if(!settings.ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll]))
                             {
                                 do
                                 {
@@ -891,7 +872,7 @@ namespace qse
                                 
                                 
                                 
-                            } while (!(ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll]) || (column == 0 && line + scroll == 1)));
+                            } while (!(settings.ignclr.Contains(file[filelenghts[(line + scroll) - 1] + column - 2 + (line + scroll) + hscroll]) || (column == 0 && line + scroll == 1)));
                             }
                         
                             else

@@ -58,8 +58,32 @@ namespace qse
         }
 
 
-        public static string listColourAndCutoff(List<char> file, int maxWidth, string dcolour, char[] ignclr, string[][] efs, string[] colours, int top, int height, int hscroll, char strng, string[] exps, int[] mark, int[] pos, bool marked)
+        public static string listColourAndCutoff(List<char> file, int maxWidth, string dcolour, string[] colours, int top, int height, int hscroll, string[] exps, int[] mark, int[] pos, bool marked, Settings settings)
         {
+            //s-o-t
+            string[][] efs = [ settings.colours["black"],
+                                 settings.colours["red"],
+                               settings.colours["green"],
+                              settings.colours["yellow"],
+                                settings.colours["blue"],
+                             settings.colours["magenta"],
+                                settings.colours["cyan"],
+                               settings.colours["white"],
+                        settings.colours["bright black"],
+                          settings.colours["bright red"],
+                        settings.colours["bright green"],
+                       settings.colours["bright yellow"],
+                         settings.colours["bright blue"],
+                      settings.colours["bright magenta"],
+                         settings.colours["bright cyan"],
+                        settings.colours["bright white"] ];
+            
+            char strng = settings.str;
+            bool code = settings.code;
+            char[] ignclr = settings.ignclr;
+            //e-o-t
+            
+            
             // maxWidth, dcolour, []ignclr, [][]efs, []colours, top, height, hscroll
             
             List<string> filestr = string.Concat(file).Split('\n').Skip(top).Take(height).ToList();
@@ -177,10 +201,10 @@ namespace qse
             return String.Join("", output);
         }
 
-        public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, char strng, char[] ignclr, string[][] efs, bool marked, int[] mark, string[] colours, int mode, char prevch, string[] exps, int[] pos, string previous)
+        public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, bool marked, int[] mark, int mode, char prevch, string[] exps, int[] pos, string previous, Settings settings, string[] colours)
         {
             
-            string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length)-1, colours[16], ignclr, efs, colours, scroll,  Console.WindowHeight - 3, hscroll, strng, exps, mark, pos, marked);
+            string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length)-1, colours[16], colours, scroll,  Console.WindowHeight - 3, hscroll, exps, mark, pos, marked, settings);
             
             List<string> writel = write.Split('\n').ToList();
             

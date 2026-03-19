@@ -42,18 +42,16 @@ namespace qse
                     brc--;
             }
             
-            string outpft = "";
+            
             string[] outpfa = outpf.Split('{');
             
             if(System.Environment.OSVersion.Platform != PlatformID.Unix)
                 return "";
             
             string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.nuget/packages/";
-            foreach(string s in outpft.Split('\n'))
-            {
-                string pth = path + s;
-            }
             
+            
+            List<string> outpft = new List<string>();
             List<string> names = new List<string>();
             
             
@@ -67,7 +65,7 @@ namespace qse
                     {
                         if(str.Split("\"files\": [\n").Length < 2)
                             continue;
-                        //not here
+                        
                         string sl = str.Split("\"files\": [\n")[1].Split("]")[0];
                         foreach(string s in sl.Split('\n'))
                         {
@@ -76,20 +74,20 @@ namespace qse
                                 string st = pth + s.Split('"')[1];
                                 if(Path.GetExtension(st) == ".xml" && !(names.Contains(Path.GetFileName(st))) && st != "")
                                 {
-                                    outpft += path + st+"\n";
+                                    outpft.Add(path + st);
                                     names.Add(Path.GetFileName(st));
-                                    //outpft += String.Concat(names)+"\n";
                                 }
                             }
                         }
                     }
                 }
             }
-            string files = "";
+            //done
+            List<string> files = new List<string>();
             
             List<string> notfound = new List<string>();
             
-            foreach(string s in outpft.Split('\n'))
+            foreach(string s in outpft)
             {
                 if(s == "")
                     break;
@@ -105,15 +103,15 @@ namespace qse
                 
                 for(int i = 1; i < filet.Count(); i++)
                 {
-                    files += filet[i].Split('"')[0].Split(':')[1] + "\n";
+                    files.Add(filet[i].Split('"')[0].Split(':')[1]);
                 }
             }
             
             
-            
+            //done
             Dictionary<string, List<string>> sug = new Dictionary<string, List<string>>();
             
-            foreach(string s in files.Split('\n'))
+            foreach(string s in files)
             {
                 //List<string> sa = s.Split('.').ToList();    //TODO detect for unnecessary dots in comments for methods
                 List<string> sa = new List<string>();
@@ -143,16 +141,17 @@ namespace qse
                 }
                 
             }
-            string sugg = "";
+            //done
+            List<string> sugg = new List<string>();
             for(int i = 0; i < sug.Count(); i++)
             {
                 string s = sug.ElementAt(i).Key;
                 List<string> sl = sug.ElementAt(i).Value;
                 
-                sugg += s + "\n";
+                sugg.Add(s + "\n");
                 if(sl.Count > 0)
-                    sugg += s + "-" + String.Join("-", sl);
-                sugg+="\n";
+                    sugg.Add(s + "-" + String.Join("-", sl));
+                sugg.Add("\n");
             }
             
             foreach(string s in notfound)
@@ -161,7 +160,7 @@ namespace qse
                 Console.ReadKey();
             }
             
-            return sugg;
+            return String.Concat(sugg);
         }
         
         public static string run()

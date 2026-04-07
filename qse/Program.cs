@@ -76,18 +76,8 @@ namespace qse
                 colours[i] = "\x1b[" + theme[i] + "m";
             }
             
+            
             Console.CursorVisible = false;
-            Screen.start(colours[21] + colours[16]);
-            
-            Stopwatch sw  = new Stopwatch();
-            sw.Start();
-            do{}while(sw.ElapsedMilliseconds < 400);
-            sw.Stop();
-            
-            //Console.Clear();
-            //Console.Write(cs.open());
-            //Console.ReadKey();
-            
             
             string settingsfile = "settings";
             Files.MakeSureConfDirExists(settingsfile, homeDirectory);
@@ -142,12 +132,28 @@ namespace qse
             {
                 if(File.Exists(homeDirectory + Path.DirectorySeparatorChar+".qse"+Path.DirectorySeparatorChar+"suggestions"+Path.DirectorySeparatorChar+Path.GetExtension(filename)))
                 {
-                    Console.Write("Loading, please wait");
+                    Console.CursorVisible = false;
+                    Screen.start(colours[21] + colours[16]);
                     sugfile = Path.GetExtension(filename);
-/* end of checks*/                    match = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar+".qse"+Path.DirectorySeparatorChar+"suggestions"+Path.DirectorySeparatorChar+Path.GetExtension(filename)).Split('\n').Concat(cs.open(filename).Split('\n')).ToArray();
+/* end of checks*/  match = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar+".qse"+Path.DirectorySeparatorChar+"suggestions"+Path.DirectorySeparatorChar+Path.GetExtension(filename)).Split('\n').Concat(cs.open(filename).Split('\n')).ToArray();
                     dosug = true;
+                    
+                    List<string> wrds = new List<string>();
+                    foreach(string s in match)
+                    {
+                        foreach(string st in s.Split('-'))
+                        {
+                            wrds.Add(st.Split('(')[0]);
+                        }
+                    }
+                    wrds = wrds.Distinct().ToList();
+                    
+                    settings.colours["bright white"] = settings.colours["bright white"].Concat(wrds.ToArray()).ToArray();
                 }
             }
+            
+            
+            
             
             
             
@@ -251,7 +257,7 @@ namespace qse
                     
                     if(dosug)
                     {
-                        suggest = Suggest.sug(prevstr, nowstr, match, vars.ToArray() );
+                        suggest = Suggest.sug(prevstr, nowstr, match, vars.ToArray(), sugsc);
                         if(prevnowstr != nowstr)
                         {
                             sugsc = 0;
@@ -259,12 +265,7 @@ namespace qse
                     }
                     
                     
-                    
-                    
-                    
                     prev = Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject/**/ /**/,  marked, marka/**/ /**/, mode, prevch, exps.ToArray(), [line+scroll, column+hscroll], prev, settings, colours);
-                    //if(vars.Count() > 0) Utils.debug(String.Join(",", vars[0]));
-                    //if(exps.Count() > 0) Utils.debug(String.Join(",", exps[0]));
                     
                     string[] prevs = prev.Split('\n');
                     
@@ -275,7 +276,7 @@ namespace qse
                         if(sugsc < 0)
                             sugsc = 0;
                         Console.SetCursorPosition(column, line);
-                        autocomp = Utils.ArrayBlackBox(suggest, colours[27] + colours[28], colours[21], nowstr.Length, sugsc, settings.ignclr);
+                        autocomp = Utils.ArrayBlackBox(suggest, colours[27] + colours[28], colours[21], nowstr.Length, settings.ignclr, (file.Count()+"").Length);
                         prevnowstr = nowstr;
                         
                         for(int i = 1; i <= 7 && i + line < prevs.Length; i++)
@@ -413,11 +414,11 @@ namespace qse
                     
                     if (keyInfo1.Key == ConsoleKey.F)
                     {
-                        mode = 1;
+                        //mode = 1;
                     }
                     else if (keyInfo1.Key == ConsoleKey.D)
                     {
-                        mode = 0;
+                        //mode = 0;
                     }
                     
                     if (keyInfo1.Key == ConsoleKey.G)
@@ -471,10 +472,23 @@ namespace qse
                         {
                             if(File.Exists(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "suggestions" + Path.DirectorySeparatorChar + ""+Path.GetExtension(filename)))
                             {
-                                Console.Write("Loading, please wait");
+                                Console.CursorVisible = false;
+                                Screen.start(colours[21] + colours[16]);
                                 sugfile = Path.GetExtension(filename);
                                 match = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "suggestions" + Path.DirectorySeparatorChar + "" + Path.GetExtension(filename)).Split('\n').Concat(cs.open(filename).Split('\n')).ToArray();
                                 dosug = true;
+                                
+                                List<string> wrds = new List<string>();
+                                foreach(string s in match)
+                                {
+                                    foreach(string st in s.Split('-'))
+                                    {
+                                        wrds.Add(st.Split('(')[0]);
+                                    }
+                                }
+                                wrds = wrds.Distinct().ToList();
+                                
+                                settings.colours["bright white"] = settings.colours["bright white"].Concat(wrds.ToArray()).ToArray();
                             }
                         }
                         
@@ -686,10 +700,22 @@ namespace qse
                                 {
                                     if(File.Exists(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "suggestions" + Path.DirectorySeparatorChar + ""+Path.GetExtension(filename)))
                                     {
-                                        Console.Write("Loading, please wait");
+                                        Console.CursorVisible = false;
+                                        Screen.start(colours[21] + colours[16]);
                                         sugfile = Path.GetExtension(filename);
                                         match = File.ReadAllText(homeDirectory + Path.DirectorySeparatorChar + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "suggestions" + Path.DirectorySeparatorChar + "" + Path.GetExtension(filename)).Split('\n').Concat(cs.open(filename).Split('\n')).ToArray();
                                         dosug = true;
+                                        List<string> wrds = new List<string>();
+                                        foreach(string s in match)
+                                        {
+                                            foreach(string st in s.Split('-'))
+                                            {
+                                                wrds.Add(st.Split('(')[0]);
+                                            }
+                                        }
+                                        wrds = wrds.Distinct().ToList();
+                                        
+                                        settings.colours["bright white"] = settings.colours["bright white"].Concat(wrds.ToArray()).ToArray();
                                     }
                                 }
                             }

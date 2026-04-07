@@ -172,9 +172,11 @@ namespace qse
             }
             return false;
         }
-        public static string ArrayBlackBox(string[] arr,string bgcol, string defcol, int offset, int start, char[] ignclr)
+        public static string ArrayBlackBox(string[] arr,string bgcol, string defcol, int offset, char[] ignclr, int lnlen)
         {
-            int cl = Console.CursorLeft-offset;
+            int start = 0;
+            
+            int cl = Console.CursorLeft-offset+lnlen;
             string outp = "";
 
             if(cl >= 0)
@@ -186,10 +188,10 @@ namespace qse
                     if(arr.Length > 6) arr = [arr[0], arr[1], arr[2], arr[3], arr[4], arr[5]];
                     int width = arr.Aggregate(string.Empty, (seed, f) => f.Length > seed.Length ? f : seed).Length;
                 int height = arr.Length;
-
-
-
-
+                
+                
+                
+                
                 for (int i = 0; i < height; i++)
                 {
                     while(cl+width >= Console.WindowWidth) width--;

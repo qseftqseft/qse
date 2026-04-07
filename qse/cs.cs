@@ -21,9 +21,21 @@ namespace qse
                 outp = File.ReadAllText(Path.GetDirectoryName(filename) + "/obj/project.assets.json").Replace("\r\n", "\n");
             else
                 return "";
+            
             outp = outp.Split("\"libraries\": {")[1];
             
+            if(File.Exists(Path.GetDirectoryName(filename) + "/obj/.qse.project.assets.json.old"))
+            {
+                
+                string old = File.ReadAllText(Path.GetDirectoryName(filename) + "/obj/.qse.project.assets.json.old");
+                if (outp == old)
+                {
+                    return File.ReadAllText(Path.GetDirectoryName(filename) + "/obj/.qse.project.assets.json.contents.old");
+                }
+                    
+            }
             
+            File.WriteAllText(Path.GetDirectoryName(filename) + "/obj/.qse.project.assets.json.old", outp);
             
             int brc = 1;
             int ptr = 0;
@@ -148,9 +160,11 @@ namespace qse
                 string s = sug.ElementAt(i).Key;
                 List<string> sl = sug.ElementAt(i).Value;
                 
-                sugg.Add(s + "\n");
                 if(sl.Count > 0)
                     sugg.Add(s + "-" + String.Join("-", sl));
+                else
+                    sugg.Add(s);
+                
                 sugg.Add("\n");
             }
             
@@ -160,6 +174,7 @@ namespace qse
                 Console.ReadKey();
             }
             
+            File.WriteAllText(Path.GetDirectoryName(filename) + "/obj/.qse.project.assets.json.contents.old", String.Concat(sugg));
             return String.Concat(sugg);
         }
         

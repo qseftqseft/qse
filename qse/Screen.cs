@@ -29,6 +29,9 @@ namespace qse
                     Console.Write(" ");
                 Console.Write(st+"\n");
             }
+            Console.CursorLeft = Console.WindowWidth - 10;
+            Console.CursorTop = Console.WindowHeight - 1;
+            Console.Write("loading...");
             Console.SetCursorPosition(0, 0);
             
             

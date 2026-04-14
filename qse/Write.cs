@@ -208,7 +208,7 @@ namespace qse
             
             List<string> writel = write.Split('\n').ToList();
             
-            int lnlen = (scroll + Console.WindowHeight - 3).ToString().Length;
+            
             
             
             
@@ -228,31 +228,33 @@ namespace qse
                 max = filelenghts.Count - 1;
             
             if(outp.Length < max) max = outp.Length - 1;
+            
+            int lastlnlen = (scroll + max - 1).ToString().Length;
+            
             for(int i = 1; i < max; i++)
             {
+                //NOTICE! this is in reverse order, so that it is possible to insert at [0]
                 
-                foreach( char c in (colours[22] + colours[23]).Reverse() ) outp[i].Insert(0, c);
-                
-                
-                //leading zero
-                for(int j = 0; j < lnlen - (i+scroll).ToString().Length; j++)
-                    outp[i].Insert((colours[22] + colours[23]).Length + j, '0');
-                
-                foreach( char c in colours[24].Reverse() ) outp[i].Insert((lnlen - (i+scroll).ToString().Length) + (colours[22] + colours[23]).Length, c);
-                
-                //numbers
-                foreach(char c in (""+(i+scroll)).Reverse() ) outp[i].Insert((lnlen - (i+scroll).ToString().Length) + (colours[22] + colours[23] + colours[24]).Length, c);
-                
-                //reset colour
-                foreach(char c in  colours[21].Reverse()) outp[i].Insert((lnlen - (i+scroll).ToString().Length) + (colours[22] + colours[23] + colours[24]).Length + String.Concat((""+(i+scroll)).Reverse()).Length, c);
                 
                 //space between line numbers
-                outp[i].Insert((lnlen - (i+scroll).ToString().Length) + (colours[21] + colours[22] + colours[23] + colours[24]).Length + String.Concat((""+(i+scroll)).Reverse()).Length, ' ');
+                outp[i].Insert(0, ' ');
+                
+                //reset colour
+                foreach(char c in  colours[21].Reverse()    ) outp[i].Insert(0, c);
+                
+                //numbers
+                foreach(char c in (""+(i+scroll)).Reverse() ) outp[i].Insert(0, c);
+                foreach(char c in colours[24].Reverse()     ) outp[i].Insert(0, c);
+                
+                //leading zero
+                for(int j = 0; j < lastlnlen - (i+scroll).ToString().Length; j++)
+                    outp[i].Insert(j, '0');
+                
+                foreach( char c in (colours[22] + colours[23]).Reverse() ) outp[i].Insert(0, c);
             }
             
             
             //UI
-            
             foreach(char c in (colours[25]+colours[26])) outp[0].Add(c);
             
             
@@ -284,12 +286,20 @@ namespace qse
             foreach(char c in (colours[21]+colours[16])) outp[top].Add(c);
             
             
+            
+            if(previous == "") for(int i = 0; i < outp.Length; i++) if(outp[i].Count() < 1)
+            {
+                foreach(char c in  colours[21].Reverse()    ) outp[i].Insert(0, c);
+                for(int j = 0; j < Console.WindowWidth; j++)
+                    outp[i].Insert(0, ' ');
+            }
+            
+            
             List<string> outplst = new List<string>();
             foreach(List<char> l in outp) outplst.Add(String.Concat(l));
             string outpstr = String.Join("\n", outplst);
             
             Console.CursorVisible = false;
-            
             
             quickWrite(previous, outpstr);
             
@@ -313,7 +323,7 @@ namespace qse
             for(int i = scroll; i < scroll+Console.WindowHeight-3; i++)
             {
                 Console.SetCursorPosition(Console.WindowWidth-1, 1+i-scroll);
-                if(filelenghts.Count() > i+1) if(filelenghts[i+1] - filelenghts[i] > Console.WindowWidth+hscroll-lnlen-2)
+                if(filelenghts.Count() > i+1) if(filelenghts[i+1] - filelenghts[i] > Console.WindowWidth+hscroll-lastlnlen-2)
                 {
                     Console.Write(colours[15] + ">");
                 }
@@ -331,6 +341,12 @@ namespace qse
         public static void quickWrite(string prevwrite, string write, int offset=0)
         {
             
+            if(prevwrite == "")
+            {
+                Console.SetCursorPosition(0, 0);
+                Console.Write(write);
+                return;
+            }
             
             List<string> prevwritelst = prevwrite.Split('\n').ToList();
             string[] writearr = write.Split('\n');
@@ -338,14 +354,6 @@ namespace qse
             for(int i = 0; i < writearr.Length; i++)
                     if(writearr[i].Length < 1)
                         writearr[i] = new string(' ', Console.WindowWidth);
-            
-            if(prevwrite == "")
-            {
-                Console.SetCursorPosition(0, 0);
-                Console.Write(String.Join("\n", writearr));
-                
-                return;
-            }
             
             while( writearr.Length >  prevwritelst.Count )
             {
@@ -360,9 +368,6 @@ namespace qse
                     Console.Write(writearr[i]);
                 }
             }
-            
-            
-            
             
         }
         

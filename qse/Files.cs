@@ -14,6 +14,8 @@ namespace qse
         {
             List<char> file = new List<char>();
             originalfile = File.ReadAllText(filename).Replace("\t", "    ").Replace("\r\n", "\n");
+            if(originalfile.Length < 1) originalfile = "\n";
+            else if(originalfile[originalfile.Length-1] != '\n') originalfile = originalfile + '\n';
             foreach (char c in originalfile)
             {
                 file.Add(c);

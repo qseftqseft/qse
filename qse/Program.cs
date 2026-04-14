@@ -464,6 +464,7 @@ namespace qse
                         
                         
                         file = Files.OpenFile(filename, out originalfile);
+                        prev="";
                         
                         dosug = false;
                         sugfile = "";
@@ -491,7 +492,7 @@ namespace qse
                                 settings.colours["bright white"] = settings.colours["bright white"].Concat(wrds.ToArray()).ToArray();
                             }
                         }
-                        
+                    
                     }
                     
                     if (keyInfo1.Key == ConsoleKey.C)
@@ -685,13 +686,8 @@ namespace qse
                                 if(!File.Exists(filename))
                                     File.WriteAllText(filename, "\n");
                                 
-                                originalfile = File.ReadAllText(filename).Replace("\t", "    ");
-                                filestr = "";
-                                file = new List<char>();
-                                foreach (char c in originalfile)
-                                {
-                                    file.Add(c);
-                                }
+                                file = Files.OpenFile(filename, out originalfile);
+                                prev="";
                                 
                                 dosug = false;
                                 sugfile = "";

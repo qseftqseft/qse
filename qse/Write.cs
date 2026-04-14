@@ -203,31 +203,28 @@ namespace qse
 
         public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, bool marked, int[] mark, int mode, char prevch, string[] exps, int[] pos, string previous, Settings settings, string[] colours)
         {
+        
+            int max = top;
+            if (max > filelenghts.Count - 1)
+                max = filelenghts.Count - 1;
             
-            string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length)-1, colours[16], colours, scroll,  Console.WindowHeight - 3, hscroll, exps, mark, pos, marked, settings);
+            int height = max - 1;
+            
+            string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length)-1, colours[16], colours, scroll,  height, hscroll, exps, mark, pos, marked, settings);
             
             List<string> writel = write.Split('\n').ToList();
-            
-            
-            
             
             
             List<char>[] outp = new List<char>[ Console.WindowHeight ];        
             for (int i = 0; i < outp.Length; i++) outp[i] = new List<char>();  
             
-            for (int i = 0; i < writel.Count; i++)
+            for (int i = 0; i < writel.Count-1; i++)
             {
                 foreach(char c in writel[i]) outp[i+1].Add(c);
             }
             
             
             //linunumbers
-            
-            int max = top;
-            if (max > filelenghts.Count - 1)
-                max = filelenghts.Count - 1;
-            
-            if(outp.Length < max) max = outp.Length - 1;
             
             int lastlnlen = (scroll + max - 1).ToString().Length;
             
@@ -286,12 +283,12 @@ namespace qse
             foreach(char c in (colours[21]+colours[16])) outp[top].Add(c);
             
             
-            
+            //line filling
             if(previous == "") for(int i = 0; i < outp.Length; i++) if(outp[i].Count() < 1)
             {
-                foreach(char c in  colours[21].Reverse()    ) outp[i].Insert(0, c);
                 for(int j = 0; j < Console.WindowWidth; j++)
                     outp[i].Insert(0, ' ');
+                foreach(char c in  (colours[21]).Reverse()    ) outp[i].Insert(0, c);
             }
             
             

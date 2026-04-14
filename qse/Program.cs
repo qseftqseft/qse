@@ -571,17 +571,7 @@ namespace qse
                         File.WriteAllText(filename, filestr);
                         do{}while(File.ReadAllText(filename) != filestr);
                         
-                        //term = settings.runexec;
-                        //tflags = settings.runflags;
-                        //tcommand = settings.runcommand;
-                        
-                        //if (settings.curfile)
-                        //{
-                        //    tcommand = filename + tcommand;
-                        //}
-                        
-                        
-                        
+                                                
                         ProcessStartInfo psi = new ProcessStartInfo
                         {
                             FileName = settings.runexec,
@@ -606,9 +596,12 @@ namespace qse
                         
                         using (Process proc = Process.Start(psi) ?? new Process())
                         {
-                             proc.WaitForExit();
+                            proc.WaitForExit();
                         }
+                        
                         Input.HandleRC(line, column, scroll, hscroll, file, false, out line, out column, out scroll, out hscroll, out file, out filelenghts);
+                        
+                        
                     }
                     if (keyInfo1.Key == ConsoleKey.Q)
                     {

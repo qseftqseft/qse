@@ -203,7 +203,10 @@ namespace qse
 
         public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, bool marked, int[] mark, int mode, char prevch, string[] exps, int[] pos, string previous, Settings settings, string[] colours)
         {
-        
+            if(top > Console.WindowHeight-1)
+                top = Console.WindowHeight-1;
+            
+            
             int max = top;
             if (max > filelenghts.Count - 1)
                 max = filelenghts.Count - 1;
@@ -338,7 +341,7 @@ namespace qse
         public static void quickWrite(string prevwrite, string write, int offset=0)
         {
             
-            if(prevwrite == "")
+            if(prevwrite == "" || prevwrite == write)
             {
                 Console.SetCursorPosition(0, 0);
                 Console.Write(write);

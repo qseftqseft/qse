@@ -190,6 +190,14 @@ namespace qse
             Console.Write(colours[21]);
             Console.Write("\x1b[2J");
             
+            char prevch = '\0';
+            string autocomp = "";
+            string prev = "";
+            
+            List<char> prevfile = new List<char>();
+            int prevscroll = scroll;
+            int prevhscroll = hscroll;
+            int prevsugcnt = 0;
             
             while (true)
             {
@@ -200,9 +208,8 @@ namespace qse
                 filestr = string.Concat(file);
                 filelenghts.Add(0);
                 filelenghts = Utils.lenghts(filestr);
-                char prevch = '\0';
-                string autocomp = "";
-                string prev = "";
+                prevch = '\0';
+                autocomp = "";
                 
                 while (run)
                 {
@@ -263,9 +270,18 @@ namespace qse
                             sugsc = 0;
                         }
                     }
+                                        
                     
                     
-                    prev = Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject/**/ /**/,  marked, marka/**/ /**/, mode, prevch, exps.ToArray(), [line+scroll, column+hscroll], prev, settings, colours);
+                    if(!(prevfile.Count() == file.Count() && scroll == prevscroll && prevhscroll == hscroll && !marked && prevsugcnt <2))
+                    {
+                        prev = Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject/**/ /**/,  marked, marka/**/ /**/, mode, prevch, exps.ToArray(), [line+scroll, column+hscroll], prev, settings, colours);
+                    }
+                    
+                    prevfile = String.Concat(file).ToList();
+                    prevscroll = scroll;
+                    prevhscroll = hscroll;
+                    prevsugcnt = suggest.Length;
                     
                     string[] prevs = prev.Split('\n');
                     
@@ -371,8 +387,10 @@ namespace qse
                     out file, out line, out column, out scroll, out hscroll, out sugsc, out r, out mode, out prevch, out prevtf, out prevtfm);
                     
                     
-                    
                     Input.HandleRC(line, column, scroll, hscroll, file, r, out line, out column, out scroll, out hscroll, out file, out filelenghts);
+                    
+                    
+                    
                     
                     
                 }
@@ -383,6 +401,12 @@ namespace qse
                     Console.SetCursorPosition(0, top + 1);
                     
                     Console.Write(colours[21]+colours[15]);//change to 27 and 28
+                    
+                    prev="";
+                    prevfile = new List<char>();
+                    prevscroll = scroll;
+                    prevhscroll = hscroll;
+                    prevsugcnt = 0;
                     
                     for (int i = 0; i <= left; i++)
                     {
@@ -464,7 +488,6 @@ namespace qse
                         
                         
                         file = Files.OpenFile(filename, out originalfile);
-                        prev="";
                         
                         dosug = false;
                         sugfile = "";
@@ -550,7 +573,6 @@ namespace qse
                     if (keyInfo1.Key == ConsoleKey.M)
                     {
                         hscroll = hscroll + 2;
-                        prev="";
                     }
                     
                     if (keyInfo1.Key == ConsoleKey.N)
@@ -563,7 +585,6 @@ namespace qse
                         {
                             hscroll = 0;
                         }
-                        prev="";
                     }
                     if (keyInfo1.Key == ConsoleKey.R)
                     {
@@ -600,7 +621,8 @@ namespace qse
                         }
                         
                         Input.HandleRC(line, column, scroll, hscroll, file, false, out line, out column, out scroll, out hscroll, out file, out filelenghts);
-                        
+                        Console.Clear();
+                        prev="";
                         
                     }
                     if (keyInfo1.Key == ConsoleKey.Q)
@@ -680,7 +702,6 @@ namespace qse
                                     File.WriteAllText(filename, "\n");
                                 
                                 file = Files.OpenFile(filename, out originalfile);
-                                prev="";
                                 
                                 dosug = false;
                                 sugfile = "";
@@ -727,16 +748,16 @@ namespace qse
                     {
                         bool slashn = false;
                         int aposition = position;
-                        if (file[aposition] == '\n') {line++; column = 0; hscroll = 0;slashn=true;}
+                        if (file[aposition] == '\n') {line++; column = 0; hscroll = 0; slashn=true;}
                         
                         if (!slashn)
                         {
                             do
                             {
                                 aposition++;
-                                while(file[aposition] == ' ' && file[aposition + 1] == ' ') aposition++;
-                                
+                                while(file[aposition] == ' ' && file[aposition + 1] == ' ') aposition++;    
                             } while (!settings.ignclr.Contains(file[aposition]));
+                            
                             if(file[aposition] == ' ') aposition++;
                             
                             column = column + (aposition - position);

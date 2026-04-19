@@ -10,14 +10,15 @@ namespace qse
 {
     class Input
     {
-        public static void modeone(ConsoleKeyInfo keyInfo1, int line, int column, bool r, string autocomp, List<char> file, int scroll, int hscroll, int curchar, List<int> filelenghts, int tab, int top, int sugsc, string[] suggest, int mode, Settings settings, out List<char> file2, out int line2, out int column2, out int scroll2, out int hscroll2, out int sugsc2, out bool r2, out int mode2)
+        public static void modeone(ConsoleKeyInfo keyInfo1, int line, int column, bool r, string autocomp, List<char> file, int scroll, int hscroll, int curchar, List<int> filelenghts, int tab, int top, int sugsc, string[] suggest, int mode, Settings settings, out List<char> file2, out int line2, out int column2, out int scroll2, out int hscroll2, out int sugsc2, out bool r2, out int mode2, out bool sug)
         {
             //s-o-t
             char[] ignclr = settings.ignclr;
             bool code = settings.code;
             //e-o-t
             
-
+            sug = false;
+            
             switch(keyInfo1.Key)
             {
                 case ConsoleKey.Escape:
@@ -111,6 +112,7 @@ namespace qse
                     {
                         file.Insert(curchar ,keyInfo1.KeyChar);
                         column++;
+                        sug = true;
                     }
                     break;
             }

@@ -198,6 +198,8 @@ namespace qse
             int prevscroll = scroll;
             int prevhscroll = hscroll;
             int prevsugcnt = 0;
+            bool sug = false;
+            
             
             while (true)
             {
@@ -262,7 +264,7 @@ namespace qse
                         }
                     }
                     
-                    if(dosug)
+                    if(dosug && sug)
                     {
                         suggest = Suggest.sug(prevstr, nowstr, match, vars.ToArray(), sugsc);
                         if(prevnowstr != nowstr)
@@ -285,7 +287,7 @@ namespace qse
                     
                     string[] prevs = prev.Split('\n');
                     
-                    if(dosug)
+                    if(dosug && sug)
                     {
                         if(sugsc > suggest.Length-1)
                             sugsc = suggest.Length-1;
@@ -332,6 +334,7 @@ namespace qse
                             Console.SetCursorPosition(0, top + 1);
                             Console.Write("Copied!");
                             Console.SetCursorPosition(((scroll + Console.WindowHeight - 3).ToString().Length)+1+column, line);
+                            prev="";
                         }
                         
                     };
@@ -360,10 +363,9 @@ namespace qse
                         continue;}
                     
                     
+                    sug = false;
                     
                     keyInfo1 = Console.ReadKey(true);
-                    
-                    
                     
                     if (((keyInfo1.Modifiers & ConsoleModifiers.Alt) != 0))
                     {
@@ -381,7 +383,7 @@ namespace qse
                     
                     
                     if(mode == 0) Input.modeone(keyInfo1, line, column, r, autocomp, file, scroll, hscroll,  curchar, filelenghts, tab, top, sugsc, suggest, mode, settings,
-                    out file, out line, out column, out scroll, out hscroll, out sugsc, out r, out mode);
+                    out file, out line, out column, out scroll, out hscroll, out sugsc, out r, out mode, out sug);
                     
                     if(mode == 1) NavMode.modetwo(keyInfo1, line, column, r, autocomp, file, scroll, hscroll,  curchar, filelenghts, tab, top, sugsc, suggest, mode, prevch, prevtf, prevtfm, settings,
                     out file, out line, out column, out scroll, out hscroll, out sugsc, out r, out mode, out prevch, out prevtf, out prevtfm);

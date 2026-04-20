@@ -275,9 +275,13 @@ namespace qse
                                         
                     
                     
-                    if(!(prevfile.Count() == file.Count() && scroll == prevscroll && prevhscroll == hscroll && !marked && prevsugcnt <2))
+                    if(!(prevfile.Count() == file.Count() && scroll == prevscroll && prevhscroll == hscroll && !marked && prevsugcnt <2 && prev != ""))
                     {
                         prev = Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject/**/ /**/,  marked, marka/**/ /**/, mode, prevch, exps.ToArray(), [line+scroll, column+hscroll], prev, settings, colours);
+                    }
+                    else
+                    {
+                        Utils.debug("F");
                     }
                     
                     prevfile = String.Concat(file).ToList();
@@ -347,19 +351,18 @@ namespace qse
                         {
                             left = Console.WindowWidth - 1;
                             iterate = true;
-                            prev = "";
                             break;
                         }
                         if(top != Console.WindowHeight - 2)
                         {
                             top = Console.WindowHeight - 2;
                             iterate = true;
-                            prev = "";
                             break;
                         }
                     }
                     if(iterate){
                         iterate = false;
+                        prev = "";
                         continue;}
                     
                     

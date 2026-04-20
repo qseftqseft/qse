@@ -289,7 +289,7 @@ namespace qse
             //line filling
             if(previous == "") for(int i = 0; i < outp.Length; i++) if(outp[i].Count() < 1)
             {
-                for(int j = 0; j < Console.WindowWidth; j++)
+                for(int j = 0; j < left; j++)
                     outp[i].Insert(0, ' ');
                 foreach(char c in  (colours[21]).Reverse()    ) outp[i].Insert(0, c);
             }
@@ -300,6 +300,8 @@ namespace qse
             string outpstr = String.Join("\n", outplst);
             
             Console.CursorVisible = false;
+            
+            
             
             quickWrite(previous, outpstr);
             
@@ -341,7 +343,7 @@ namespace qse
         public static void quickWrite(string prevwrite, string write, int offset=0)
         {
             
-            if(prevwrite == "" || prevwrite == write)
+            if(prevwrite == "")
             {
                 Console.SetCursorPosition(0, 0);
                 Console.Write(write);
@@ -364,6 +366,7 @@ namespace qse
             {
                 if( prevwritelst[i] != writearr[i]) 
                 {
+                    
                     Console.SetCursorPosition(0, i + offset);
                     Console.Write(writearr[i]);
                 }

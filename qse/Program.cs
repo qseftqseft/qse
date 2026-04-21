@@ -279,10 +279,7 @@ namespace qse
                     {
                         prev = Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject/**/ /**/,  marked, marka/**/ /**/, mode, prevch, exps.ToArray(), [line+scroll, column+hscroll], prev, settings, colours);
                     }
-                    else
-                    {
-                        Utils.debug("F");
-                    }
+                    
                     
                     prevfile = String.Concat(file).ToList();
                     prevscroll = scroll;
@@ -291,26 +288,33 @@ namespace qse
                     
                     string[] prevs = prev.Split('\n');
                     
+                    int max = top;
+                    if (max > filelenghts.Count - 1)
+                        max = filelenghts.Count - 1;
+            
+
+                    
+                    Console.SetCursorPosition(((scroll + Console.WindowHeight - 3).ToString().Length)+1+column, line);
+                    
+                    
+                    
                     if(dosug && sug)
                     {
                         if(sugsc > suggest.Length-1)
                             sugsc = suggest.Length-1;
                         if(sugsc < 0)
                             sugsc = 0;
-                        Console.SetCursorPosition(column, line);
-                        autocomp = Utils.ArrayBlackBox(suggest, colours[27] + colours[28], colours[21], nowstr.Length, settings.ignclr, (file.Count()+"").Length);
+                        autocomp = Utils.ArrayBlackBox(suggest, colours[27] + colours[28], colours[21], nowstr.Length, settings.ignclr, 0);
                         prevnowstr = nowstr;
                         
                         for(int i = 1; i <= 7 && i + line < prevs.Length; i++)
                             prevs[i+line] = "";
+                        Console.SetCursorPosition(((scroll + Console.WindowHeight - 3).ToString().Length)+1+column, line);
                     }
                     
                     
                     prev = String.Join('\n', prevs);
                     
-                    
-                    
-                    Console.SetCursorPosition(((scroll + Console.WindowHeight - 3).ToString().Length)+1+column, line);
                     
                     //
                     //debug(swone.ElapsedMilliseconds + " " + swtwo.ElapsedMilliseconds + " " + swthree.ElapsedMilliseconds);                    

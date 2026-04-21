@@ -21,7 +21,7 @@ namespace qse
             
             return colourString(str, efs, colours, ignclr, exps);
         }
-
+        
         public static string colourString(string str, string[][] efs, string[] colours, char[] ignclr, string[] exps)
         {
             if(str == "" )
@@ -32,7 +32,7 @@ namespace qse
             {
                 return colours[15];
             }
-
+            
             for(int i = 0; i <= 15; i++)
             {
                 if (Array.Exists(efs[i], x => x == str))
@@ -40,7 +40,7 @@ namespace qse
                     return colours[i];
                 }
             }
-
+            
             if (int.TryParse(str, out _))
             {
                 return colours[17];
@@ -56,8 +56,8 @@ namespace qse
                 return colours[16];
             }
         }
-
-
+        
+        
         public static string listColourAndCutoff(List<char> file, int maxWidth, string dcolour, string[] colours, int top, int height, int hscroll, string[] exps, int[] mark, int[] pos, bool marked, Settings settings)
         {
             //s-o-t
@@ -104,7 +104,7 @@ namespace qse
             {
                 int k = hscroll;
                 string lne = filestr[h];
-
+                
                 bool isfirst = false;
                 int i = hscroll;
                 
@@ -137,7 +137,7 @@ namespace qse
                     if(i+1 < lne.Length) i++;
                     else break;
                 }
-
+                
                 while(i < lne.Length && i < hscroll+maxWidth)
                 {
                     List<char> expression = new List<char>();
@@ -154,8 +154,8 @@ namespace qse
                         addi = expr.Substring(hscroll - j);
                     else
                         addi = expr;
-
-
+                    
+                    
                     foreach( char c in (colour(expr, efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides, exps)))
                         output.Add(c);
                     foreach( char c in addi)
@@ -168,9 +168,9 @@ namespace qse
                     
                     
                     isfirst=false;
-
+                    
                     i++;
-
+                    
                     if(i < lne.Length) while(ignclr.Contains(lne[i]) && i < lne.Length && i < hscroll+maxWidth)    //yes, this is the exact same code
                     {
                         foreach(char c in ( colour(lne[i] + "", efs, colours, ignclr, h+top, i, file, strng, String.Join("\n", filestr), overrides, exps) )) output.Add(c);
@@ -181,26 +181,26 @@ namespace qse
                         if(marked && pos[0] == h+top+1 && pos[1] == k) foreach(char ch in colours[21]) output.Add(ch);
                         
                         k++;
-
+                        
                         if(i+1 < lne.Length) i++;
                         else break;
                     }
-
+                    
                     //i++;
-
+                    
                 }
-
+                
                 while(i > hscroll+maxWidth && output.Count() > 0 ) {i--; output.RemoveAt(output.Count()-1); }
-
+                
                 foreach(char c in colours[15]) output.Add(c);
                 output.Add('\n');
-
-
+                
+                
             }
-
+            
             return String.Join("", output);
         }
-
+        
         public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, bool marked, int[] mark, int mode, char prevch, string[] exps, int[] pos, string previous, Settings settings, string[] colours)
         {
             if(top > Console.WindowHeight-1)
@@ -301,17 +301,7 @@ namespace qse
             
             Console.CursorVisible = false;
             
-            
-            
             quickWrite(previous, outpstr);
-            
-            //empty space
-            //Console.SetCursorPosition(0, 10);
-            
-            //for(int i = Console.CursorTop; i < Console.WindowHeight - 3; i++)
-            //{
-            //    Console.Write(colours[21] + "\x1b[2K\r" + outpstr.Split('\n').Length);
-            //}
             
             
             //last line clearing

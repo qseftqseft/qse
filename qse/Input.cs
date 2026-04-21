@@ -65,6 +65,7 @@ namespace qse
                             line--;
                             column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
                         }
+                        sug = true;
                     }
                     break;
                 case ConsoleKey.Enter:
@@ -103,9 +104,11 @@ namespace qse
                     break;
                 case ConsoleKey.Home:
                     if(sugsc > 0) sugsc--;
+                    sug = true;
                     break;
                 case ConsoleKey.End:
                     if(sugsc < suggest.Length + 5) sugsc++;
+                    sug = true;
                     break;
                 default:
                     if (!char.IsControl(keyInfo1.KeyChar) && keyInfo1.KeyChar != '\0')

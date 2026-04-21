@@ -289,7 +289,7 @@ namespace qse
             //line filling
             if(previous == "") for(int i = 0; i < outp.Length; i++) if(outp[i].Count() < 1)
             {
-                for(int j = 0; j < left; j++)
+                for(int j = 0; j < left+1; j++)
                     outp[i].Insert(0, ' ');
                 foreach(char c in  (colours[21]).Reverse()    ) outp[i].Insert(0, c);
             }

@@ -130,7 +130,7 @@ namespace qse
             mode2 = mode;
 
         }
-        public static void HandleRC(int line, int column, int scroll, int hscroll, List<char> file, bool r, out int line1, out int column1, out int scroll1, out int hscroll1, out List<char> file1, out List<int> filelenghts1)
+        public static void HandleRC(int line, int column, int scroll, int hscroll, int max, List<char> file, bool r, out int line1, out int column1, out int scroll1, out int hscroll1, out List<char> file1, out List<int> filelenghts1)
         {
             int left = Console.WindowWidth - 1;
             int top = Console.WindowHeight - 2;
@@ -142,10 +142,14 @@ namespace qse
             if(line >= filelenghts.Count)
                 line = filelenghts.Count - 1;
             
-            while(scroll + top > filelenghts.Count)
-                scroll--;
+            if(scroll + max > filelenghts.Count)
+                scroll = filelenghts.Count - max;
             
-            while (line >= top) { line--; scroll++; }
+            if(line >= top)
+            {
+                scroll = scroll + (line - (top-1));
+                line = top - 1;
+            }
 
             if (line <= 0)
             {
@@ -158,18 +162,19 @@ namespace qse
                 line--;
                 column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
             }
-
-            while (column < 0 && hscroll > 0)
+            
+            
+            if(column < 0 && hscroll + column > 0)
             {
-                column++;
-                hscroll--;
+                hscroll = hscroll + column;
+                column = 0;
             }
-
+            
             if (column < 0 && hscroll == 0 && (line + scroll < 2))
             {
                 column = 0;
             }
-
+            
             if (line <= 0)
             {
                 line = 1;
@@ -178,22 +183,23 @@ namespace qse
 
 
 
-
-
+            
+            
             if (line >= top)
             {
                 line = top - 1;
                 scroll++;
             }
-
+            
+            
             if (scroll <= 0)
             {
                 scroll = 0;
             }
-
+            
             if (line >= 1 && (line + scroll < filelenghts.Count - 1))
             {
-                if ((column + hscroll == filelenghts[line + scroll] - filelenghts[line - 1 + scroll] + 1/*  || column  >= left*/) && r)
+                if ((column + hscroll == filelenghts[line + scroll] - filelenghts[line - 1 + scroll] + 1) && r)
                 {
                     column = 0;
                     hscroll = 0;
@@ -205,25 +211,25 @@ namespace qse
                     }
                 }
             }
-
-            while(line + scroll >= filelenghts.Count - 1)
+            
+            
+            if (line + scroll >= filelenghts.Count - 1)
             {
-                if(line > 1){
-                    line--;
-                }
-                else if (scroll > 0){
-                    scroll--;
-                }
-                else{
-                    file.Insert(file.Count(), '\n');
-                    break;
-                }
+                line = filelenghts.Count - 2 - scroll;
             }
-
-            while (column >=  (left-((filelenghts.Count).ToString().Length)))
+            if(line < 1)
             {
-                column--; hscroll++;
+                scroll = scroll + line - 1;
+                line = 1;
             }
+            
+
+            if (column >=  (left-((filelenghts.Count).ToString().Length)))
+            {
+                hscroll = hscroll + column - (left-((filelenghts.Count).ToString().Length)) - 1;
+                column = (left-((filelenghts.Count).ToString().Length)) - 1;
+            }
+            
 
             if (scroll + top >= filelenghts.Count && filelenghts.Count - top > 0)
             {
@@ -236,7 +242,7 @@ namespace qse
             {
                 line = top - 1;
             }
-
+            
             if (filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll >
                 filelenghts[filelenghts.Count - 1] + (filelenghts.Count - 3))
             {
@@ -259,15 +265,17 @@ namespace qse
             {
                 column = (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]) - hscroll;
             }
-
-            while (column < 0)
+            
+            
+            if(column < 0)
             {
-                column++;
-                if (hscroll > 0)
-                    hscroll--;
+                hscroll = hscroll + column;
+                column = 0;
             }
-
-
+            if(hscroll < 0)
+                hscroll = 0;
+            
+            
             line1 = line;
             column1 = column;
             scroll1 = scroll;

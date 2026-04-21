@@ -60,6 +60,7 @@ namespace qse
     {
         public static void Main(string[] args)
         {
+            
             int left = Console.WindowWidth-1;
             int top = Console.WindowHeight-2;
             
@@ -200,6 +201,9 @@ namespace qse
             int prevsugcnt = 0;
             bool sug = false;
             
+            int max = top;
+            if (max > filelenghts.Count - 1)
+                max = filelenghts.Count - 1;
             
             while (true)
             {
@@ -216,7 +220,6 @@ namespace qse
                 while (run)
                 {
                     
-                    
                     autocomp = "";
                     
                     
@@ -225,6 +228,7 @@ namespace qse
                     int iindx = 0;
                     prevstr = "";
                     nowstr = "";
+                    
                     do
                     {
                         iindx++;
@@ -288,13 +292,13 @@ namespace qse
                     
                     string[] prevs = prev.Split('\n');
                     
-                    int max = top;
+                    max = top;
                     if (max > filelenghts.Count - 1)
                         max = filelenghts.Count - 1;
             
 
                     
-                    Console.SetCursorPosition(((scroll + Console.WindowHeight - 3).ToString().Length)+1+column, line);
+                    Console.SetCursorPosition(((scroll + max - 1).ToString().Length)+1+column, line);
                     
                     
                     
@@ -309,7 +313,7 @@ namespace qse
                         
                         for(int i = 1; i <= 7 && i + line < prevs.Length; i++)
                             prevs[i+line] = "";
-                        Console.SetCursorPosition(((scroll + Console.WindowHeight - 3).ToString().Length)+1+column, line);
+                        Console.SetCursorPosition(((scroll + max - 1).ToString().Length)+1+column, line);
                     }
                     
                     
@@ -396,8 +400,7 @@ namespace qse
                     out file, out line, out column, out scroll, out hscroll, out sugsc, out r, out mode, out prevch, out prevtf, out prevtfm);
                     
                     
-                    Input.HandleRC(line, column, scroll, hscroll, file, r, out line, out column, out scroll, out hscroll, out file, out filelenghts);
-                    
+                    Input.HandleRC(line, column, scroll, hscroll, max, file, r, out line, out column, out scroll, out hscroll, out file, out filelenghts);
                     
                     
                     
@@ -524,7 +527,7 @@ namespace qse
                                 settings.colours["bright white"] = settings.colours["bright white"].Concat(wrds.ToArray()).ToArray();
                             }
                         }
-                    
+                        prev="";
                     }
                     
                     if (keyInfo1.Key == ConsoleKey.C)
@@ -629,7 +632,7 @@ namespace qse
                             proc.WaitForExit();
                         }
                         
-                        Input.HandleRC(line, column, scroll, hscroll, file, false, out line, out column, out scroll, out hscroll, out file, out filelenghts);
+                        Input.HandleRC(line, column, scroll, hscroll, max, file, false, out line, out column, out scroll, out hscroll, out file, out filelenghts);
                         Console.Clear();
                         prev="";
                         
@@ -963,10 +966,13 @@ namespace qse
                         prev="";
                     }
                 }
-                Input.HandleRC(line, column, scroll, hscroll, file, false, out line, out column, out scroll, out hscroll, out file, out filelenghts);
+                Input.HandleRC(line, column, scroll, hscroll, max, file, false, out line, out column, out scroll, out hscroll, out file, out filelenghts);
                 run = true;
-                
+            
             }
+            
+            
+            
         }
         
     }

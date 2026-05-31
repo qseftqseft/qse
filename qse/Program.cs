@@ -368,8 +368,12 @@ namespace qse
                     };
                     
                     
-                    bool iterate = false;
-                    while(!Console.KeyAvailable)
+                    
+                    
+                    bool iterate = false;                    
+                    
+                    
+                    while (!Console.KeyAvailable)
                     {
                         if(left != Console.WindowWidth - 1)
                         {
@@ -383,11 +387,14 @@ namespace qse
                             iterate = true;
                             break;
                         }
+                        Thread.Sleep(1);
                     }
+                    
                     if(iterate){
                         iterate = false;
                         prev = "";
                         continue;}
+                    
                     
                     
                     sug = false;
@@ -849,7 +856,7 @@ namespace qse
                     }
                     else if (keyInfo1.Key == ConsoleKey.V)
                     {
-                        string pclip = ClipboardService.GetText().Replace("\t", "    ").Replace("\r\n", "\n") ?? string.Empty;
+                        string pclip = (ClipboardService.GetText() ?? string.Empty).Replace("\t", "    ").Replace("\r\n", "\n");
                         for (int i = 0; i < pclip.Length; i++)
                         {
                             file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, pclip[i]);

@@ -65,8 +65,8 @@ namespace qse
         public static void Main(string[] args)
         {
             InitRPC();
-            
             DateTime t = DateTime.UtcNow;
+            UpdateRPCIdle(t);
             
             
             int left = Console.WindowWidth-1;
@@ -235,7 +235,6 @@ namespace qse
                 while (run)
                 {
                     
-                    UpdateRPC(Path.GetFileName(filename), currentproject, line + scroll, t);
                     autocomp = "";
                     
                     
@@ -372,6 +371,8 @@ namespace qse
                     
                     bool iterate = false;                    
                     
+                    Stopwatch IdleTimer = new Stopwatch();
+                    IdleTimer.Start();
                     
                     while (!Console.KeyAvailable)
                     {
@@ -387,6 +388,12 @@ namespace qse
                             iterate = true;
                             break;
                         }
+                        if(IdleTimer.ElapsedMilliseconds > 60000)
+                        {
+                            UpdateRPCIdle(t);
+                            IdleTimer.Stop();
+                        }
+                        
                         Thread.Sleep(1);
                     }
                     
@@ -425,6 +432,7 @@ namespace qse
                     
                     Input.HandleRC(line, column, scroll, hscroll, max, file, r, out line, out column, out scroll, out hscroll, out file, out filelenghts);
                     
+                    UpdateRPC(Path.GetFileName(filename), currentproject, line + scroll, t);
                     
                 }
                 
@@ -1021,6 +1029,24 @@ namespace qse
             var presence = new RichPresence(){
                 State="line " + line, 
                 Details="editing " + file + " in " + project, 
+                
+                Assets = new Assets(){
+                    LargeImageKey = "logo"
+                }, 
+                Timestamps = new Timestamps
+                {
+                    Start = t
+                },
+                
+            };
+            
+            client.SetPresence(presence);
+        }
+        
+        static void UpdateRPCIdle(DateTime t)
+        {
+            var presence = new RichPresence(){
+                State="idle", 
                 
                 Assets = new Assets(){
                     LargeImageKey = "logo"

@@ -46,6 +46,10 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "DiscordRichPresence": {
+              "target": "Package",
+              "version": "[1.6.1.70, )"
+            },
             "NAudio": {
               "target": "Package",
               "version": "[2.2.1, )"

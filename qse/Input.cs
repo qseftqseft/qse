@@ -138,142 +138,130 @@ namespace qse
             filelenghts.Add(0);
             string filestr = string.Concat(file);
             filelenghts = Utils.lenghts(filestr);
-
-            if(line >= filelenghts.Count)
-                line = filelenghts.Count - 1;
             
-            if(scroll + max > filelenghts.Count)
-                scroll = filelenghts.Count - max;
+            int lastlnlen = (scroll + max - 1).ToString().Length;
             
-            if(line >= top)
+            
+            
+            //cursor at end of view
+            if (column >= left - lastlnlen - 2)
             {
-                scroll = scroll + (line - (top-1));
-                line = top - 1;
-            }
-
-            if (line <= 0)
-            {
-                line = 1;
-                scroll--;
-            }
-
-            if (column < 0 && hscroll == 0 && line + scroll >= 2)
-            {
-                line--;
-                column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+                hscroll = column - left + lastlnlen + 2 + hscroll;
+                column = left - lastlnlen - 2;
             }
             
             
-            if(column < 0 && hscroll + column > 0)
-            {
-                hscroll = hscroll + column;
-                column = 0;
-            }
-            
-            if (column < 0 && hscroll == 0 && (line + scroll < 2))
-            {
-                column = 0;
-            }
-            
-            if (line <= 0)
-            {
-                line = 1;
-                scroll--;
-            }
-
-
-
-            
-            
-            if (line >= top)
-            {
-                line = top - 1;
-                scroll++;
-            }
-            
-            
-            if (scroll <= 0)
-            {
-                scroll = 0;
-            }
-            
-            if (line >= 1 && (line + scroll < filelenghts.Count - 1))
-            {
-                if ((column + hscroll == filelenghts[line + scroll] - filelenghts[line - 1 + scroll] + 1) && r)
-                {
-                    column = 0;
-                    hscroll = 0;
-                    line++;
-                    if (line >= top)
-                    {
-                        line = top - 1;
-                        column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
-                    }
-                }
-            }
-            
-            
-            if (line + scroll >= filelenghts.Count - 1)
-            {
-                line = filelenghts.Count - 2 - scroll;
-            }
-            if(line < 1)
+            //cursor at start of view
+            if(line < 1 && scroll > 0)
             {
                 scroll = scroll + line - 1;
                 line = 1;
             }
             
-
-            if (column >=  (left-((filelenghts.Count).ToString().Length)))
-            {
-                hscroll = hscroll + column - (left-((filelenghts.Count).ToString().Length)) - 1;
-                column = (left-((filelenghts.Count).ToString().Length)) - 1;
-            }
             
-
-            if (scroll + top >= filelenghts.Count && filelenghts.Count - top > 0)
+            //cursor at end of view
+            if(line >= top)
             {
-                if (line < top)
-                    line++;
-                scroll = filelenghts.Count - top - 1;
-            }
-
-            if (line >= top)
-            {
+                scroll = scroll + (line - top + 1);
                 line = top - 1;
-            }
-            
-            if (filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll >
-                filelenghts[filelenghts.Count - 1] + (filelenghts.Count - 3))
-            {
-                column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
-            }
-
-            if (column >= left)
-            {
-                hscroll = column - left + hscroll;
-                column = left;
-                if (hscroll > (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]) - left)
+                
+                if(scroll + top >= filelenghts.Count())
                 {
-                    hscroll = 0;
-                    column = 0;
-                    line++;
+                    scroll = filelenghts.Count - top - 1;
                 }
             }
-
-            if (hscroll + column > (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]))
+            
+            
+            //view at end of file
+            if(line >= filelenghts.Count)
             {
-                column = (filelenghts[line + scroll] - filelenghts[line - 1 + scroll]) - hscroll;
+                line = filelenghts.Count - 1;
             }
             
             
-            if(column < 0)
+            //scroll at end of file*/
+            if(scroll + top > filelenghts.Count - 1)
             {
-                hscroll = hscroll + column;
+                line++;
+                scroll = filelenghts.Count - 1 - top;
+                
+            }
+            
+            
+            //scroll at start of file
+            if (scroll < 0)
+            {
+                scroll = 0;
+                line--;
+            }
+            
+            
+            //length of file does not allow scrolling
+            if (scroll + top >= filelenghts.Count && top > filelenghts.Count)
+            {
+                scroll = 0;
+            }
+            
+            
+            //cursor at start of file
+            if (column < 0 && hscroll == 0 && (line + scroll < 2))
+            {
                 column = 0;
             }
-            if(hscroll < 0)
+            
+            
+            //cursor at start of file
+            if(line + scroll < 1)
+            {
+                scroll = 0;
+                line = 1;
+            }
+            
+            
+            //cursor at end of line
+            if ((column + hscroll == filelenghts[line + scroll] - filelenghts[line - 1 + scroll] + 1 && line + scroll < filelenghts.Count - 2) && r)
+            {
+                column = 0;
                 hscroll = 0;
+                line++;
+            }
+            
+            
+            //cursor past the end of line
+            if (column + hscroll > filelenghts[line + scroll] - filelenghts[line - 1 + scroll])
+            {
+                column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll] - hscroll;
+            }
+            
+            
+            //cursor at end of file
+            if (line + scroll > filelenghts.Count - 2 && filelenghts.Count - scroll - 2 > 0)
+            {
+                line = filelenghts.Count - scroll - 2;
+            }
+            
+            
+            //cursor at start of line (no hscroll, line subtraction possible)
+            if (column < 0 && hscroll == 0 && line + scroll >= 2)
+            {
+                line--;
+                
+                if (line <= 0)
+                {
+                    scroll += line - 1;
+                    line = 1;
+                }
+                
+                column = filelenghts[line + scroll] - filelenghts[line - 1 + scroll];
+            }
+            
+            
+            //cursor at start of line (hscroll subtraction possible)
+            if(column < 0 && hscroll + column > 0)
+            {
+                hscroll += column;
+                column = 0;
+            }
             
             
             line1 = line;

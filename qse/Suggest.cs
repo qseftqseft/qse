@@ -12,8 +12,9 @@ namespace qse
     {
         public static string[] sug(string prevstr, string str, string[] match, string[] vars, int scroll)
         {
-            if(str.Length < 1)
+            if(str.Length < 1 && prevstr.Length < 1)
                 return [""];
+            
             
             List<string> sugg = new List<string>();
             List<string> sugtwo = new List<string>();
@@ -30,6 +31,7 @@ namespace qse
             
             Dictionary<string, string[]> matd = new Dictionary<string, string[]>();
             
+            foreach(string s in vars) vnms.Insert(0, s.Split(sep)[1]);
             foreach(string s in vars) vnms.Insert(0, s.Split(sep)[1]);
             
             vnms.Sort((x, y) => y.Length.CompareTo(x.Length));

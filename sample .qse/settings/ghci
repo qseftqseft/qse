@@ -1,0 +1,23 @@
+.Æ,Æ/Æ+Æ-Æ>Æ<Æ=Æ Æ;Æ(Æ)Æ[Æ]Æ{Æ}Æ!Æ"Æ:Æ|Æ_
+
+
+
+
+
+IntÆCharÆBool
+
+
+
+
+--
+
+otherwise
+FalseÆTrue
+
+
+"
+10
+/usr/bin/st
+ -f "monospace:size=18" -e /usr/bin/bash -c "/usr/bin/ghci 
+; exec /usr/bin/bash"
+let

@@ -1,4 +1,4 @@
-QSE - qseft's simple editor - the C# console-based text editor
+pQSE - qseft's simple editor - the C# console-based text editor
 Copyright (C) 2025 Václav Ulrich
 
     This program is free software: you can redistribute it and/or modify
@@ -27,7 +27,6 @@ CTRL shortcuts
     CTRL+SHIFT+R arrow -> jump to end of line
     CTRL+SHIFT+L arrow -> jump to start of line
 
-
 ALT shortcuts
     ALT+M -> scroll right
     ALT+N -> scroll left
@@ -44,4 +43,3 @@ Other shortcuts
 
 Be sure to check out the wiki
 qseftweb.wz.cz/qse/wiki
-

@@ -16,7 +16,7 @@ usingÆargsÆcase
 Console
 
 "
-01
-st
--f "monospace:size=18" -e
-bash -c "pushd /home/qseft/WPF-Samples/Graphics/Brushes && dotnetbuild; popd"
+10
+/usr/bin/st
+-f "monospace:size=18" -e /usr/bin/bash -c "wpfxml
+; popd"

@@ -52,14 +52,22 @@ using System.Diagnostics;
 using System.Text;
 using System.Linq;
 using TextCopy;
-
+using DiscordRPC;
 
 namespace qse
 {
     class MainClass
     {
+    
+        private static readonly DiscordRpcClient client = new DiscordRpcClient("1510288838457823413");
+                
+        
         public static void Main(string[] args)
         {
+            InitRPC();
+            
+            DateTime t = DateTime.UtcNow;
+            
             
             int left = Console.WindowWidth-1;
             int top = Console.WindowHeight-2;
@@ -153,8 +161,14 @@ namespace qse
                 }
             }
             
-            
-            
+            if(filename.Split(Path.DirectorySeparatorChar)[filename.Split(Path.DirectorySeparatorChar).Length-1].Contains('.'))
+            {
+                if(File.Exists(homeDirectory + Path.DirectorySeparatorChar+".qse"+Path.DirectorySeparatorChar+"settings"+Path.DirectorySeparatorChar+Path.GetExtension(filename).Substring(1)))
+                {
+                    settingsfile = Path.DirectorySeparatorChar+Path.GetExtension(filename).Substring(1);
+                    settings = new Settings(homeDirectory + Path.DirectorySeparatorChar+".qse"+Path.DirectorySeparatorChar+"settings"+Path.DirectorySeparatorChar+Path.GetExtension(filename).Substring(1));
+                }
+            }
             
             
             
@@ -177,6 +191,7 @@ namespace qse
             }    
             string currentproject = projects[0][0];
             int currentprojectindx = 0;
+            
             
             Stopwatch ressw = new Stopwatch();
             
@@ -220,6 +235,7 @@ namespace qse
                 while (run)
                 {
                     
+                    UpdateRPC(Path.GetFileName(filename), currentproject, line + scroll, t);
                     autocomp = "";
                     
                     
@@ -251,7 +267,7 @@ namespace qse
                     
                     
                     filestr = string.Concat(file);
-                    List<string> exps = new List<string>();
+                    Dictionary<string, string> exps = new Dictionary<string, string>();
                     string[] lnes = filestr.Split('\n');
                     List<string> vars = new List<string>();
                     
@@ -262,7 +278,7 @@ namespace qse
                         {
                             if( settings.types.Contains(st[i-1]) )
                             {
-                                exps.Add(st[i]);
+                                if(!exps.ContainsKey(st[i])) exps.Add( st[i], st[i-1] );
                                 if(dosug) vars.Add(st[i-1] + match[0] + st[i]);
                             }
                         }
@@ -281,7 +297,7 @@ namespace qse
                     
                     if(!(prevfile.Count() == file.Count() && scroll == prevscroll && prevhscroll == hscroll && !marked && prevsugcnt <2 && prev != ""))
                     {
-                        prev = Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject/**/ /**/,  marked, marka/**/ /**/, mode, prevch, exps.ToArray(), [line+scroll, column+hscroll], prev, settings, colours);
+                        prev = Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject/**/ /**/,  marked, marka/**/ /**/, mode, prevch, exps, [line+scroll, column+hscroll], prev, settings, colours);
                     }
                     
                     
@@ -401,8 +417,6 @@ namespace qse
                     
                     
                     Input.HandleRC(line, column, scroll, hscroll, max, file, r, out line, out column, out scroll, out hscroll, out file, out filelenghts);
-                    
-                    
                     
                     
                 }
@@ -527,6 +541,14 @@ namespace qse
                                 settings.colours["bright white"] = settings.colours["bright white"].Concat(wrds.ToArray()).ToArray();
                             }
                         }
+                        if(filename.Split(Path.DirectorySeparatorChar)[filename.Split(Path.DirectorySeparatorChar).Length-1].Contains('.'))
+                        {
+                            if(File.Exists(homeDirectory + Path.DirectorySeparatorChar+".qse"+Path.DirectorySeparatorChar+"settings"+Path.DirectorySeparatorChar+Path.GetExtension(filename).Substring(1)))
+                            {
+                                settingsfile = Path.DirectorySeparatorChar+Path.GetExtension(filename).Substring(1);
+                                settings = new Settings(homeDirectory + Path.DirectorySeparatorChar+".qse"+Path.DirectorySeparatorChar+"settings"+Path.DirectorySeparatorChar+Path.GetExtension(filename).Substring(1));
+                            }
+                        }
                         prev="";
                     }
                     
@@ -608,7 +630,7 @@ namespace qse
                         ProcessStartInfo psi = new ProcessStartInfo
                         {
                             FileName = settings.runexec,
-                            Arguments = settings.runflags + " " + settings.runcommand + " && sleep 10",
+                            Arguments = settings.runflags + " " + settings.runcommand,
                             UseShellExecute = true
                         };
                         if (settings.curfile)
@@ -616,7 +638,7 @@ namespace qse
                             psi = new ProcessStartInfo
                             {
                                 FileName = settings.runexec,
-                                Arguments = settings.runflags + " " + filename + settings.runcommand + " && sleep 10",
+                                Arguments = settings.runflags + " " + filename + settings.runcommand,
                                 UseShellExecute = true
                             };
                         }
@@ -740,6 +762,15 @@ namespace qse
                                         settings.colours["bright white"] = settings.colours["bright white"].Concat(wrds.ToArray()).ToArray();
                                     }
                                 }
+                                if(filename.Split(Path.DirectorySeparatorChar)[filename.Split(Path.DirectorySeparatorChar).Length-1].Contains('.'))
+                                {
+                                    if(File.Exists(homeDirectory + Path.DirectorySeparatorChar+".qse"+Path.DirectorySeparatorChar+"settings"+Path.DirectorySeparatorChar+Path.GetExtension(filename).Substring(1)))
+                                    {
+                                        settingsfile = Path.DirectorySeparatorChar+Path.GetExtension(filename).Substring(1);
+                                        settings = new Settings(homeDirectory + Path.DirectorySeparatorChar+".qse"+Path.DirectorySeparatorChar+"settings"+Path.DirectorySeparatorChar+Path.GetExtension(filename).Substring(1));
+                                    }
+                                }
+                                
                             }
                             else
                             {
@@ -818,7 +849,7 @@ namespace qse
                     }
                     else if (keyInfo1.Key == ConsoleKey.V)
                     {
-                        string pclip = ClipboardService.GetText() ?? string.Empty;
+                        string pclip = ClipboardService.GetText().Replace("\t", "    ").Replace("\r\n", "\n") ?? string.Empty;
                         for (int i = 0; i < pclip.Length; i++)
                         {
                             file.Insert(filelenghts[(line + scroll) - 1] + column - 1 + (line + scroll) + hscroll, pclip[i]);
@@ -973,6 +1004,28 @@ namespace qse
             
             
             
+        }
+        public static void InitRPC() {
+            client.Initialize();
+        }
+        
+        static void UpdateRPC(string file, string project, int line, DateTime t)
+        {
+            var presence = new RichPresence(){
+                State="line " + line, 
+                Details="editing " + file + " in " + project, 
+                
+                Assets = new Assets(){
+                    LargeImageKey = "logo"
+                }, 
+                Timestamps = new Timestamps
+                {
+                    Start = t
+                },
+                
+            };
+            
+            client.SetPresence(presence);
         }
         
     }

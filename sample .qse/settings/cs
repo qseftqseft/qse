@@ -1,0 +1,24 @@
+.Æ,Æ/Æ+Æ-Æ>Æ<Æ=Æ Æ;Æ(Æ)Æ[Æ]Æ{Æ}Æ!Æ"Æ:
+
+
+//
+AddÆReadAllTextÆReplace
+forÆforeachÆusingÆifÆelseÆswitchÆforÆwhileÆdoÆbreakÆcontinueÆreturnÆthrowÆtryÆcatchÆfinallyÆpublicÆprivateÆprotectedÆinternalÆstaticÆabstractÆsealedÆvirtualÆoverrideÆreadonlyÆconstÆvolatileÆnamespaceÆtypeofÆsizeofÆisÆasÆrefÆoutÆinÆparamsÆoperatorÆimplicitÆexplicitÆasyncÆawaitÆvarÆdynamicÆnameofÆrecordÆinitÆglobalÆrequiredÆscopedÆwithÆnewÆtrueÆfalse
+trueÆfalseÆnull
+intÆstringÆboolÆfloatÆdoubleÆcharÆobjectÆdecimalÆvoidÆStopwatch
+
+#
+
+FileÆListÆConsoleKeyInfoÆConsoleKey
+StartÆConcatÆReadKeyÆRemoveAtÆInsert
+usingÆargsÆcase
+
+Console
+
+"
+10
+/usr/bin/st
+ -f "monospace:size=18" -e /usr/bin/bash -c "/home/qseft/.dotnet/dotnet run --project $(dirname '
+'); exec /usr/bin/bash"
+boolÆbyteÆsbyteÆcharÆdecimalÆdoubleÆfloatÆintÆuintÆnintÆnuintÆlongÆulongÆshortÆushortÆstringÆobjectÆdelegateÆdynamic
+

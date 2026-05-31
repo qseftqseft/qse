@@ -10,7 +10,7 @@ namespace qse
 {
     class Write
     {
-        public static string colour(string str, string[][] efs, string[] colours, char[] ignclr, int h, int i, List<char> file, char strng, string filestring, List<int>[] overrides, string[] exps)
+        public static string colour(string str, string[][] efs, string[] colours, char[] ignclr, int h, int i, List<char> file, char strng, string filestring, List<int>[] overrides, Dictionary<string, string> exps)
         {
             if(overrides.Length > h)
                 if(overrides[h].Count > i)
@@ -22,7 +22,7 @@ namespace qse
             return colourString(str, efs, colours, ignclr, exps);
         }
         
-        public static string colourString(string str, string[][] efs, string[] colours, char[] ignclr, string[] exps)
+        public static string colourString(string str, string[][] efs, string[] colours, char[] ignclr, Dictionary<string, string> exps)
         {
             if(str == "" )
             {
@@ -46,7 +46,7 @@ namespace qse
                 return colours[17];
             }
             
-            else if(exps.Contains(str))
+            else if(exps.ContainsKey(str))
             {
                 return colours[29];
             }
@@ -58,7 +58,7 @@ namespace qse
         }
         
         
-        public static string listColourAndCutoff(List<char> file, int maxWidth, string dcolour, string[] colours, int top, int height, int hscroll, string[] exps, int[] mark, int[] pos, bool marked, Settings settings)
+        public static string listColourAndCutoff(List<char> file, int maxWidth, string dcolour, string[] colours, int top, int height, int hscroll, Dictionary<string, string> exps, int[] mark, int[] pos, bool marked, Settings settings)
         {
             //s-o-t
             string[][] efs = [ settings.colours["black"],
@@ -201,7 +201,7 @@ namespace qse
             return String.Join("", output);
         }
         
-        public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, bool marked, int[] mark, int mode, char prevch, string[] exps, int[] pos, string previous, Settings settings, string[] colours)
+        public static string write(int scroll, int hscroll, int top, int left, List<int> filelenghts, List<char> file, string filename, string filestr,int line,int column,  string currentproject, bool marked, int[] mark, int mode, char prevch, Dictionary<string, string> exps, int[] pos, string previous, Settings settings, string[] colours)
         {
             if(top > Console.WindowHeight-1)
                 top = Console.WindowHeight-1;
@@ -213,7 +213,9 @@ namespace qse
             
             int height = max - 1;
             
-            string write = listColourAndCutoff(file, Console.WindowWidth-((filelenghts.Count).ToString().Length)-1, colours[16], colours, scroll,  height, hscroll, exps, mark, pos, marked, settings);
+            int lastlnlen = (scroll + max - 1).ToString().Length;
+            
+            string write = listColourAndCutoff(file, Console.WindowWidth-lastlnlen-1, colours[16], colours, scroll,  height, hscroll, exps, mark, pos, marked, settings);
             
             List<string> writel = write.Split('\n').ToList();
             
@@ -229,7 +231,7 @@ namespace qse
             
             //linunumbers
             
-            int lastlnlen = (scroll + max - 1).ToString().Length;
+            
             
             for(int i = 1; i < max; i++)
             {
@@ -311,7 +313,8 @@ namespace qse
             Console.SetCursorPosition(0, 0);
             
             
-            //cutoffs            
+            //cutoffs
+            
             for(int i = scroll; i < scroll+Console.WindowHeight-3; i++)
             {
                 Console.SetCursorPosition(Console.WindowWidth-1, 1+i-scroll);

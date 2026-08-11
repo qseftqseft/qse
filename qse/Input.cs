@@ -10,7 +10,8 @@ namespace qse
 {
     class Input
     {
-        public static void modeone(ConsoleKeyInfo keyInfo1, int line, int column, bool r, string autocomp, List<char> file, int scroll, int hscroll, int curchar, List<int> filelenghts, int tab, int top, int sugsc, string[] suggest, int mode, Settings settings, out List<char> file2, out int line2, out int column2, out int scroll2, out int hscroll2, out int sugsc2, out bool r2, out int mode2, out bool sug)
+        public static void modeone(ConsoleKeyInfo keyInfo1, int line, int column, bool r, List<char> file, int scroll, int hscroll, int curchar, List<int> filelenghts, int tab, int top, int sugsc, string[] suggest, int mode, Settings settings, string prevstr, string nowstr, string[] match, string[] vars, bool dosug
+        , out List<char> file2, out int line2, out int column2, out int scroll2, out int hscroll2, out int sugsc2, out bool r2, out int mode2, out bool sug)
         {
             //s-o-t
             char[] ignclr = settings.ignclr;
@@ -38,6 +39,13 @@ namespace qse
                     r = true;
                     break;
                 case ConsoleKey.Tab:
+                    string autocomp = "";
+                    
+                    if(dosug)
+                    {
+                        autocomp = Suggest.sugo(prevstr, nowstr, match, vars, sugsc)[0];
+                    }
+                    
                     if(autocomp == "")
                     {
                         for(int i = 0; i < 4; i++)
@@ -46,6 +54,7 @@ namespace qse
                     }
                     else
                     {
+                        autocomp = autocomp.Remove(0, nowstr.Length);
                         char[] cha = autocomp.ToCharArray();
                         Array.Reverse(cha);
                         foreach(char c in cha)
@@ -257,7 +266,7 @@ namespace qse
             
             
             //cursor at start of line (hscroll subtraction possible)
-            if(column < 0 && hscroll + column > 0)
+            if(column < 0 && hscroll + column >= 0)
             {
                 hscroll += column;
                 column = 0;

@@ -10,7 +10,7 @@ namespace qse
 {
     class NavMode
     {
-        public static void modetwo(ConsoleKeyInfo keyInfo1, int line, int column, bool r, string autocomp, List<char> file, int scroll, int hscroll, int curchar, List<int> filelenghts, int tab, int top, int sugsc, string[] suggest, int mode, char prevch, char prevtf, int prevtfm, Settings settings,
+        public static void modetwo(ConsoleKeyInfo keyInfo1, int line, int column, bool r, List<char> file, int scroll, int hscroll, int curchar, List<int> filelenghts, int tab, int top, int sugsc, string[] suggest, int mode, char prevch, char prevtf, int prevtfm, Settings settings,
         out List<char> file2, out int line2, out int column2, out int scroll2, out int hscroll2, out int sugsc2, out bool r2, out int mode2, out char prevch2, out char prevtf2, out int prevtfm2)
         {
             //s-o-t

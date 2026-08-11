@@ -10,7 +10,26 @@ namespace qse
 {
     class Suggest
     {
-        public static string[] sug(string prevstr, string str, string[] match, string[] vars, int scroll)
+        /*public static void sug(string prevstr, string nowstr, string[] match, string[] vars, int scroll, int sugsc, string[] prevs, int x, int line, string[] colours, Settings settings){
+            //do{ Console.Write("["); Console.Clear(); }while(true);
+            //cts.Token.ThrowIfCancellationRequested();
+            //Suggest.sug(prevstr, nowstr, match, vars.ToArray(), scroll, sugsc, prevs, ((scroll+max-1).ToString().Length)+1+column, line, colours, settings);
+            
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            do{}while(sw.ElapsedMilliseconds < 1000);
+            int lef = Console.CursorLeft;
+            int top = Console.CursorTop;
+            string[] suggest = sugo(prevstr, nowstr, match, vars, sugsc);
+            Utils.ArrayBlackBox(suggest, colours[27] + colours[28], colours[21], nowstr.Length, settings.ignclr, 0);
+            string autocomp = Utils.ArrayBlackBox(suggest, colours[27] + colours[28], colours[21], nowstr.Length, settings.ignclr, 0);
+            for(int i = 1; i <= 7 && i + line < prevs.Length; i++)
+                prevs[i+line] = "";
+            Console.SetCursorPosition(x, line);
+            
+        }*/
+        
+        public static string[] sugo(string prevstr, string str, string[] match, string[] vars, int scroll)
         {
             if(str.Length < 1 && prevstr.Length < 1)
                 return [""];

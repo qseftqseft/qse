@@ -244,224 +244,6 @@
           }
         }
       }
-    },
-    "net9.0/linux-x64": {
-      "DiscordRichPresence/1.6.1.70": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "13.0.1"
-        },
-        "compile": {
-          "lib/net9.0/DiscordRPC.dll": {
-            "related": ".deps.json;.pdb;.xml"
-          }
-        },
-        "runtime": {
-          "lib/net9.0/DiscordRPC.dll": {
-            "related": ".deps.json;.pdb;.xml"
-          }
-        }
-      },
-      "Microsoft.Extensions.DependencyInjection.Abstractions/7.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/net7.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net7.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
-            "related": ".xml"
-          }
-        },
-        "build": {
-          "buildTransitive/net6.0/_._": {}
-        }
-      },
-      "Microsoft.NETCore.Platforms/3.1.0": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard1.0/_._": {}
-        },
-        "runtime": {
-          "lib/netstandard1.0/_._": {}
-        }
-      },
-      "Microsoft.Win32.Registry/4.7.0": {
-        "type": "package",
-        "dependencies": {
-          "System.Security.AccessControl": "4.7.0",
-          "System.Security.Principal.Windows": "4.7.0"
-        },
-        "compile": {
-          "ref/netstandard2.0/Microsoft.Win32.Registry.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "runtimes/unix/lib/netstandard2.0/Microsoft.Win32.Registry.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "NAudio/2.2.1": {
-        "type": "package",
-        "dependencies": {
-          "NAudio.Asio": "2.2.1",
-          "NAudio.Core": "2.2.1",
-          "NAudio.Midi": "2.2.1",
-          "NAudio.Wasapi": "2.2.1",
-          "NAudio.WinMM": "2.2.1"
-        },
-        "compile": {
-          "lib/net6.0/NAudio.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/NAudio.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "NAudio.Asio/2.2.1": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Win32.Registry": "4.7.0",
-          "NAudio.Core": "2.2.1"
-        },
-        "compile": {
-          "lib/netstandard2.0/NAudio.Asio.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/NAudio.Asio.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "NAudio.Core/2.2.1": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/NAudio.Core.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/NAudio.Core.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "NAudio.Midi/2.2.1": {
-        "type": "package",
-        "dependencies": {
-          "NAudio.Core": "2.2.1"
-        },
-        "compile": {
-          "lib/netstandard2.0/NAudio.Midi.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/NAudio.Midi.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "NAudio.Wasapi/2.2.1": {
-        "type": "package",
-        "dependencies": {
-          "NAudio.Core": "2.2.1"
-        },
-        "compile": {
-          "lib/netstandard2.0/NAudio.Wasapi.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/NAudio.Wasapi.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "NAudio.WinMM/2.2.1": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Win32.Registry": "4.7.0",
-          "NAudio.Core": "2.2.1"
-        },
-        "compile": {
-          "lib/netstandard2.0/NAudio.WinMM.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/NAudio.WinMM.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Newtonsoft.Json/13.0.1": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "System.Security.AccessControl/4.7.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "3.1.0",
-          "System.Security.Principal.Windows": "4.7.0"
-        },
-        "compile": {
-          "ref/netstandard2.0/System.Security.AccessControl.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/netstandard2.0/System.Security.AccessControl.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "System.Security.Principal.Windows/4.7.0": {
-        "type": "package",
-        "compile": {
-          "ref/netcoreapp3.0/System.Security.Principal.Windows.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "runtimes/unix/lib/netcoreapp2.1/System.Security.Principal.Windows.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "TextCopy/6.2.1": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0"
-        },
-        "compile": {
-          "lib/net6.0/TextCopy.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/TextCopy.dll": {
-            "related": ".xml"
-          }
-        }
-      }
     }
   },
   "libraries": {
@@ -908,19 +690,11 @@
             "version": "[9.0.12, 9.0.12]"
           },
           {
-            "name": "Microsoft.AspNetCore.App.Runtime.linux-x64",
-            "version": "[9.0.12, 9.0.12]"
-          },
-          {
             "name": "Microsoft.NETCore.App.Host.linux-x64",
             "version": "[9.0.12, 9.0.12]"
           },
           {
             "name": "Microsoft.NETCore.App.Ref",
-            "version": "[9.0.12, 9.0.12]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Runtime.linux-x64",
             "version": "[9.0.12, 9.0.12]"
           }
         ],
@@ -930,11 +704,6 @@
           }
         },
         "runtimeIdentifierGraphPath": "/home/qseft/.dotnet/sdk/10.0.102/PortableRuntimeIdentifierGraph.json"
-      }
-    },
-    "runtimes": {
-      "linux-x64": {
-        "#import": []
       }
     }
   }

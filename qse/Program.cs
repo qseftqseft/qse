@@ -220,6 +220,12 @@ namespace qse
             if (max > filelenghts.Count - 1)
                 max = filelenghts.Count - 1;
             
+            Task taskA = new Task(() => {});
+            CancellationTokenSource cts = new CancellationTokenSource();
+            List<string> vars = new List<string>();
+            string[] prevs = [];
+            bool prevsug = (dosug && sug);
+            
             while (true)
             {
                 ConsoleKeyInfo keyInfo1 = new ConsoleKeyInfo('\u001b', ConsoleKey.Escape, shift: false, alt: false,
@@ -234,7 +240,35 @@ namespace qse
                 
                 while (run)
                 {
+                    cts = new CancellationTokenSource();
+                    CancellationToken ct = cts.Token;
                     
+                    taskA = new Task(() => 
+                    {
+                        Stopwatch swc = new Stopwatch();
+                        swc.Start();
+                        do{}while(swc.ElapsedMilliseconds < 1000);
+                        
+                        ct.ThrowIfCancellationRequested();
+                        
+                        int Tlef = Console.CursorLeft;
+                        int Ttop = Console.CursorTop;
+                        string[] Tsuggest = Suggest.sugo(prevstr, nowstr, match, vars.ToArray(), sugsc);
+                        
+                        if (!cts.Token.IsCancellationRequested)
+                        {
+                            
+                            Utils.ArrayBlackBox(Tsuggest, colours[27] + colours[28], colours[21], nowstr.Length, settings.ignclr, 0);
+                            Console.SetCursorPosition(((scroll+max-1).ToString().Length)+1+column, line);
+                        }
+                        else{
+                            Console.Clear();
+                            Console.Write("Prass key");
+                            Console.ReadKey();
+                        }
+                        
+                    }
+                    , cts.Token);
                     autocomp = "";
                     
                     
@@ -268,7 +302,7 @@ namespace qse
                     filestr = string.Concat(file);
                     Dictionary<string, string> exps = new Dictionary<string, string>();
                     string[] lnes = filestr.Split('\n');
-                    List<string> vars = new List<string>();
+                    vars = new List<string>();
                     
                     foreach(string str in lnes)
                     {
@@ -282,7 +316,7 @@ namespace qse
                             }
                         }
                     }
-                    
+                    /*
                     if(dosug && sug)
                     {
                         suggest = Suggest.sug(prevstr, nowstr, match, vars.ToArray(), sugsc);
@@ -290,11 +324,16 @@ namespace qse
                         {
                             sugsc = 0;
                         }
-                    }
-                                        
+                    }*/
                     
                     
-                    if(!(prevfile.Count() == file.Count() && scroll == prevscroll && prevhscroll == hscroll && !marked && prevsugcnt <2 && prev != ""))
+                    //Console.Clear();
+                    
+                    
+                    
+                    
+                    
+                    if(!(prevfile.Count() == file.Count() && scroll == prevscroll && prevhscroll == hscroll && !marked && !prevsug && prev != ""))
                     {
                         prev = Write.write(scroll, hscroll, top, left, filelenghts, file, filename, filestr, line, column, currentproject/**/ /**/,  marked, marka/**/ /**/, mode, prevch, exps, [line+scroll, column+hscroll], prev, settings, colours);
                     }
@@ -303,9 +342,9 @@ namespace qse
                     prevfile = String.Concat(file).ToList();
                     prevscroll = scroll;
                     prevhscroll = hscroll;
-                    prevsugcnt = suggest.Length;
+                    prevsug = (dosug && sug);
                     
-                    string[] prevs = prev.Split('\n');
+                    
                     
                     max = top;
                     if (max > filelenghts.Count - 1)
@@ -319,20 +358,13 @@ namespace qse
                     
                     if(dosug && sug)
                     {
-                        if(sugsc > suggest.Length-1)
-                            sugsc = suggest.Length-1;
-                        if(sugsc < 0)
-                            sugsc = 0;
-                        autocomp = Utils.ArrayBlackBox(suggest, colours[27] + colours[28], colours[21], nowstr.Length, settings.ignclr, 0);
-                        prevnowstr = nowstr;
                         
-                        for(int i = 1; i <= 7 && i + line < prevs.Length; i++)
-                            prevs[i+line] = "";
-                        Console.SetCursorPosition(((scroll + max - 1).ToString().Length)+1+column, line);
+                        
+                        taskA.Start();
                     }
                     
                     
-                    prev = String.Join('\n', prevs);
+                    
                     
                     
                     //
@@ -367,8 +399,6 @@ namespace qse
                     };
                     
                     
-                    
-                    
                     bool iterate = false;                    
                     
                     Stopwatch IdleTimer = new Stopwatch();
@@ -394,7 +424,7 @@ namespace qse
                             IdleTimer.Stop();
                         }
                         
-                        Thread.Sleep(1);
+                        Thread.Sleep(0);
                     }
                     
                     if(iterate){
@@ -402,6 +432,14 @@ namespace qse
                         prev = "";
                         continue;}
                     
+                    
+                    
+                    if(dosug && sug){
+                        if(!taskA.IsCompleted) cts.Cancel();
+                        prevs = prev.Split('\n');
+                        for(int i = 1; i <= 6 && i + line < prevs.Length; i++)    prevs[i+line] = "";
+                        prev = String.Join('\n', prevs);
+                    }
                     
                     
                     sug = false;
@@ -423,16 +461,22 @@ namespace qse
                     int curchar = Utils.curchar(filelenghts, line, scroll, column, hscroll);
                     
                     
-                    if(mode == 0) Input.modeone(keyInfo1, line, column, r, autocomp, file, scroll, hscroll,  curchar, filelenghts, tab, top, sugsc, suggest, mode, settings,
-                    out file, out line, out column, out scroll, out hscroll, out sugsc, out r, out mode, out sug);
+                    if(mode == 0) Input.modeone(keyInfo1, line, column, r, file, scroll, hscroll, curchar, filelenghts, tab, top, sugsc, suggest, mode, settings, prevstr, nowstr, match, vars.ToArray(), dosug
+                    , out file, out line, out column, out scroll, out hscroll, out sugsc, out r, out mode, out sug);
                     
-                    if(mode == 1) NavMode.modetwo(keyInfo1, line, column, r, autocomp, file, scroll, hscroll,  curchar, filelenghts, tab, top, sugsc, suggest, mode, prevch, prevtf, prevtfm, settings,
+                    if(mode == 1) NavMode.modetwo(keyInfo1, line, column, r, file, scroll, hscroll,  curchar, filelenghts, tab, top, sugsc, suggest, mode, prevch, prevtf, prevtfm, settings,
                     out file, out line, out column, out scroll, out hscroll, out sugsc, out r, out mode, out prevch, out prevtf, out prevtfm);
                     
                     
                     Input.HandleRC(line, column, scroll, hscroll, max, file, r, out line, out column, out scroll, out hscroll, out file, out filelenghts);
                     
                     UpdateRPC(Path.GetFileName(filename), currentproject, line + scroll, t);
+                    
+                    
+                    /*
+                    
+                    */
+                    
                     
                 }
                 

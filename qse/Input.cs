@@ -54,6 +54,16 @@ namespace qse
                     }
                     else
                     {
+                        List<int> endarr = new List<int>();
+                        foreach(char c in ignclr)
+                        {
+                            int indxof = autocomp.IndexOf(c);
+                            if(indxof > 0) endarr.Add(indxof);
+                        }
+                        endarr.Add(autocomp.Length);
+                        autocomp = autocomp.Substring(0, endarr.Min());
+                        
+                        
                         autocomp = autocomp.Remove(0, nowstr.Length);
                         char[] cha = autocomp.ToCharArray();
                         Array.Reverse(cha);

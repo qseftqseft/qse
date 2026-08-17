@@ -37,8 +37,8 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
-        name: qse-${{ matrix.os }}-x64.tar
-        path: qse/qse-${{ matrix.os }}-x64.tar
+        name: qse-${{ matrix.os }}-x64.tar.gz
+        path: qse/qse-${{ matrix.os }}-x64.tar.gz
   release:
     needs: build
     runs-on:  ubuntu-latest

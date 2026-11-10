@@ -76,11 +76,13 @@ jobs:
         path: qse-linux.tar
       
     - name: Create GitHub Release
-      run: 'ls'
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ steps.versioning.outputs.version }}
-        files: qse-*/qse-*
+        files: |
+          qse-*/qse-*
+          qse-installer-win64.sh
         prerelease: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      

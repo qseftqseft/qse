@@ -58,7 +58,7 @@ jobs:
       run: |
         wget https://qseft.wz.cz/qse/qse-installer-win64.txt
         ls
-        mv qse-installer-win64.txt qse-installer-win64.sh
+        mv qse-installer-win64.txt qse-installer-win64.bat
         mv qse-macOS-latest-x64.tar.gz qse-macOS-UNTESTED.tar.gz
         mv qse-ubuntu-latest-x64.tar.gz qse-linux.tar.gz
         mv qse-windows-latest-x64.tar.gz qse-windows-EXPERIMENTAL.tar.gz

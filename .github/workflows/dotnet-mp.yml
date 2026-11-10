@@ -70,6 +70,7 @@ jobs:
         tag_name: ${{ steps.versioning.outputs.version }}
         files: |
           qse-*
+          qse-*/qse-*
         prerelease: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

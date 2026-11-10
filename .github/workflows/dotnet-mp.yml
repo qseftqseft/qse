@@ -57,31 +57,19 @@ jobs:
     - name: Get
       run: |
         wget https://qseft.wz.cz/qse/qse-installer-win64.txt
-        mv qse-installer-win64.txt qse-installer-win64.sh
         ls
-    - name: Upload
-      uses: actions/upload-artifact@v4
-      with:
-        name: qse-macOS-UNTESTED.tar
-        path: qse-macOS-UNTESTED.tar
-    - name: Upload
-      uses: actions/upload-artifact@v4
-      with:
-        name: qse-windows-EXPERIMENTAL.tar
-        path: qse-windows-EXPERIMENTAL.tar
-    - name: Upload
-      uses: actions/upload-artifact@v4
-      with:
-        name: qse-linux.tar
-        path: qse-linux.tar
+        mv qse-installer-win64.txt qse-installer-win64.sh
+        mv qse-macOS-latest-x64.tar.gz qse-macOS-UNTESTED.tar.gz
+        mv qse-ubuntu-latest-x64.tar.gz qse-linux.tar.gz
+        mv qse-windows-latest-x64.tar.gz qse-windows-EXPERIMENTAL.tar.gz
+        ls
       
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ steps.versioning.outputs.version }}
         files: |
-          qse-*/qse-*
-          qse-installer-win64.sh
+          qse-*
         prerelease: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

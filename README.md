@@ -9,4 +9,4 @@ QSE tries to be both easy, and fast by having easy to learn shortcuts and by pro
 
 QSE is intended to make you stop using IDE's like VScode, and try an actual text editor, that doesn't have to lie about being a text editor.
 
-QSE currently works only in [st](https://st.suckless.org/), and unless you are using the installer, you have to read the [quick start guide](https://qseft.wz.cz/qse/guide.html) to install it.
+QSE currently works only in [st](https://st.suckless.org/), and unless you are using the installer, you have to follow the [quick start guide](https://qseft.wz.cz/qse/guide.html) to install it.

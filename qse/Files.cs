@@ -39,7 +39,7 @@ namespace qse
             }
             if (!File.Exists(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "projects" + Path.DirectorySeparatorChar + "projects.list"))
             {
-                File.WriteAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "projects" + Path.DirectorySeparatorChar + "projects.list", "\n");
+                File.WriteAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "projects" + Path.DirectorySeparatorChar + "projects.list", "");
                 r=false;
             }
 
@@ -51,7 +51,7 @@ namespace qse
             }
             if (!File.Exists(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + "theme"))
             {
-                File.WriteAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + "theme", "38;2;080;080;080\n38;2;150;025;075\n38;2;025;150;100\n38;2;175;175;025\n38;2;075;050;175\n38;2;125;050;125\n38;2;050;125;125\n38;2;125;125;150\n38;2;100;100;100\n38;2;200;075;125\n38;2;075;200;150\n38;2;225;225;075\n38;2;125;100;225\n38;2;175;100;175\n38;2;075;175;175\n38;2;175;175;200\n38;2;115;115;150\n38;2;200;100;200\n38;2;175;050;075\n38;2;050;175;100\n48;2;175;175;025\n48;2;000;000;020\n48;2;000;000;050\n38;2;025;025;075\n38;2;075;075;150\n");
+                File.WriteAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + "theme", "38;2;080;080;080\n38;2;150;025;075\n38;2;025;150;100\n38;2;175;175;025\n38;2;075;050;175\n38;2;125;050;125\n38;2;050;125;125\n38;2;125;125;150\n38;2;100;100;100\n38;2;200;075;125\n38;2;075;200;150\n38;2;225;225;075\n38;2;125;100;225\n38;2;175;100;175\n38;2;075;175;175\n38;2;175;175;200\n38;2;115;115;150\n38;2;200;100;200\n38;2;175;050;075\n38;2;050;175;100\n48;2;175;175;025\n48;2;000;000;020\n48;2;000;000;050\n38;2;025;025;075\n38;2;075;075;150\n48;2;075;075;150\n38;2;000;000;050\n48;2;020;020;020\n38;2;125;125;175\n38;2;050;100;150");
                 r=false;
             }
 
@@ -63,7 +63,7 @@ namespace qse
             }
             if (!File.Exists(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "settings" + Path.DirectorySeparatorChar + "" + settingsfile))
             {
-                File.WriteAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "settings" +Path.DirectorySeparatorChar+ settingsfile, " \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n");
+                File.WriteAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "settings" +Path.DirectorySeparatorChar+ settingsfile, ".Æ,Æ/Æ+Æ-Æ>Æ<Æ=Æ Æ;Æ(Æ)Æ[Æ]Æ{Æ}Æ!Æ\"Æ:\n\n\n//\nAddÆReadAllTextÆReplace\nforÆforeachÆusingÆifÆelseÆswitchÆforÆwhileÆdoÆbreakÆcontinueÆreturnÆthrowÆtryÆcatchÆfinallyÆpublicÆprivateÆprotectedÆinternalÆstaticÆabstractÆsealedÆvirtualÆoverrideÆreadonlyÆconstÆvolatileÆnamespaceÆtypeofÆsizeofÆisÆasÆrefÆoutÆinÆparamsÆoperatorÆimplicitÆexplicitÆasyncÆawaitÆvarÆdynamicÆnameofÆrecordÆinitÆglobalÆrequiredÆscopedÆwithÆnewÆtrueÆfalse\ntrueÆfalseÆnull\nintÆstringÆboolÆfloatÆdoubleÆcharÆobjectÆdecimalÆvoidÆStopwatch\n\n#\n\nFileÆListÆConsoleKeyInfoÆConsoleKey\nStartÆConcatÆReadKeyÆRemoveAtÆInsert\nusingÆargsÆcase\n\nConsole\n\n\"\n10\n/usr/bin/st\n-f \"monospace:size=18\" -e /usr/bin/bash -c \"/home/qseft/.dotnet/dotnet run --project $(dirname '\n'); exec /usr/bin/bash\"\nboolÆbyteÆsbyteÆcharÆdecimalÆdoubleÆfloatÆintÆuintÆnintÆnuintÆlongÆulongÆshortÆushortÆstringÆobjectÆdelegateÆdynamic\n");
                 r=false;
             }
 

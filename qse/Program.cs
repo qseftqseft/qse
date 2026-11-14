@@ -76,6 +76,9 @@ namespace qse
             
             string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             
+            string settingsfile = "settings";
+            Files.MakeSureConfDirExists(settingsfile, homeDirectory);
+            
             string themefile = "theme";
             string[] theme = File.ReadAllText(homeDirectory + "" + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "themes" + Path.DirectorySeparatorChar + themefile).Split('\n');
             string[] colours = new string[30];
@@ -87,9 +90,6 @@ namespace qse
             
             
             Console.CursorVisible = false;
-            
-            string settingsfile = "settings";
-            Files.MakeSureConfDirExists(settingsfile, homeDirectory);
             
             string filename = homeDirectory + Path.DirectorySeparatorChar + ".qse" + Path.DirectorySeparatorChar + "open" + Path.DirectorySeparatorChar + "file";
             

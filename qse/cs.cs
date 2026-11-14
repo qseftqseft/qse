@@ -17,6 +17,11 @@ namespace qse
             Console.Write("\n");
             string outp = "";
             
+            if(!Directory.Exists(Path.GetDirectoryName(filename) + "/obj/"))
+            {
+                return "";
+            }
+            
             if(File.Exists(Path.GetDirectoryName(filename) + "/obj/project.assets.json"))
                 outp = File.ReadAllText(Path.GetDirectoryName(filename) + "/obj/project.assets.json").Replace("\r\n", "\n");
             else
@@ -30,7 +35,13 @@ namespace qse
                 string old = File.ReadAllText(Path.GetDirectoryName(filename) + "/obj/.qse.project.assets.json.old");
                 if (outp == old)
                 {
-                    return File.ReadAllText(Path.GetDirectoryName(filename) + "/obj/.qse.project.assets.json.contents.old");
+                    if(File.Exists(Path.GetDirectoryName(filename) + "/obj/.qse.project.assets.json.contents.old"))
+                    {
+                        return File.ReadAllText(Path.GetDirectoryName(filename) + "/obj/.qse.project.assets.json.contents.old");
+                    }
+                    else{
+                        return "";
+                    }
                 }
                     
             }
